@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Games — BloxBet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<style>
+  #allGames{
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:1rem;
+  }
+  #allGames .card{
+    padding:1.35rem;
+    gap:.85rem;
+  }
+  #allGames .card-art{
+    height:140px;
+    margin-bottom:.35rem;
+  }
+  #allGames .card-art .ico,
+  #allGames .card-art img.ico{
+    width:72px;
+    height:72px;
+  }
+  #allGames .card-title{
+    font-size:1.05rem;
+    font-weight:600;
+    letter-spacing:-.01em;
+  }
+  #allGames .card-desc{
+    font-size:.85rem;
+    line-height:1.55;
+  }
+  #allGames .card-foot{
+    margin-top:.35rem;
+    padding-top:.6rem;
+    border-top:1px solid var(--border);
+  }
+  #allGames .card-meta{
+    font-size:.78rem;
+  }
+  #allGames .btn-sm{
+    padding:.5rem .9rem;
+    font-size:.82rem;
+  }
+  #allGames .badge{
+    font-size:.68rem;
+    padding:.2rem .5rem;
+  }
+  #allGames .card.unavailable{
+    opacity:.55;
+    cursor:not-allowed;
+  }
+  #allGames .card.unavailable:hover{
+    transform:none;
+    border-color:var(--border);
+    background:var(--surface);
+  }
+
+  @media (max-width:900px){
+    #allGames{
+      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    }
+  }
+  @media (max-width:640px){
+    #allGames{
+      grid-template-columns:1fr;
+      gap:.75rem;
+    }
+    #allGames .card-art{
+      height:120px;
+    }
+    #allGames .card-art .ico,
+    #allGames .card-art img.ico{
+      width:56px;
+      height:56px;
+    }
+    #allGames .card-title{font-size:.95rem}
+    #allGames .card-desc{font-size:.8rem}
+  }
+</style>
+</head>
+<body>
+
+<div id="bbLoader" class="bb-loader">
+  <div class="bb-loader-bg"></div>
+  <div class="bb-loader-veil"></div>
+  <div class="bb-loader-vignette"></div>
+  <div class="bb-loader-glow"></div>
+  <div class="bb-loader-inner">
+    <div class="bb-loader-lockup">
+      <div class="bb-loader-mark">
+        <img src="icons/bloxbet.png" alt="BloxBet" draggable="false">
+      </div>
+      <div class="bb-loader-text">
+        <span class="bb-blox">Blox</span><span class="bb-bet">Bet</span>
+      </div>
+    </div>
+    <div class="bb-loader-bar">
+      <div class="bb-loader-fill"></div>
+    </div>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-left">
+    <button class="menu-btn" data-tip="Menu"><img src="icons/menu.png" alt="" class="ico" draggable="false"></button>
+    <a href="index.html" class="nav-logo">
+      <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
+      <span class="nav-logo-text">BloxBet</span>
+    </a>
+  </div>
+  <div class="nav-center">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="games.html">Games</a>
+    <a class="nav-link" href="rewards.html">Rewards</a>
+    <a class="nav-link" href="community.html">Community</a>
+    <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+    <a class="nav-link" href="profile.html">Profile</a>
+  </div>
+  <div class="nav-right">
+    <div class="balance-chip">
+      <div>
+        <div class="label">Balance</div>
+        <div class="value"><span data-balance data-balance="12480">12,480</span><span class="unit">RC</span></div>
+      </div>
+      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')"><img src="icons/plus.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications"><img src="icons/bell.png" alt="" class="ico" draggable="false"></button>
+      <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
+    </div>
+    <div class="dropdown">
+      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">N</button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="profile.html">Profile</a>
+        <a class="dropdown-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;">Settings</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-section">Overview</div>
+  <a class="side-item" data-href="index.html" href="index.html"><span class="icon"><img src="icons/home.png" alt="" class="ico" draggable="false"></span><span class="label">Home</span></a>
+  <a class="side-item" data-href="games.html" href="games.html"><span class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></span><span class="label">Games</span></a>
+  <a class="side-item" data-href="rewards.html" href="rewards.html"><span class="icon"><img src="icons/rewards.png" alt="" class="ico" draggable="false"></span><span class="label">Rewards</span></a>
+  <div class="sidebar-section">Social</div>
+  <a class="side-item" data-href="community.html" href="community.html"><span class="icon"><img src="icons/community.png" alt="" class="ico" draggable="false"></span><span class="label">Community</span></a>
+  <a class="side-item" data-href="leaderboard.html" href="leaderboard.html"><span class="icon"><img src="icons/leaderboard.png" alt="" class="ico" draggable="false"></span><span class="label">Leaderboard</span></a>
+  <div class="sidebar-section">Account</div>
+  <a class="side-item" data-href="profile.html" href="profile.html"><span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span><span class="label">Profile</span></a>
+  <a class="side-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;"><span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span><span class="label">Settings</span></a>
+<a class="sidebar-discord" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">
+    <span class="icon"><img src="icons/discord.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Discord</span>
+  </a>
+  <div class="sidebar-toggle">
+    <span class="icon"><img src="icons/chevron-left.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Collapse</span>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="container page">
+
+    <div class="page-head">
+      <div>
+        <h1>Games</h1>
+        <div class="sub" id="gamesSub">—</div>
+      </div>
+      <div class="page-head-actions">
+        <div class="segmented" id="filterBar">
+          <button class="active" data-filter="all">All</button>
+          <button data-filter="popular">Popular</button>
+          <button data-filter="available">Available</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" id="allGames">
+      <div class="card" style="cursor:default">
+        <div class="card-art"></div>
+        <div class="card-title">Loading…</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a class="bn-item" data-href="index.html" href="index.html"><img src="icons/home.png" alt="" class="ico" draggable="false"><span>Home</span></a>
+    <a class="bn-item" data-href="games.html" href="games.html"><img src="icons/games.png" alt="" class="ico" draggable="false"><span>Games</span></a>
+    <a class="bn-item" data-href="rewards.html" href="rewards.html"><img src="icons/rewards.png" alt="" class="ico" draggable="false"><span>Rewards</span></a>
+    <a class="bn-item" data-href="community.html" href="community.html"><img src="icons/community.png" alt="" class="ico" draggable="false"><span>Social</span></a>
+    <a class="bn-item" data-href="profile.html" href="profile.html"><img src="icons/profile.png" alt="" class="ico" draggable="false"><span>Me</span></a>
+  </div>
+</nav>
+
+<div class="modal-overlay" id="m-deposit">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>Add Funds</h3><p>Top up your RoCoins balance.</p></div>
+      <button class="modal-close" onclick="Modal.close('m-deposit')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Amount</label>
+        <input type="number" id="depositAmount" value="1000" min="100" max="500000" step="100">
+      </div>
+      <div class="quick-bets" style="margin-top:.5rem">
+        <button class="quick-bet" data-deposit="500">500</button>
+        <button class="quick-bet" data-deposit="1000">1K</button>
+        <button class="quick-bet" data-deposit="5000">5K</button>
+        <button class="quick-bet" data-deposit="10000">10K</button>
+        <button class="quick-bet" data-deposit="50000">50K</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')">Cancel</button>
+      <button class="btn btn-primary" id="depositConfirmBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var loader = document.getElementById('bbLoader');
+    if(!loader) return;
+    setTimeout(function(){
+      loader.classList.add('hide');
+      setTimeout(function(){ loader.remove(); }, 320);
+    }, 2000);
+  })();
+</script>
+
+<script src="js/data.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/toasts.js"></script>
+<script src="js/modals.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/deposit.js"></script>
+<script src="js/admin-link.js"></script>
+<script>
+  (function(){
+    if(typeof Auth === 'undefined'){ console.error('[games] Auth missing'); return; }
+    if(!Auth.isLoggedIn()){ Auth.safeRedirect('login'); return; }
+
+    var me = Auth.getUser();
+    var navAvatar = document.getElementById('navAvatar');
+    if(navAvatar && typeof renderAvatar === 'function') renderAvatar(navAvatar, me);
+
+    var sub = document.getElementById('gamesSub');
+    var grid = document.getElementById('allGames');
+
+    var gamesList = [];
+    var currentFilter = 'all';
+
+    async function loadGames(){
+      try {
+        var res = await Auth.api('/games');
+        if(!res.ok) throw new Error('bad status');
+        var data = await res.json();
+        gamesList = data.games || [];
+        if(sub){
+          var available = gamesList.filter(function(g){ return g.available; }).length;
+          sub.textContent = available + ' game' + (available === 1 ? '' : 's') + ' available';
+        }
+        renderGames();
+      } catch(e){
+        grid.innerHTML =
+          '<div class="empty" style="grid-column:1/-1">' +
+            '<div class="icon"><img src="icons/search.png" alt="" class="ico" draggable="false"></div>' +
+            '<h4>Could not load games</h4>' +
+            '<p>Check that the server is running.</p>' +
+          '</div>';
+      }
+    }
+
+    function filterGames(){
+      if(currentFilter === 'all') return gamesList;
+      if(currentFilter === 'popular') return gamesList.filter(function(g){ return g.badge === 'popular'; });
+      if(currentFilter === 'available') return gamesList.filter(function(g){ return g.available; });
+      return gamesList;
+    }
+
+    function renderGames(){
+      grid.innerHTML = '';
+      var list = filterGames();
+
+      if(list.length === 0){
+        grid.innerHTML =
+          '<div class="empty" style="grid-column:1/-1">' +
+            '<div class="icon"><img src="icons/search.png" alt="" class="ico" draggable="false"></div>' +
+            '<h4>No games found</h4>' +
+            '<p>Try a different filter.</p>' +
+          '</div>';
+        return;
+      }
+
+      list.forEach(function(g){
+        var card = document.createElement('div');
+        card.className = 'card';
+        if(!g.available) card.classList.add('unavailable');
+
+        var playersLabel = g.players > 0
+          ? g.players.toLocaleString() + ' playing'
+          : 'No players';
+
+        var badgeHtml = g.badge
+          ? '<span class="badge badge-' + g.badge + '">' + g.badge + '</span>'
+          : '';
+
+        var buttonLabel = g.available ? 'Play' : 'Soon';
+        var buttonClass = g.available ? 'btn-primary' : 'btn-ghost';
+
+        card.innerHTML =
+          '<div class="card-art">' + Icon(g.icon, 'ico-2xl') + '</div>' +
+          '<div class="card-head">' +
+            '<div class="card-title">' + g.name + '</div>' +
+            badgeHtml +
+          '</div>' +
+          '<div class="card-desc">' + g.desc + '</div>' +
+          '<div class="card-foot">' +
+            '<div class="card-meta">' +
+              (g.players > 0 ? '<span class="live-dot"></span>' : '') +
+              playersLabel +
+            '</div>' +
+            '<button class="btn ' + buttonClass + ' btn-sm" ' + (g.available ? '' : 'disabled') + '>' + buttonLabel + '</button>' +
+          '</div>';
+
+        card.addEventListener('click', function(){
+          if(!g.available){
+            Toast.info(g.name, 'Coming soon.');
+            return;
+          }
+          if(g.route) location.href = g.route;
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    document.querySelectorAll('#filterBar button').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        document.querySelectorAll('#filterBar button').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderGames();
+      });
+    });
+
+    loadGames();
+
+    // Refresh counts every 15s so "X playing" stays honest
+    setInterval(loadGames, 15000);
+  })();
+</script>
+</body>
+</html>

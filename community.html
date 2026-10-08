@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Community — BloxBet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<style>
+  /* ============================================================
+     COMMUNITY — LIVE FLIP FEED
+     ============================================================ */
+
+  .cm-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:.75rem;
+    margin-bottom:1rem;
+  }
+  .cm-stat{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--r-lg);
+    padding:.85rem 1rem;
+    position:relative;
+    overflow:hidden;
+  }
+  .cm-stat::before{
+    content:'';
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:2px;
+    background:var(--accent);
+    opacity:.6;
+  }
+  .cm-stat.win::before{background:var(--success)}
+  .cm-stat.lose::before{background:var(--danger)}
+
+  .cm-stat-label{
+    font-size:.62rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-weight:600;
+    color:var(--text-3);
+    margin-bottom:.35rem;
+  }
+  .cm-stat-value{
+    font-family:'JetBrains Mono',monospace;
+    font-size:1.05rem;
+    font-weight:600;
+    color:var(--text);
+    letter-spacing:-.01em;
+  }
+  .cm-stat.win .cm-stat-value{color:#4ade80}
+  .cm-stat.lose .cm-stat-value{color:#f87171}
+  .cm-stat-sub{
+    font-size:.65rem;
+    color:var(--text-3);
+    margin-top:.2rem;
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  /* ============================================================
+     FEED
+     ============================================================ */
+  .cm-feed{
+    display:flex;
+    flex-direction:column;
+    gap:.5rem;
+  }
+
+  .cm-row{
+    display:grid;
+    grid-template-columns:56px 1fr 150px 120px 130px;
+    align-items:center;
+    gap:1rem;
+    padding:.9rem 1.15rem;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--r-lg);
+    transition:border-color 120ms ease, background 120ms ease, transform 120ms ease;
+    position:relative;
+    overflow:hidden;
+    animation:cmRowIn 260ms cubic-bezier(.2,.7,.3,1) both;
+  }
+  @keyframes cmRowIn{
+    from{opacity:0;transform:translateY(-4px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  .cm-row:hover{
+    border-color:var(--border-2);
+    background:var(--surface-2);
+  }
+
+  .cm-row::before{
+    content:'';
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:3px;
+    background:var(--border-2);
+  }
+  .cm-row.win::before{background:linear-gradient(180deg,#22c55e,#16a34a)}
+  .cm-row.lose::before{background:linear-gradient(180deg,#ef4444,#b91c1c)}
+
+  .cm-row.streak-hot::before{
+    background:linear-gradient(180deg,#fbbf24,#f59e0b);
+    box-shadow:0 0 12px rgba(251,191,36,.4);
+  }
+
+  /* ---------- Avatar ---------- */
+  .cm-avatar-cell{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+  }
+  .cm-avatar{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:var(--surface-3);
+    display:grid;
+    place-items:center;
+    font-weight:700;
+    font-size:.95rem;
+    color:var(--text);
+    border:1px solid var(--border-2);
+    overflow:hidden;
+    position:relative;
+  }
+  .cm-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .cm-verified{
+    position:absolute;
+    bottom:-2px;
+    right:-2px;
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:var(--accent);
+    border:2px solid var(--surface);
+    display:grid;
+    place-items:center;
+    font-size:.55rem;
+    color:#fff;
+    font-weight:700;
+  }
+
+  /* ---------- User cell ---------- */
+  .cm-user{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:.15rem;
+  }
+  .cm-user-top{
+    display:flex;
+    align-items:center;
+    gap:.4rem;
+    flex-wrap:wrap;
+  }
+  .cm-username{
+    font-size:.88rem;
+    font-weight:600;
+    color:var(--text);
+    letter-spacing:-.005em;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:200px;
+  }
+  .cm-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:.2rem;
+    padding:.1rem .4rem;
+    border-radius:4px;
+    font-size:.58rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    background:var(--surface-3);
+    color:var(--text-2);
+    border:1px solid var(--border-2);
+    line-height:1.4;
+  }
+  .cm-badge.og{background:rgba(168,85,247,.14);color:#c4b5fd;border-color:rgba(168,85,247,.35)}
+  .cm-badge.whale{background:rgba(59,130,246,.14);color:#93c5fd;border-color:rgba(59,130,246,.35)}
+  .cm-badge.lucky{background:rgba(34,197,94,.14);color:#86efac;border-color:rgba(34,197,94,.35)}
+  .cm-badge.streak{
+    background:linear-gradient(90deg,rgba(251,191,36,.18),rgba(245,158,11,.1));
+    color:#fcd34d;
+    border-color:rgba(251,191,36,.4);
+    animation:streakPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes streakPulse{
+    0%,100%{opacity:1}
+    50%{opacity:.75}
+  }
+
+  .cm-user-meta{
+    font-size:.68rem;
+    color:var(--text-3);
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .cm-user-meta .sep{opacity:.4}
+
+  /* ---------- Flip cell ---------- */
+  .cm-flip{
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    justify-content:flex-end;
+  }
+  .cm-coin{
+    width:44px;
+    height:44px;
+    flex-shrink:0;
+    position:relative;
+    border-radius:50%;
+    display:block;
+    filter:drop-shadow(0 1px 3px rgba(0,0,0,.4));
+  }
+  .cm-coin img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+    pointer-events:none;
+    user-select:none;
+    -webkit-user-drag:none;
+    position:relative;
+    z-index:1;
+  }
+
+  .cm-coin::before{
+    content:'';
+    position:absolute;
+    inset:-6px;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:0;
+  }
+  .cm-coin.win::before{
+    border:2px solid #22c55e;
+    box-shadow:
+      0 0 10px rgba(34,197,94,.55),
+      0 0 20px rgba(34,197,94,.3),
+      inset 0 0 8px rgba(34,197,94,.25);
+  }
+  .cm-coin.lose::before{
+    border:2px solid #ef4444;
+    box-shadow:
+      0 0 10px rgba(239,68,68,.55),
+      0 0 20px rgba(239,68,68,.3),
+      inset 0 0 8px rgba(239,68,68,.25);
+  }
+
+  .cm-flip-detail{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:.1rem;
+  }
+  .cm-flip-choice{
+    font-size:.66rem;
+    color:var(--text-3);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:600;
+  }
+  .cm-flip-result{
+    font-size:.82rem;
+    font-weight:600;
+    color:var(--text);
+    text-transform:capitalize;
+  }
+
+  /* ---------- Money cell ---------- */
+  .cm-money{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:.15rem;
+    text-align:right;
+  }
+  .cm-net{
+    font-family:'JetBrains Mono',monospace;
+    font-size:1rem;
+    font-weight:700;
+    letter-spacing:-.01em;
+    line-height:1;
+  }
+  .cm-net.win{color:#4ade80}
+  .cm-net.lose{color:#f87171}
+  .cm-money-sub{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.66rem;
+    color:var(--text-3);
+    line-height:1;
+  }
+  .cm-money-sub .strike{
+    text-decoration:line-through;
+    opacity:.6;
+    margin-right:.25rem;
+  }
+
+  /* ---------- Time cell ---------- */
+  .cm-time{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:.15rem;
+    text-align:right;
+  }
+  .cm-time-rel{
+    font-size:.72rem;
+    color:var(--text-2);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .cm-time-abs{
+    font-size:.62rem;
+    color:var(--text-3);
+    font-family:'JetBrains Mono',monospace;
+    opacity:.7;
+  }
+  .cm-mode-tag{
+    font-size:.58rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:700;
+    color:var(--text-3);
+    padding:.1rem .35rem;
+    border:1px solid var(--border);
+    border-radius:3px;
+    margin-top:.15rem;
+  }
+  .cm-mode-tag.pvp{
+    color:#c4b5fd;
+    border-color:rgba(168,85,247,.35);
+    background:rgba(168,85,247,.08);
+  }
+
+  /* ============================================================
+     FOOTER SUMMARY
+     ============================================================ */
+  .cm-footer{
+    margin-top:1rem;
+    padding:.85rem 1.15rem;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--r-lg);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    flex-wrap:wrap;
+  }
+  .cm-footer-label{
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-weight:600;
+    color:var(--text-3);
+  }
+  .cm-footer-metrics{
+    display:flex;
+    gap:1.5rem;
+    flex-wrap:wrap;
+  }
+  .cm-footer-metric{
+    display:flex;
+    flex-direction:column;
+    gap:.1rem;
+    text-align:right;
+  }
+  .cm-footer-metric .m-val{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.82rem;
+    font-weight:600;
+    color:var(--text);
+  }
+  .cm-footer-metric .m-val.pos{color:#4ade80}
+  .cm-footer-metric .m-label{
+    font-size:.58rem;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    color:var(--text-3);
+    font-weight:600;
+  }
+
+  /* ============================================================
+     EMPTY
+     ============================================================ */
+  .cm-empty{
+    padding:3rem 1rem;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.65rem;
+  }
+  .cm-empty .icon{
+    width:48px;
+    height:48px;
+    border-radius:var(--r-md);
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    display:grid;
+    place-items:center;
+  }
+  .cm-empty .icon .ico{width:22px;height:22px;opacity:.4}
+  .cm-empty h4{font-size:.9rem;font-weight:600;color:var(--text)}
+  .cm-empty p{font-size:.75rem;color:var(--text-3);max-width:280px;line-height:1.5}
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width:900px){
+    .cm-row{
+      grid-template-columns:48px 1fr 100px;
+      gap:.75rem;
+      padding:.8rem 1rem;
+    }
+    .cm-flip-detail{display:none}
+    .cm-coin{width:36px;height:36px}
+    .cm-coin::before{inset:-5px}
+  }
+  @media (max-width:640px){
+    .cm-stats{grid-template-columns:1fr;gap:.5rem}
+    .cm-stat{padding:.7rem .85rem}
+    .cm-row{
+      grid-template-columns:40px 1fr auto;
+      gap:.6rem;
+      padding:.7rem .85rem;
+    }
+    .cm-avatar{width:36px;height:36px;font-size:.8rem}
+    .cm-username{font-size:.82rem;max-width:130px}
+    .cm-user-meta{font-size:.62rem}
+    .cm-flip{display:none}
+    .cm-net{font-size:.9rem}
+    .cm-money-sub{display:none}
+    .cm-time-abs{display:none}
+    .cm-mode-tag{display:none}
+    .cm-footer{padding:.75rem .9rem}
+    .cm-footer-metrics{gap:1rem}
+  }
+</style>
+</head>
+<body>
+
+<div id="bbLoader" class="bb-loader">
+  <div class="bb-loader-bg"></div>
+  <div class="bb-loader-veil"></div>
+  <div class="bb-loader-vignette"></div>
+  <div class="bb-loader-glow"></div>
+  <div class="bb-loader-inner">
+    <div class="bb-loader-lockup">
+      <div class="bb-loader-mark">
+        <img src="icons/bloxbet.png" alt="BloxBet" draggable="false">
+      </div>
+      <div class="bb-loader-text">
+        <span class="bb-blox">Blox</span><span class="bb-bet">Bet</span>
+      </div>
+    </div>
+    <div class="bb-loader-bar">
+      <div class="bb-loader-fill"></div>
+    </div>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-left">
+    <button class="menu-btn" data-tip="Menu"><img src="icons/menu.png" alt="" class="ico" draggable="false"></button>
+    <a href="index.html" class="nav-logo">
+      <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
+      <span class="nav-logo-text">BloxBet</span>
+    </a>
+  </div>
+  <div class="nav-center">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="games.html">Games</a>
+    <a class="nav-link" href="rewards.html">Rewards</a>
+    <a class="nav-link" href="community.html">Community</a>
+    <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+    <a class="nav-link" href="profile.html">Profile</a>
+  </div>
+  <div class="nav-right">
+    <div class="balance-chip">
+      <div>
+        <div class="label">Balance</div>
+        <div class="value"><span data-balance data-balance="12480">12,480</span><span class="unit">RC</span></div>
+      </div>
+      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')"><img src="icons/plus.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications"><img src="icons/bell.png" alt="" class="ico" draggable="false"></button>
+      <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
+    </div>
+    <div class="dropdown">
+      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">N</button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="profile.html">Profile</a>
+        <a class="dropdown-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;">Settings</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-section">Overview</div>
+  <a class="side-item" data-href="index.html" href="index.html"><span class="icon"><img src="icons/home.png" alt="" class="ico" draggable="false"></span><span class="label">Home</span></a>
+  <a class="side-item" data-href="games.html" href="games.html"><span class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></span><span class="label">Games</span></a>
+  <a class="side-item" data-href="rewards.html" href="rewards.html"><span class="icon"><img src="icons/rewards.png" alt="" class="ico" draggable="false"></span><span class="label">Rewards</span></a>
+  <div class="sidebar-section">Social</div>
+  <a class="side-item" data-href="community.html" href="community.html"><span class="icon"><img src="icons/community.png" alt="" class="ico" draggable="false"></span><span class="label">Community</span></a>
+  <a class="side-item" data-href="leaderboard.html" href="leaderboard.html"><span class="icon"><img src="icons/leaderboard.png" alt="" class="ico" draggable="false"></span><span class="label">Leaderboard</span></a>
+  <div class="sidebar-section">Account</div>
+  <a class="side-item" data-href="profile.html" href="profile.html"><span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span><span class="label">Profile</span></a>
+  <a class="side-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;"><span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span><span class="label">Settings</span></a>
+<a class="sidebar-discord" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">
+    <span class="icon"><img src="icons/discord.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Discord</span>
+  </a>
+  <div class="sidebar-toggle">
+    <span class="icon"><img src="icons/chevron-left.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Collapse</span>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="container page">
+
+    <div class="page-head">
+      <div>
+        <h1>Community</h1>
+        <div class="sub">Every flip, as it lands.</div>
+      </div>
+    </div>
+
+    <div class="cm-stats" id="cmStats">
+      <div class="cm-stat">
+        <div class="cm-stat-label">Flips · 24h</div>
+        <div class="cm-stat-value" id="cmStatFlips">—</div>
+        <div class="cm-stat-sub" id="cmStatFlipsSub">—</div>
+      </div>
+      <div class="cm-stat">
+        <div class="cm-stat-label">Wagered · 24h</div>
+        <div class="cm-stat-value" id="cmStatWagered">—</div>
+        <div class="cm-stat-sub" id="cmStatWageredSub">total volume</div>
+      </div>
+      <div class="cm-stat win">
+        <div class="cm-stat-label">Paid Out · 24h</div>
+        <div class="cm-stat-value" id="cmStatPaid">—</div>
+        <div class="cm-stat-sub" id="cmStatPaidSub">to winners</div>
+      </div>
+    </div>
+
+    <div class="cm-feed" id="cmFeed">
+      <div class="cm-empty">
+        <div class="icon"><img src="icons/coin.png" alt="" class="ico" draggable="false"></div>
+        <h4>Loading feed…</h4>
+        <p>Pulling the latest flips.</p>
+      </div>
+    </div>
+
+    <div class="cm-footer" id="cmFooter" style="display:none">
+      <div class="cm-footer-label">Rolling 24h</div>
+      <div class="cm-footer-metrics">
+        <div class="cm-footer-metric">
+          <div class="m-val" id="cmFootFlips">—</div>
+          <div class="m-label">Flips</div>
+        </div>
+        <div class="cm-footer-metric">
+          <div class="m-val" id="cmFootWagered">—</div>
+          <div class="m-label">Wagered</div>
+        </div>
+        <div class="cm-footer-metric">
+          <div class="m-val pos" id="cmFootPaid">—</div>
+          <div class="m-label">Paid</div>
+        </div>
+        <div class="cm-footer-metric">
+          <div class="m-val" id="cmFootEdge">—</div>
+          <div class="m-label">House Take</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a class="bn-item" data-href="index.html" href="index.html"><img src="icons/home.png" alt="" class="ico" draggable="false"><span>Home</span></a>
+    <a class="bn-item" data-href="games.html" href="games.html"><img src="icons/games.png" alt="" class="ico" draggable="false"><span>Games</span></a>
+    <a class="bn-item" data-href="rewards.html" href="rewards.html"><img src="icons/rewards.png" alt="" class="ico" draggable="false"><span>Rewards</span></a>
+    <a class="bn-item" data-href="community.html" href="community.html"><img src="icons/community.png" alt="" class="ico" draggable="false"><span>Social</span></a>
+    <a class="bn-item" data-href="profile.html" href="profile.html"><img src="icons/profile.png" alt="" class="ico" draggable="false"><span>Me</span></a>
+  </div>
+</nav>
+
+<div class="modal-overlay" id="m-deposit">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>Add Funds</h3><p>Top up your RoCoins balance.</p></div>
+      <button class="modal-close" onclick="Modal.close('m-deposit')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Amount</label>
+        <input type="number" id="depositAmount" value="1000" min="100" max="500000" step="100">
+      </div>
+      <div class="quick-bets" style="margin-top:.5rem">
+        <button class="quick-bet" data-deposit="500">500</button>
+        <button class="quick-bet" data-deposit="1000">1K</button>
+        <button class="quick-bet" data-deposit="5000">5K</button>
+        <button class="quick-bet" data-deposit="10000">10K</button>
+        <button class="quick-bet" data-deposit="50000">50K</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')">Cancel</button>
+      <button class="btn btn-primary" id="depositConfirmBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var loader = document.getElementById('bbLoader');
+    if(!loader) return;
+    setTimeout(function(){
+      loader.classList.add('hide');
+      setTimeout(function(){ loader.remove(); }, 320);
+    }, 2000);
+  })();
+</script>
+
+<script src="js/data.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/toasts.js"></script>
+<script src="js/modals.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/deposit.js"></script>
+<script src="js/admin-link.js"></script>
+<script>
+  (function(){
+    if(typeof Auth === 'undefined'){ console.error('[community] Auth missing'); return; }
+    if(!Auth.isLoggedIn()){ Auth.safeRedirect('login'); return; }
+
+    var me = Auth.getUser();
+    var navAvatar = document.getElementById('navAvatar');
+    if(navAvatar && typeof renderAvatar === 'function') renderAvatar(navAvatar, me);
+
+    var feedEl    = document.getElementById('cmFeed');
+    var footerEl  = document.getElementById('cmFooter');
+    var statFlips = document.getElementById('cmStatFlips');
+    var statFlipsSub = document.getElementById('cmStatFlipsSub');
+    var statWag   = document.getElementById('cmStatWagered');
+    var statPaid  = document.getElementById('cmStatPaid');
+    var footFlips = document.getElementById('cmFootFlips');
+    var footWag   = document.getElementById('cmFootWagered');
+    var footPaid  = document.getElementById('cmFootPaid');
+    var footEdge  = document.getElementById('cmFootEdge');
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, function(c){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+      });
+    }
+
+    function fmtNum(n){
+      n = Number(n) || 0;
+      if(Math.abs(n) >= 1e6) return (n/1e6).toFixed(2) + 'M';
+      if(Math.abs(n) >= 1e3) return (n/1e3).toFixed(1) + 'K';
+      return n.toLocaleString();
+    }
+
+    function fmtFull(n){
+      return Number(n || 0).toLocaleString();
+    }
+
+    function timeAgo(ts){
+      var s = Math.floor((Date.now() - ts) / 1000);
+      if(s < 5)   return 'just now';
+      if(s < 60)  return s + 's ago';
+      var m = Math.floor(s / 60);
+      if(m < 60)  return m + 'm ago';
+      var h = Math.floor(m / 60);
+      if(h < 24)  return h + 'h ago';
+      return Math.floor(h / 24) + 'd ago';
+    }
+
+    function timeAbs(ts){
+      var d = new Date(ts);
+      var hh = String(d.getHours()).padStart(2,'0');
+      var mm = String(d.getMinutes()).padStart(2,'0');
+      var ss = String(d.getSeconds()).padStart(2,'0');
+      return hh + ':' + mm + ':' + ss;
+    }
+
+    function badgeClassFromChatBadge(badge){
+      if(!badge) return '';
+      var b = String(badge).toLowerCase();
+      if(b === 'og')    return 'og';
+      if(b === 'whale') return 'whale';
+      if(b === 'lucky') return 'lucky';
+      return '';
+    }
+
+    function renderRow(f){
+      var row = document.createElement('div');
+      row.className = 'cm-row ' + (f.win ? 'win' : 'lose');
+      if(f.streak >= 3) row.classList.add('streak-hot');
+
+      var initial = (f.username || 'U')[0].toUpperCase();
+      var avatarHtml;
+      if(f.avatar && /^https?:/i.test(f.avatar)){
+        avatarHtml = '<img src="' + f.avatar + '" alt="" draggable="false" onerror="this.parentNode.textContent=\'' + initial + '\'">';
+      } else {
+        avatarHtml = initial;
+      }
+
+      var chatBadgeClass = badgeClassFromChatBadge(f.chatBadge);
+      var chatBadgeHtml = chatBadgeClass
+        ? '<span class="cm-badge ' + chatBadgeClass + '">' + escapeHtml(f.chatBadge) + '</span>'
+        : '';
+
+      var verifiedHtml = f.hasVerifiedBadge ? '<span class="cm-verified">✓</span>' : '';
+      var streakHtml = (f.streak >= 3)
+        ? '<span class="cm-badge streak">' + f.streak + '× streak</span>'
+        : '';
+
+      var nameStyle = f.nameColor
+        ? ' style="color:' + escapeHtml(f.nameColor) + '"'
+        : '';
+
+      var modeHtml = (f.mode === 'pvp')
+        ? '<span class="cm-mode-tag pvp">PvP</span>'
+        : '';
+
+      var coinClass = 'cm-coin ' + f.result + ' ' + (f.win ? 'win' : 'lose');
+      var coinSrc = 'icons/coin-' + f.result + '.png';
+
+      var netStr = (f.net >= 0 ? '+' : '') + fmtFull(f.net);
+      var netClass = f.win ? 'win' : 'lose';
+
+      var moneySub;
+      if(f.win){
+        moneySub = '<span class="strike">' + fmtFull(f.bet) + '</span>' + fmtFull(f.payout);
+      } else {
+        moneySub = 'bet ' + fmtFull(f.bet);
+      }
+
+      row.innerHTML =
+        '<div class="cm-avatar-cell">' +
+          '<div class="cm-avatar">' +
+            avatarHtml +
+            verifiedHtml +
+          '</div>' +
+        '</div>' +
+
+        '<div class="cm-user">' +
+          '<div class="cm-user-top">' +
+            '<span class="cm-username"' + nameStyle + '>' + escapeHtml(f.username) + '</span>' +
+            chatBadgeHtml +
+            streakHtml +
+          '</div>' +
+          '<div class="cm-user-meta">' +
+            '<span>Lv ' + (f.level || 1) + '</span>' +
+            '<span class="sep">·</span>' +
+            '<span>' + escapeHtml(f.rank || 'Bronze') + '</span>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="cm-flip">' +
+          '<div class="cm-flip-detail">' +
+            '<span class="cm-flip-choice">picked ' + escapeHtml(f.choice) + '</span>' +
+            '<span class="cm-flip-result">' + escapeHtml(f.result) + '</span>' +
+          '</div>' +
+          '<div class="' + coinClass + '">' +
+            '<img src="' + coinSrc + '" alt="' + f.result + '" draggable="false">' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="cm-money">' +
+          '<span class="cm-net ' + netClass + '">' + netStr + '</span>' +
+          '<span class="cm-money-sub">' + moneySub + '</span>' +
+        '</div>' +
+
+        '<div class="cm-time">' +
+          '<span class="cm-time-rel">' + timeAgo(f.timestamp) + '</span>' +
+          '<span class="cm-time-abs">' + timeAbs(f.timestamp) + '</span>' +
+          modeHtml +
+        '</div>';
+
+      return row;
+    }
+
+    function renderEmpty(){
+      feedEl.innerHTML =
+        '<div class="cm-empty">' +
+          '<div class="icon"><img src="icons/coin.png" alt="" class="ico" draggable="false"></div>' +
+          '<h4>No flips yet</h4>' +
+          '<p>Be the first to flip a coin. Your flip shows up here the moment it lands.</p>' +
+        '</div>';
+    }
+
+    async function loadFeed(){
+      try {
+        var res = await Auth.api('/flips/recent?limit=25');
+        if(!res.ok) throw new Error();
+        var data = await res.json();
+        var flips = data.flips || [];
+        var totals = data.totals || null;
+
+        if(flips.length === 0){
+          renderEmpty();
+          footerEl.style.display = 'none';
+          statFlips.textContent = '0';
+          statFlipsSub.textContent = 'no flips in window';
+          statWag.textContent = '0';
+          statPaid.textContent = '0';
+          return;
+        }
+
+        feedEl.innerHTML = '';
+        flips.forEach(function(f){
+          feedEl.appendChild(renderRow(f));
+        });
+
+        if(totals){
+          statFlips.textContent = fmtNum(totals.flips);
+          statFlipsSub.textContent = 'last 24 hours';
+          statWag.textContent = fmtNum(totals.wagered) + ' RC';
+          statPaid.textContent = fmtNum(totals.paid) + ' RC';
+
+          footFlips.textContent = fmtFull(totals.flips);
+          footWag.textContent = fmtFull(totals.wagered) + ' RC';
+          footPaid.textContent = fmtFull(totals.paid) + ' RC';
+
+          var edge = totals.wagered > 0
+            ? ((totals.wagered - totals.paid) / totals.wagered) * 100
+            : 0;
+          footEdge.textContent = edge.toFixed(2) + '%';
+
+          footerEl.style.display = '';
+        } else {
+          statFlips.textContent = fmtNum(flips.length);
+          statFlipsSub.textContent = 'in feed';
+          statWag.textContent = '—';
+          statPaid.textContent = '—';
+          footerEl.style.display = 'none';
+        }
+
+      } catch(e){
+        feedEl.innerHTML = '<div class="cm-empty"><h4>Could not load feed</h4><p>Check that the server is running.</p></div>';
+      }
+    }
+
+    loadFeed();
+    setInterval(loadFeed, 12000);
+
+  })();
+</script>
+</body>
+</html>

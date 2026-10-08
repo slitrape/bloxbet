@@ -1,0 +1,364 @@
+/* ============================================================
+   BLOXBET — REWARDS PAGE
+   ============================================================ */
+
+.rw-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+
+/* ============================================================
+   REWARD HERO CARD
+   ============================================================ */
+.rw-hero{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:2rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1.25rem;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.rw-hero::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(79,140,255,.4), transparent);
+}
+
+.rw-hero.locked{
+  background:linear-gradient(180deg, var(--surface), var(--surface));
+}
+.rw-hero.unlocked{
+  background:linear-gradient(180deg, rgba(34,197,94,.06), var(--surface));
+  border-color:rgba(34,197,94,.25);
+}
+.rw-hero.claimed{
+  background:linear-gradient(180deg, rgba(79,140,255,.04), var(--surface));
+}
+
+.rw-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  padding:.3rem .7rem;
+  border-radius:999px;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  border:1px solid var(--border);
+  background:var(--surface-2);
+  color:var(--text-3);
+}
+.rw-badge.unlocked{
+  color:#4ade80;
+  background:rgba(34,197,94,.1);
+  border-color:rgba(34,197,94,.3);
+}
+.rw-badge.claimed{
+  color:var(--accent);
+  background:rgba(79,140,255,.1);
+  border-color:rgba(79,140,255,.3);
+}
+
+.rw-value{
+  display:flex;
+  align-items:baseline;
+  gap:.5rem;
+  justify-content:center;
+}
+.rw-value .num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:4rem;
+  font-weight:700;
+  letter-spacing:-.04em;
+  line-height:1;
+  color:var(--text);
+}
+.rw-value .unit{
+  font-size:1.15rem;
+  font-weight:600;
+  color:var(--text-3);
+}
+
+.rw-sub{
+  font-size:.9rem;
+  color:var(--text-2);
+  max-width:420px;
+  line-height:1.55;
+}
+
+/* ============================================================
+   PROGRESS STEPS
+   ============================================================ */
+.rw-progress{
+  width:100%;
+  max-width:560px;
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+  margin-top:.5rem;
+}
+
+.rw-progress-label{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  font-size:.72rem;
+  color:var(--text-3);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:600;
+}
+.rw-progress-label .count{
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;
+  font-size:.85rem;
+  text-transform:none;
+  letter-spacing:0;
+}
+
+.rw-steps{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:.4rem;
+}
+
+.rw-step{
+  aspect-ratio:1 / 1;
+  border-radius:var(--r-md);
+  border:1px solid var(--border);
+  background:var(--surface-2);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:.2rem;
+  position:relative;
+  transition:border-color var(--dur-fast) var(--ease),
+             background var(--dur-fast) var(--ease);
+}
+.rw-step .num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.9rem;
+  font-weight:700;
+  color:var(--text-3);
+}
+.rw-step .check{
+  width:14px;
+  height:14px;
+  display:block;
+}
+.rw-step.done{
+  background:rgba(34,197,94,.1);
+  border-color:rgba(34,197,94,.4);
+}
+.rw-step.done .num{ color:#4ade80; }
+.rw-step.current{
+  background:rgba(79,140,255,.1);
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(79,140,255,.1);
+}
+.rw-step.current .num{ color:var(--accent); }
+
+/* ============================================================
+   TODAY'S PROGRESS
+   ============================================================ */
+.rw-today{
+  width:100%;
+  max-width:560px;
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+  padding:1rem 1.15rem;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:var(--r-md);
+  margin-top:.5rem;
+}
+.rw-today-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:.75rem;
+}
+.rw-today-head .label{
+  color:var(--text-3);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:600;
+  font-size:.66rem;
+}
+.rw-today-head .value{
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;
+  font-weight:600;
+}
+.rw-today-bar{
+  height:6px;
+  background:var(--bg-2);
+  border-radius:999px;
+  overflow:hidden;
+}
+.rw-today-fill{
+  height:100%;
+  background:linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius:999px;
+  transition:width 400ms var(--ease-out);
+}
+.rw-today-fill.complete{
+  background:linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+/* ============================================================
+   CLAIM BUTTON
+   ============================================================ */
+.rw-claim{
+  padding:.9rem 2rem;
+  border-radius:var(--r-md);
+  border:none;
+  font-family:inherit;
+  font-size:.95rem;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.55rem;
+  min-width:220px;
+  transition:background var(--dur-fast) var(--ease),
+             transform var(--dur-fast) var(--ease),
+             opacity var(--dur-fast) var(--ease),
+             box-shadow var(--dur-fast) var(--ease);
+  -webkit-appearance:none;
+  appearance:none;
+}
+.rw-claim:active:not(:disabled){transform:scale(.98)}
+.rw-claim:disabled{cursor:not-allowed;transform:none}
+
+.rw-claim.ready{
+  background:linear-gradient(180deg, #22c55e, #16a34a);
+  color:#fff;
+  box-shadow:0 6px 20px rgba(34,197,94,.35);
+}
+.rw-claim.ready:hover{
+  background:linear-gradient(180deg, #2bdd6c, #1cb557);
+  box-shadow:0 8px 28px rgba(34,197,94,.5);
+}
+
+.rw-claim.locked{
+  background:var(--surface-2);
+  color:var(--text-3);
+  border:1px solid var(--border);
+}
+
+.rw-claim.claimed{
+  background:rgba(79,140,255,.1);
+  color:var(--accent);
+  border:1px solid rgba(79,140,255,.3);
+}
+
+.rw-claim .ico{
+  width:16px;
+  height:16px;
+  opacity:1;
+  filter:brightness(10);
+}
+
+/* ============================================================
+   RESET TIMER
+   ============================================================ */
+.rw-reset{
+  font-size:.72rem;
+  color:var(--text-3);
+  font-family:'JetBrains Mono',monospace;
+  margin-top:.25rem;
+}
+.rw-reset .time{
+  color:var(--text-2);
+  font-weight:600;
+}
+
+/* ============================================================
+   INFO STRIP
+   ============================================================ */
+.rw-info{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:.75rem;
+}
+.rw-info-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:1rem 1.15rem;
+  display:flex;
+  gap:.75rem;
+  align-items:flex-start;
+}
+.rw-info-card .icon{
+  width:32px;height:32px;
+  border-radius:var(--r-sm);
+  background:var(--surface-2);
+  display:grid;place-items:center;
+  flex-shrink:0;
+  color:var(--accent);
+}
+.rw-info-card .icon .ico{width:16px;height:16px;opacity:1;filter:brightness(2)}
+.rw-info-card h4{
+  font-size:.82rem;
+  font-weight:600;
+  margin-bottom:.2rem;
+}
+.rw-info-card p{
+  font-size:.75rem;
+  color:var(--text-3);
+  line-height:1.5;
+}
+
+/* ============================================================
+   CELEBRATION ANIMATION
+   ============================================================ */
+@keyframes rwClaimedPulse{
+  0%{transform:scale(1)}
+  30%{transform:scale(1.06)}
+  100%{transform:scale(1)}
+}
+.rw-hero.claimed-pulse{
+  animation:rwClaimedPulse 700ms var(--ease-out);
+}
+
+@keyframes rwFloat{
+  0%{opacity:0;transform:translateY(0)}
+  20%{opacity:1}
+  100%{opacity:0;transform:translateY(-80px)}
+}
+.rw-floaty{
+  position:absolute;
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;
+  color:#4ade80;
+  pointer-events:none;
+  animation:rwFloat 1.6s var(--ease-out) forwards;
+  font-size:1.2rem;
+  z-index:5;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:640px){
+  .rw-hero{padding:1.5rem 1rem;}
+  .rw-value .num{font-size:2.8rem;}
+  .rw-value .unit{font-size:.95rem;}
+  .rw-steps{gap:.3rem;}
+  .rw-step .num{font-size:.75rem;}
+  .rw-claim{width:100%;padding:.8rem 1.25rem;font-size:.88rem;}
+  .rw-info{grid-template-columns:1fr;}
+}

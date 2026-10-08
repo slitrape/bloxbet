@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: bloxbet
+    runtime: node
+    plan: starter
+    buildCommand: cd server && npm install --omit=dev
+    startCommand: node server/server.js
+    healthCheckPath: /login.html
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DB_PATH
+        value: /data/bloxbet.db
+      - key: NODE_ENV
+        value: production
+    disk:
+      name: bloxbet-data
+      mountPath: /data
+      sizeGB: 1

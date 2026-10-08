@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+bloxbet.db
+bloxbet.db-wal
+bloxbet.db-shm
+.git
+.gitignore

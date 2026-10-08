@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Case Battles — BloxBet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/casebattles.css">
+</head>
+<body>
+
+<div id="bbLoader" class="bb-loader">
+  <div class="bb-loader-bg"></div>
+  <div class="bb-loader-veil"></div>
+  <div class="bb-loader-vignette"></div>
+  <div class="bb-loader-glow"></div>
+  <div class="bb-loader-inner">
+    <div class="bb-loader-lockup">
+      <div class="bb-loader-mark">
+        <img src="icons/bloxbet.png" alt="BloxBet" draggable="false">
+      </div>
+      <div class="bb-loader-text">
+        <span class="bb-blox">Blox</span><span class="bb-bet">Bet</span>
+      </div>
+    </div>
+    <div class="bb-loader-bar">
+      <div class="bb-loader-fill"></div>
+    </div>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-left">
+    <button class="menu-btn" data-tip="Menu"><img src="icons/menu.png" alt="" class="ico" draggable="false"></button>
+    <a href="index.html" class="nav-logo">
+      <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
+      <span class="nav-logo-text">BloxBet</span>
+    </a>
+  </div>
+  <div class="nav-center">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="games.html">Games</a>
+    <a class="nav-link" href="rewards.html">Rewards</a>
+    <a class="nav-link" href="community.html">Community</a>
+    <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+    <a class="nav-link" href="profile.html">Profile</a>
+  </div>
+  <div class="nav-right">
+    <div class="balance-chip">
+      <div>
+        <div class="label">Balance</div>
+        <div class="value"><span data-balance data-balance="12480">12,480</span><span class="unit">RC</span></div>
+      </div>
+      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')"><img src="icons/plus.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications"><img src="icons/bell.png" alt="" class="ico" draggable="false"></button>
+      <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
+    </div>
+    <div class="dropdown">
+      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">N</button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="profile.html">Profile</a>
+        <a class="dropdown-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;">Settings</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-section">Overview</div>
+  <a class="side-item" data-href="index.html" href="index.html"><span class="icon"><img src="icons/home.png" alt="" class="ico" draggable="false"></span><span class="label">Home</span></a>
+  <a class="side-item" data-href="games.html" href="games.html"><span class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></span><span class="label">Games</span></a>
+  <a class="side-item" data-href="rewards.html" href="rewards.html"><span class="icon"><img src="icons/rewards.png" alt="" class="ico" draggable="false"></span><span class="label">Rewards</span></a>
+  <div class="sidebar-section">Social</div>
+  <a class="side-item" data-href="community.html" href="community.html"><span class="icon"><img src="icons/community.png" alt="" class="ico" draggable="false"></span><span class="label">Community</span></a>
+  <a class="side-item" data-href="leaderboard.html" href="leaderboard.html"><span class="icon"><img src="icons/leaderboard.png" alt="" class="ico" draggable="false"></span><span class="label">Leaderboard</span></a>
+  <div class="sidebar-section">Account</div>
+  <a class="side-item" data-href="profile.html" href="profile.html"><span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span><span class="label">Profile</span></a>
+  <a class="side-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;"><span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span><span class="label">Settings</span></a>
+<a class="sidebar-discord" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">
+    <span class="icon"><img src="icons/discord.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Discord</span>
+  </a>
+  <div class="sidebar-toggle">
+    <span class="icon"><img src="icons/chevron-left.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Collapse</span>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="container page">
+
+    <div class="page-head">
+      <div>
+        <h1>Case Battles</h1>
+        <div class="sub">Open cases with other players. Highest total wins everything.</div>
+      </div>
+      <div class="page-head-actions">
+        <a class="btn btn-ghost" href="games.html">
+          <img src="icons/chevron-left.png" alt="" class="ico" draggable="false">
+          <span>Back</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="cb-lobby">
+
+      <div class="cb-lobby-main">
+
+        <div class="section-head" style="margin-top:0">
+          <h2>Choose a Case</h2>
+          <span class="tiny muted" id="caseCount">—</span>
+        </div>
+        <div class="cb-case-grid" id="caseGrid">
+          <div class="cb-case-card">
+            <div class="cb-case-art"></div>
+            <div class="cb-case-name">Loading…</div>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <h2>Open Battles</h2>
+          <button class="btn btn-ghost btn-sm" id="refreshBattlesBtn">Refresh</button>
+        </div>
+        <div class="panel">
+          <div class="panel-body" id="battleList">
+            <div class="cb-waiting"><span class="pulse"></span>Loading battles…</div>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <h2>Recent Battles</h2>
+        </div>
+        <div class="panel">
+          <div class="panel-body" id="recentBattles">
+            <div class="side-empty">No recent battles.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <aside class="cb-lobby-side">
+
+        <div class="cb-create-panel">
+          <h3>Create Battle</h3>
+
+          <div class="field" style="margin-bottom:.75rem">
+            <label>Case</label>
+            <select id="createCaseSelect">
+              <option value="">Choose a case</option>
+            </select>
+          </div>
+
+          <div class="field" style="margin-bottom:.85rem">
+            <label>Slots</label>
+            <div class="cb-slot-picker" id="slotPicker">
+              <button class="cb-slot-btn active" data-slots="2">1v1</button>
+              <button class="cb-slot-btn" data-slots="3">3-Way</button>
+              <button class="cb-slot-btn" data-slots="4">4-Way</button>
+            </div>
+          </div>
+
+          <button class="cb-create-btn" id="createBattleBtn">
+            <img src="icons/coin.png" alt="" class="ico" draggable="false">
+            <span>Create Battle</span>
+          </button>
+
+          <div class="cb-create-hint" id="createHint">
+            Pick a case and slot count. Your entry fee is deducted immediately.
+          </div>
+        </div>
+
+        <div class="cb-side-panel">
+          <div class="cb-side-head">
+            <h3>How It Works</h3>
+          </div>
+          <div class="cb-side-body">
+            <div class="cb-stat-row"><span class="label">Step 1</span><span class="value">Pick a case</span></div>
+            <div class="cb-stat-row"><span class="label">Step 2</span><span class="value">Wait for players</span></div>
+            <div class="cb-stat-row"><span class="label">Step 3</span><span class="value">Reels spin</span></div>
+            <div class="cb-stat-row"><span class="label">Step 4</span><span class="value">Highest value wins</span></div>
+            <div class="cb-stat-row"><span class="label">Payout</span><span class="value">All items to winner</span></div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a class="bn-item" data-href="index.html" href="index.html"><img src="icons/home.png" alt="" class="ico" draggable="false"><span>Home</span></a>
+    <a class="bn-item" data-href="games.html" href="games.html"><img src="icons/games.png" alt="" class="ico" draggable="false"><span>Games</span></a>
+    <a class="bn-item" data-href="rewards.html" href="rewards.html"><img src="icons/rewards.png" alt="" class="ico" draggable="false"><span>Rewards</span></a>
+    <a class="bn-item" data-href="community.html" href="community.html"><img src="icons/community.png" alt="" class="ico" draggable="false"><span>Social</span></a>
+    <a class="bn-item" data-href="profile.html" href="profile.html"><img src="icons/profile.png" alt="" class="ico" draggable="false"><span>Me</span></a>
+  </div>
+</nav>
+
+<div class="modal-overlay" id="m-deposit">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>Add Funds</h3><p>Top up your RoCoins balance.</p></div>
+      <button class="modal-close" onclick="Modal.close('m-deposit')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Amount</label>
+        <input type="number" id="depositAmount" value="1000" min="100" max="500000" step="100">
+      </div>
+      <div class="quick-bets" style="margin-top:.5rem">
+        <button class="quick-bet" data-deposit="500">500</button>
+        <button class="quick-bet" data-deposit="1000">1K</button>
+        <button class="quick-bet" data-deposit="5000">5K</button>
+        <button class="quick-bet" data-deposit="10000">10K</button>
+        <button class="quick-bet" data-deposit="50000">50K</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')">Cancel</button>
+      <button class="btn btn-primary" id="depositConfirmBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var loader = document.getElementById('bbLoader');
+    if(!loader) return;
+    setTimeout(function(){
+      loader.classList.add('hide');
+      setTimeout(function(){ loader.remove(); }, 320);
+    }, 2000);
+  })();
+</script>
+
+<script src="js/data.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/toasts.js"></script>
+<script src="js/modals.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/deposit.js"></script>
+<script src="js/casebattles.js"></script>
+<script src="js/admin-link.js"></script>
+</body>
+</html>

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Coin Flip — BloxBet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/game.css">
+<style>
+  /* ============================================================
+     PVP MATCH LIST
+     ============================================================ */
+
+  .pvp-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    margin-bottom:1.25rem;
+    flex-wrap:wrap;
+  }
+
+  .pvp-create-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:.55rem;
+    padding:.85rem 1.35rem;
+    border-radius:var(--r-md);
+    background:linear-gradient(180deg,#ffa524,#ff9500);
+    color:#1a0f05;
+    font-family:inherit;
+    font-size:.9rem;
+    font-weight:700;
+    border:none;
+    cursor:pointer;
+    transition:filter 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+    box-shadow:0 3px 16px rgba(255,149,0,.35);
+  }
+  .pvp-create-btn:hover{filter:brightness(1.08);box-shadow:0 4px 22px rgba(255,149,0,.5)}
+  .pvp-create-btn:active{transform:scale(.98)}
+  .pvp-create-btn .ico{width:18px;height:18px;filter:brightness(0) saturate(100%)}
+
+  /* ---------- Filter chips ---------- */
+  .pvp-filters{
+    display:flex;
+    gap:.4rem;
+    margin-bottom:1rem;
+    flex-wrap:wrap;
+  }
+  .pvp-filter{
+    padding:.42rem .85rem;
+    border-radius:999px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    color:var(--text-2);
+    font-family:inherit;
+    font-size:.72rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+  .pvp-filter:hover{color:var(--text);background:var(--surface-2);border-color:var(--border-2)}
+  .pvp-filter.active{
+    background:rgba(255,149,0,.12);
+    border-color:rgba(255,149,0,.45);
+    color:var(--accent);
+  }
+
+  /* ---------- Match cards ---------- */
+  .pvp-matches{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:.75rem;
+  }
+
+  .pvp-match{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--r-lg);
+    padding:1rem;
+    display:flex;
+    flex-direction:column;
+    gap:.85rem;
+    transition:border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .pvp-match:hover{
+    border-color:var(--border-2);
+    transform:translateY(-2px);
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+  }
+  .pvp-match::before{
+    content:'';
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:3px;
+    background:linear-gradient(180deg,#ffb84d,#ff9500);
+    opacity:.85;
+  }
+  .pvp-match.own::before{
+    background:linear-gradient(180deg,#93c5fd,#3b82f6);
+  }
+
+  .pvp-match-top{
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+  }
+  .pvp-match-avatar{
+    width:44px;height:44px;border-radius:50%;
+    background:var(--surface-3);
+    display:grid;place-items:center;
+    font-weight:700;font-size:.95rem;color:var(--text);
+    border:1px solid var(--border-2);
+    overflow:hidden;
+    flex-shrink:0;
+  }
+  .pvp-match-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+
+  .pvp-match-who{
+    flex:1;min-width:0;
+  }
+  .pvp-match-name{
+    font-size:.88rem;
+    font-weight:600;
+    color:var(--text);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    line-height:1.2;
+  }
+  .pvp-match-time{
+    font-size:.65rem;
+    color:var(--text-3);
+    font-family:'JetBrains Mono',monospace;
+    margin-top:.15rem;
+  }
+
+  .pvp-match-side{
+    display:flex;
+    align-items:center;
+    gap:.35rem;
+    padding:.3rem .65rem;
+    border-radius:var(--r-sm);
+    background:rgba(255,149,0,.08);
+    border:1px solid rgba(255,149,0,.25);
+    font-size:.68rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--accent);
+    flex-shrink:0;
+  }
+  .pvp-match-side img{
+    width:18px;height:18px;object-fit:contain;
+  }
+  .pvp-match-side.tails{
+    background:rgba(255,184,77,.08);
+    border-color:rgba(255,184,77,.3);
+    color:#ffb84d;
+  }
+
+  .pvp-match-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:.75rem;
+    padding-top:.75rem;
+    border-top:1px solid var(--border);
+  }
+
+  .pvp-match-bet{
+    display:flex;
+    flex-direction:column;
+    gap:.1rem;
+  }
+  .pvp-match-bet-label{
+    font-size:.58rem;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    font-weight:600;
+    color:var(--text-3);
+  }
+  .pvp-match-bet-value{
+    font-family:'JetBrains Mono',monospace;
+    font-size:1.15rem;
+    font-weight:700;
+    color:var(--text);
+    letter-spacing:-.01em;
+    line-height:1;
+  }
+  .pvp-match-bet-value .rc{
+    font-size:.68rem;
+    color:var(--accent);
+    margin-left:.2rem;
+  }
+
+  .pvp-join-btn{
+    padding:.65rem 1.1rem;
+    border-radius:var(--r-md);
+    background:linear-gradient(180deg,#7fc055,#5da838);
+    color:#0a1405;
+    font-family:inherit;
+    font-size:.82rem;
+    font-weight:700;
+    border:none;
+    cursor:pointer;
+    transition:filter 120ms ease, transform 120ms ease;
+    box-shadow:0 2px 12px rgba(127,192,85,.28);
+    white-space:nowrap;
+  }
+  .pvp-join-btn:hover:not(:disabled){filter:brightness(1.1);box-shadow:0 3px 18px rgba(127,192,85,.45)}
+  .pvp-join-btn:active:not(:disabled){transform:scale(.97)}
+  .pvp-join-btn:disabled{opacity:.5;cursor:not-allowed}
+
+  .pvp-match-own-tag{
+    padding:.6rem 1rem;
+    border-radius:var(--r-md);
+    background:rgba(59,130,246,.1);
+    border:1px solid rgba(59,130,246,.35);
+    color:#93c5fd;
+    font-size:.72rem;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+  }
+
+  /* ---------- Empty state ---------- */
+  .pvp-empty{
+    grid-column:1 / -1;
+    padding:3rem 1rem;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.85rem;
+    background:var(--surface);
+    border:1px dashed var(--border-2);
+    border-radius:var(--r-lg);
+  }
+  .pvp-empty .icon{
+    width:56px;height:56px;
+    border-radius:var(--r-md);
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    display:grid;place-items:center;
+  }
+  .pvp-empty .icon .ico{width:26px;height:26px;opacity:.4}
+  .pvp-empty h4{font-size:1rem;font-weight:700;color:var(--text)}
+  .pvp-empty p{font-size:.82rem;color:var(--text-3);max-width:320px;line-height:1.5}
+
+  /* ---------- Recent resolved strip ---------- */
+  .pvp-recent-title{
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-weight:600;
+    color:var(--text-3);
+    margin:1.75rem 0 .65rem;
+  }
+  .pvp-recent{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:.5rem;
+  }
+  .pvp-recent-item{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--r-md);
+    padding:.6rem .85rem;
+    display:grid;
+    grid-template-columns:20px 1fr auto;
+    align-items:center;
+    gap:.55rem;
+    font-size:.72rem;
+  }
+  .pvp-recent-item img{
+    width:20px;height:20px;object-fit:contain;
+  }
+  .pvp-recent-name{
+    color:var(--text-2);
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .pvp-recent-net{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    color:#4ade80;
+    font-size:.72rem;
+  }
+
+  /* ---------- Create Match modal ---------- */
+  .pvp-modal{
+    max-width:440px;
+  }
+  .pvp-modal-side-pick{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:.7rem;
+    margin-bottom:1.1rem;
+  }
+  .pvp-side-btn{
+    padding:1rem .75rem;
+    border-radius:var(--r-md);
+    background:var(--surface-2);
+    border:2px solid var(--border);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:.75rem;
+    font-family:inherit;
+    font-size:.92rem;
+    font-weight:700;
+    color:var(--text-2);
+    transition:background 120ms ease, border-color 120ms ease, color 120ms ease, transform 120ms ease;
+  }
+  .pvp-side-btn:hover{background:var(--surface-3);color:var(--text);transform:translateY(-1px)}
+  .pvp-side-btn.active{
+    background:rgba(255,149,0,.1);
+    border-color:var(--accent);
+    color:var(--accent);
+    box-shadow:0 0 16px rgba(255,149,0,.25);
+  }
+  .pvp-side-btn img{
+    width:48px;
+    height:48px;
+    object-fit:contain;
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,.4));
+    transition:transform 120ms ease;
+  }
+  .pvp-side-btn.active img{
+    transform:scale(1.08);
+    filter:drop-shadow(0 2px 10px rgba(255,149,0,.6));
+  }
+  .pvp-side-btn.tails.active{
+    background:rgba(255,184,77,.1);
+    border-color:#ffb84d;
+    color:#ffb84d;
+    box-shadow:0 0 16px rgba(255,184,77,.25);
+  }
+  .pvp-side-btn.tails.active img{
+    filter:drop-shadow(0 2px 10px rgba(255,184,77,.6));
+  }
+
+  .pvp-wait-details{
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    border-radius:var(--r-md);
+    padding:1rem;
+    display:flex;
+    flex-direction:column;
+    gap:.65rem;
+    margin-bottom:1rem;
+  }
+  .pvp-wait-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:.75rem;
+  }
+  .pvp-wait-row .lbl{
+    color:var(--text-3);
+    text-transform:uppercase;
+    font-size:.62rem;
+    letter-spacing:.06em;
+    font-weight:600;
+  }
+  .pvp-wait-row .val{
+    color:var(--text);
+    font-weight:600;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .pvp-wait-row .val.accent{color:var(--accent)}
+
+  .pvp-chat{
+    border:1px solid var(--border);
+    border-radius:var(--r-md);
+    overflow:hidden;
+    margin-bottom:1rem;
+  }
+  .pvp-chat-head{
+    padding:.5rem .75rem;
+    background:var(--surface-2);
+    border-bottom:1px solid var(--border);
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:600;
+    color:var(--text-3);
+  }
+  .pvp-chat-body{
+    max-height:180px;
+    overflow-y:auto;
+    padding:.65rem .75rem;
+    display:flex;
+    flex-direction:column;
+    gap:.4rem;
+    background:var(--bg-2);
+  }
+  .pvp-chat-input{
+    display:flex;
+    gap:.35rem;
+    padding:.5rem .6rem;
+    background:var(--surface-2);
+    border-top:1px solid var(--border);
+  }
+  .pvp-chat-input input{
+    flex:1;
+    background:var(--bg-2);
+    border:1px solid var(--border-2);
+    border-radius:var(--r-sm);
+    padding:.45rem .65rem;
+    color:var(--text);
+    font-family:inherit;
+    font-size:.75rem;
+    outline:none;
+  }
+  .pvp-chat-input input:focus{border-color:var(--accent)}
+
+  .chat-msg{
+    display:flex;
+    flex-direction:column;
+    gap:.1rem;
+    padding:.3rem .5rem;
+    background:var(--bg);
+    border-radius:var(--r-sm);
+    border:1px solid var(--border);
+  }
+  .chat-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:.4rem;
+    font-size:.6rem;
+  }
+  .chat-name{font-weight:600}
+  .chat-time{color:var(--text-3);font-size:.58rem}
+  .chat-body{font-size:.72rem;color:var(--text);line-height:1.4;word-break:break-word}
+
+  .pvp-result-box{
+    padding:1.5rem;
+    text-align:center;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:var(--r-md);
+    margin-bottom:1rem;
+  }
+  .pvp-result-title{
+    font-size:1.35rem;
+    font-weight:800;
+    margin-bottom:.5rem;
+    letter-spacing:-.02em;
+  }
+  .pvp-result-sub{
+    font-size:.82rem;
+    color:var(--text-2);
+    line-height:1.5;
+  }
+  .pvp-result-sub strong{color:var(--text);font-weight:600}
+
+  @media (max-width:640px){
+    .pvp-matches{grid-template-columns:1fr}
+    .pvp-header{flex-direction:column;align-items:stretch}
+    .pvp-create-btn{width:100%;justify-content:center}
+  }
+</style>
+</head>
+<body>
+
+<div id="bbLoader" class="bb-loader">
+  <div class="bb-loader-bg"></div>
+  <div class="bb-loader-veil"></div>
+  <div class="bb-loader-vignette"></div>
+  <div class="bb-loader-glow"></div>
+
+  <div class="bb-leaves">
+    <div class="bb-leaf amber"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf rust"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf crimson"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf gold"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf copper"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf deep"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf amber"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf rust"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf crimson"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf gold"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf copper"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf deep"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+  </div>
+
+  <div class="bb-loader-inner">
+    <div class="bb-loader-lockup">
+      <div class="bb-loader-mark">
+        <img src="icons/bloxbet.png" alt="BloxBet" draggable="false">
+      </div>
+      <div class="bb-loader-text">
+        <span class="bb-blox">Blox</span><span class="bb-bet">Bet</span>
+      </div>
+    </div>
+    <div class="bb-loader-bar">
+      <div class="bb-loader-fill"></div>
+    </div>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-left">
+    <button class="menu-btn" data-tip="Menu"><img src="icons/menu.png" alt="" class="ico" draggable="false"></button>
+    <a href="index.html" class="nav-logo">
+      <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
+      <span class="nav-logo-text">BloxBet</span>
+    </a>
+  </div>
+  <div class="nav-center">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="games.html">Games</a>
+    <a class="nav-link" href="rewards.html">Rewards</a>
+    <a class="nav-link" href="community.html">Community</a>
+    <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+    <a class="nav-link" href="profile.html">Profile</a>
+  </div>
+  <div class="nav-right">
+    <div class="balance-chip">
+      <div>
+        <div class="label">Balance</div>
+        <div class="value"><span data-balance data-balance="12480">12,480</span><span class="unit">RC</span></div>
+      </div>
+      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')"><img src="icons/plus.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications"><img src="icons/bell.png" alt="" class="ico" draggable="false"></button>
+      <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
+    </div>
+    <div class="dropdown">
+      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">N</button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="profile.html">Profile</a>
+        <a class="dropdown-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;">Settings</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-section">Overview</div>
+  <a class="side-item" data-href="index.html" href="index.html"><span class="icon"><img src="icons/home.png" alt="" class="ico" draggable="false"></span><span class="label">Home</span></a>
+  <a class="side-item" data-href="games.html" href="games.html"><span class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></span><span class="label">Games</span></a>
+  <a class="side-item" data-href="rewards.html" href="rewards.html"><span class="icon"><img src="icons/rewards.png" alt="" class="ico" draggable="false"></span><span class="label">Rewards</span></a>
+  <div class="sidebar-section">Social</div>
+  <a class="side-item" data-href="community.html" href="community.html"><span class="icon"><img src="icons/community.png" alt="" class="ico" draggable="false"></span><span class="label">Community</span></a>
+  <a class="side-item" data-href="leaderboard.html" href="leaderboard.html"><span class="icon"><img src="icons/leaderboard.png" alt="" class="ico" draggable="false"></span><span class="label">Leaderboard</span></a>
+  <div class="sidebar-section">Account</div>
+  <a class="side-item" data-href="profile.html" href="profile.html"><span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span><span class="label">Profile</span></a>
+  <a class="side-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;"><span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span><span class="label">Settings</span></a>
+  <a class="sidebar-discord" href="https://discord.gg/" target="_blank" rel="noopener">
+    <span class="icon"><img src="icons/discord.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Discord</span>
+  </a>
+  <div class="sidebar-toggle">
+    <span class="icon"><img src="icons/chevron-left.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Collapse</span>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="container page">
+
+    <div class="page-head">
+      <div>
+        <h1>Coin Flip</h1>
+        <div class="sub">Heads or tails. 1.96x payout.</div>
+      </div>
+      <div class="page-head-actions">
+        <a class="btn btn-ghost" href="games.html">
+          <img src="icons/chevron-left.png" alt="" class="ico" draggable="false">
+          <span>Back</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="segmented" style="margin-bottom:1.25rem" id="modeBar">
+      <button class="active" data-mode="solo">Play vs House</button>
+      <button data-mode="pvp">Play vs Players</button>
+      <button data-mode="limiteds">Limiteds</button>
+    </div>
+
+    <!-- ============================================================
+         SOLO MODE
+         ============================================================ -->
+    <div id="soloMode">
+      <div class="game-wrap">
+        <div class="game-stage">
+          <div class="result-banner" id="resultBanner"></div>
+
+          <div class="coin-stage idle" id="coinScene">
+            <div class="coin-shadow" id="coinShadow"></div>
+            <div class="coin-tilt">
+              <div class="coin-flipper" id="coinFlipper">
+                <div class="coin-body" id="coinBody">
+                  <div class="coin-face heads"><div class="shine"></div></div>
+                  <div class="coin-face tails"><div class="shine"></div></div>
+                  <div class="coin-edge" id="coinEdge"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="game-controls">
+            <div class="choice-row">
+              <button class="choice-btn active" id="pickHeads" data-choice="heads" aria-label="Heads">
+                <img src="icons/coin-heads.png" alt="Heads" draggable="false">
+              </button>
+              <button class="choice-btn" id="pickTails" data-choice="tails" aria-label="Tails">
+                <img src="icons/coin-tails.png" alt="Tails" draggable="false">
+              </button>
+            </div>
+
+            <div class="bet-row">
+              <div class="bet-input-wrap">
+                <img src="icons/coin.png" alt="" class="ico" draggable="false">
+                <input type="number" class="bet-input" id="betInput" value="100" min="10" max="100000" step="10">
+              </div>
+            </div>
+
+            <div class="quick-bets">
+              <button class="quick-bet" data-amount="10">10</button>
+              <button class="quick-bet" data-amount="50">50</button>
+              <button class="quick-bet" data-amount="100">100</button>
+              <button class="quick-bet" data-amount="500">500</button>
+              <button class="quick-bet" data-amount="1000">1K</button>
+              <button class="quick-bet" data-amount="max">Max</button>
+            </div>
+
+            <button class="flip-btn" id="flipBtn">
+              <img src="icons/coin.png" alt="" class="ico" draggable="false">
+              <span>Flip Coin</span>
+            </button>
+          </div>
+        </div>
+
+        <aside class="game-sidebar">
+          <div class="side-panel">
+            <div class="side-panel-head">
+              <h3>Recent Flips</h3>
+              <span class="tiny muted" id="recentCount">0</span>
+            </div>
+            <div class="side-panel-body">
+              <div class="history-strip" id="historyStrip">
+                <div class="side-empty" id="historyEmpty" style="width:100%">No flips yet.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="side-panel">
+            <div class="side-panel-head"><h3>Session</h3></div>
+            <div class="side-panel-body">
+              <div class="flip-log" id="flipLog">
+                <div class="side-empty">Your flips will appear here.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="side-panel">
+            <div class="side-panel-head">
+              <h3>Provably Fair</h3>
+              <div style="display:flex;gap:.35rem">
+                <button class="btn btn-ghost btn-sm" id="verifyBtn">Verify</button>
+                <button class="btn btn-ghost btn-sm" id="rotateBtn">Rotate</button>
+              </div>
+            </div>
+            <div class="side-panel-body">
+              <div class="fair-grid">
+                <div class="fair-row"><span class="label">Server</span><span class="value" id="fairServerHash">—</span></div>
+                <div class="fair-row"><span class="label">Nonce</span><span class="value" id="fairNonce">0</span></div>
+                <div class="fair-row"><span class="label">Last</span><span class="value" id="fairLastHash">—</span></div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PVP MODE
+         ============================================================ -->
+    <div id="pvpMode" style="display:none">
+
+      <div class="pvp-header">
+        <div class="pvp-filters" id="pvpFilters">
+          <button class="pvp-filter active" data-filter="all">All</button>
+          <button class="pvp-filter" data-filter="low">Under 500</button>
+          <button class="pvp-filter" data-filter="mid">500 – 5K</button>
+          <button class="pvp-filter" data-filter="high">5K+</button>
+          <button class="pvp-filter" data-filter="mine">Mine</button>
+        </div>
+        <button class="pvp-create-btn" id="pvpCreateBtn">
+          <img src="icons/plus.png" alt="" class="ico" draggable="false">
+          <span>Create Match</span>
+        </button>
+      </div>
+
+      <div class="pvp-matches" id="pvpMatches">
+        <div class="pvp-empty">
+          <div class="icon"><img src="icons/users.png" alt="" class="ico" draggable="false"></div>
+          <h4>Loading matches…</h4>
+          <p>Pulling the live lobby.</p>
+        </div>
+      </div>
+
+      <div class="pvp-recent-title">Recently Resolved</div>
+      <div class="pvp-recent" id="pvpRecent">
+        <div class="pvp-recent-item" style="grid-column:1/-1;justify-content:center;color:var(--text-3)">Loading…</div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         LIMITEDS MODE
+         ============================================================ -->
+    <div id="limitedsMode" style="display:none">
+      <div class="pvp-header">
+        <div>
+          <h2 style="margin:0 0 .35rem;font-size:1.15rem">Limited Coinflip</h2>
+          <p style="margin:0;color:var(--text-3);font-size:.82rem">1v1 item flips using limiteds from your Roblox inventory. Inventory must be <strong>Public</strong>.</p>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <button class="pvp-create-btn" id="limitedsLinkBtn" type="button">
+            <img src="icons/verified.png" alt="" class="ico" draggable="false">
+            <span id="limitedsLinkLabel">Connect Roblox</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" id="limitedsRefreshBtn" type="button" style="display:none">Refresh inventory</button>
+        </div>
+      </div>
+
+      <div id="limitedsGate" class="pvp-empty" style="padding:2rem 1rem">
+        <div class="icon"><img src="icons/verified.png" alt="" class="ico" draggable="false"></div>
+        <h4>Connect Roblox to play Limiteds</h4>
+        <p>Link your account to load public limiteds and settle item flips. Inventory must be set to Public.</p>
+        <button class="pvp-create-btn" id="limitedsGateBtn" type="button" style="margin-top:1rem">
+          <img src="icons/verified.png" alt="" class="ico" draggable="false">
+          <span>Connect Roblox</span>
+        </button>
+      </div>
+
+      <div id="limitedsPlay" style="display:none">
+        <div class="side-panel" style="margin-bottom:1rem">
+          <div class="side-panel-head">
+            <h3>Your Limiteds</h3>
+            <span class="tiny muted" id="limitedsCount">0</span>
+          </div>
+          <div class="side-panel-body">
+            <div id="limitedsGrid" class="pvp-matches" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))"></div>
+          </div>
+        </div>
+
+        <div class="pvp-header" style="margin-top:1.25rem">
+          <h3 style="margin:0;font-size:.95rem">Open limited matches</h3>
+        </div>
+        <div class="pvp-matches" id="limitedsMatches">
+          <div class="pvp-empty"><h4>No open limited flips</h4></div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</main>
+
+<div class="modal-overlay" id="m-createMatch">
+  <div class="modal pvp-modal">
+    <div class="modal-head">
+      <div>
+        <h3>Create Match</h3>
+        <p>Pick a side and bet. Another player joins and the coin decides.</p>
+      </div>
+      <button class="modal-close" onclick="Modal.close('m-createMatch')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
+    </div>
+
+    <div class="modal-body" id="pvpCreateView">
+
+      <div class="pvp-modal-side-pick">
+        <button class="pvp-side-btn active" id="pvpPickHeads" data-choice="heads">
+          <img src="icons/coin-heads.png" alt="" draggable="false">
+          <span>Heads</span>
+        </button>
+        <button class="pvp-side-btn tails" id="pvpPickTails" data-choice="tails">
+          <img src="icons/coin-tails.png" alt="" draggable="false">
+          <span>Tails</span>
+        </button>
+      </div>
+
+      <div class="field">
+        <label>Bet Amount</label>
+        <div class="bet-input-wrap">
+          <img src="icons/coin.png" alt="" class="ico" draggable="false">
+          <input type="number" class="bet-input" id="pvpBetInput" value="100" min="10" max="100000" step="10">
+        </div>
+      </div>
+
+      <div class="quick-bets" style="margin-top:.5rem">
+        <button class="quick-bet" data-pvp-amount="10">10</button>
+        <button class="quick-bet" data-pvp-amount="50">50</button>
+        <button class="quick-bet" data-pvp-amount="100">100</button>
+        <button class="quick-bet" data-pvp-amount="500">500</button>
+        <button class="quick-bet" data-pvp-amount="1000">1K</button>
+        <button class="quick-bet" data-pvp-amount="max">Max</button>
+      </div>
+
+      <div class="modal-foot" style="margin:1.1rem -1.25rem -1rem;padding:.85rem 1.25rem">
+        <button class="btn btn-ghost" onclick="Modal.close('m-createMatch')">Cancel</button>
+        <button class="btn btn-primary" id="pvpConfirmCreate">
+          <img src="icons/users.png" alt="" class="ico" draggable="false">
+          <span>Create Match</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-body" id="pvpWaitView" style="display:none">
+      <div class="pvp-wait-details" id="pvpWaitDetails"></div>
+
+      <div class="pvp-chat">
+        <div class="pvp-chat-head">Match Chat</div>
+        <div class="pvp-chat-body" id="pvpChatMessages"></div>
+        <div class="pvp-chat-input">
+          <input type="text" id="pvpChatInput" placeholder="Message…" maxlength="200">
+          <button class="btn btn-primary btn-sm" id="pvpChatSend">Send</button>
+        </div>
+      </div>
+
+      <div class="modal-foot" style="margin:.1rem -1.25rem -.1rem;padding:.85rem 1.25rem">
+        <button class="btn btn-ghost" id="pvpCancelBtn">Cancel Match</button>
+      </div>
+    </div>
+
+    <div class="modal-body" id="pvpResultView" style="display:none">
+      <div class="pvp-result-box">
+        <div class="pvp-result-title" id="pvpResultTitle">Result</div>
+        <div class="pvp-result-sub" id="pvpResultSub"></div>
+      </div>
+      <div class="modal-foot" style="margin:.1rem -1.25rem -.1rem;padding:.85rem 1.25rem">
+        <button class="btn btn-primary" id="pvpPlayAgain">Play Again</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-fair">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head">
+      <div>
+        <h3>Verify Flip</h3>
+        <p>Paste the revealed server seed to recompute any flip.</p>
+      </div>
+      <button class="modal-close" onclick="Modal.close('m-fair')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Server Seed</label>
+        <input type="text" id="fairSeedInput" placeholder="Paste revealed seed">
+      </div>
+      <div class="field">
+        <label>Flip</label>
+        <select id="fairFlipSelect"><option value="">Choose a flip</option></select>
+      </div>
+      <div id="fairResults" style="display:none">
+        <div class="fair-grid" style="padding:.85rem;background:var(--bg-2);border-radius:var(--r-md);border:1px solid var(--border)">
+          <div class="fair-row"><span class="label">Expected hash</span><span class="value full" id="fvHash">—</span></div>
+          <div class="fair-row"><span class="label">Computed hash</span><span class="value full" id="fvComputed">—</span></div>
+          <div class="fair-row"><span class="label">Hash</span><span class="value" id="fvHashMatch">—</span></div>
+          <div class="fair-row"><span class="label">Client seed</span><span class="value full" id="fvClient">—</span></div>
+          <div class="fair-row"><span class="label">Nonce</span><span class="value" id="fvNonce">—</span></div>
+          <div class="fair-row"><span class="label">Recomputed</span><span class="value" id="fvResult">—</span></div>
+          <div class="fair-row"><span class="label">Actual</span><span class="value" id="fvActual">—</span></div>
+          <div class="fair-row"><span class="label">Result</span><span class="value" id="fvStatus">—</span></div>
+        </div>
+      </div>
+      <div class="auth-status" id="fairStatus"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="Modal.close('m-fair')">Close</button>
+      <button class="btn btn-primary" id="fairVerifyBtn">Verify</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-deposit">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>Add Funds</h3><p>Top up your RoCoins balance.</p></div>
+      <button class="modal-close" onclick="Modal.close('m-deposit')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Amount</label>
+        <input type="number" id="depositAmount" value="1000" min="100" max="500000" step="100">
+      </div>
+      <div class="quick-bets" style="margin-top:.5rem">
+        <button class="quick-bet" data-deposit="500">500</button>
+        <button class="quick-bet" data-deposit="1000">1K</button>
+        <button class="quick-bet" data-deposit="5000">5K</button>
+        <button class="quick-bet" data-deposit="10000">10K</button>
+        <button class="quick-bet" data-deposit="50000">50K</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')">Cancel</button>
+      <button class="btn btn-primary" id="depositConfirmBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a class="bn-item" data-href="index.html" href="index.html"><img src="icons/home.png" alt="" class="ico" draggable="false"><span>Home</span></a>
+    <a class="bn-item" data-href="games.html" href="games.html"><img src="icons/games.png" alt="" class="ico" draggable="false"><span>Games</span></a>
+    <a class="bn-item" data-href="rewards.html" href="rewards.html"><img src="icons/rewards.png" alt="" class="ico" draggable="false"><span>Rewards</span></a>
+    <a class="bn-item" data-href="community.html" href="community.html"><img src="icons/community.png" alt="" class="ico" draggable="false"><span>Social</span></a>
+    <a class="bn-item" data-href="profile.html" href="profile.html"><img src="icons/profile.png" alt="" class="ico" draggable="false"><span>Me</span></a>
+  </div>
+</nav>
+
+<script>
+  (function(){
+    var loader = document.getElementById('bbLoader');
+    if(!loader) return;
+    setTimeout(function(){
+      loader.classList.add('hide');
+      setTimeout(function(){ loader.remove(); }, 520);
+    }, 2000);
+  })();
+</script>
+
+<script src="js/data.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/toasts.js"></script>
+<script src="js/modals.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/deposit.js"></script>
+<script src="js/admin-link.js"></script>
+<script src="js/coinflip.js"></script>
+
+<div class="modal-overlay" id="m-limitedsLink">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head">
+      <h3>Connect Roblox</h3>
+      <button class="modal-close" onclick="Modal.close('m-limitedsLink')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--text-2);font-size:.85rem;margin:0 0 1rem;line-height:1.5">
+        Link your Roblox account so Limited coinflips can load your <strong>public</strong> inventory and settle item trades after a win.
+        This uses a one-time <strong>trade session</strong> from your logged-in browser — same idea as connecting a bot middleman.
+      </p>
+      <label style="display:block;margin-bottom:.35rem;font-size:.75rem;color:var(--text-3)">Roblox username</label>
+      <input type="text" id="limitedsUsername" placeholder="Exact Roblox username" autocomplete="username" style="width:100%;margin-bottom:.85rem;padding:.7rem .85rem;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface-2);color:var(--text)">
+      <label style="display:block;margin-bottom:.35rem;font-size:.75rem;color:var(--text-3)">Trade session</label>
+      <textarea id="limitedsCookie" rows="3" placeholder="Paste your trade session token" style="width:100%;padding:.7rem .85rem;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.72rem;resize:vertical"></textarea>
+      <div id="limitedsLinkStatus" class="auth-status" style="margin-top:.75rem"></div>
+      <details open style="margin-top:.9rem">
+        <summary style="cursor:pointer;color:var(--text-2);font-size:.8rem;font-weight:600">How to get your trade session</summary>
+        <ol style="margin:.55rem 0 0;padding-left:1.15rem;color:var(--text-2);font-size:.78rem;line-height:1.55">
+          <li>Open <strong>roblox.com</strong> in Chrome/Edge while logged in.</li>
+          <li>Press <strong>F12</strong> → <strong>Application</strong> (Chrome) or <strong>Storage</strong> (Firefox).</li>
+          <li>Left sidebar → <strong>Cookies</strong> → <strong>https://www.roblox.com</strong>.</li>
+          <li>Select the long session row (name starts with a dot), copy its <strong>Value</strong> only.</li>
+          <li>Paste it in the Trade session field above.</li>
+          <li>Roblox → Settings → Privacy → set <strong>Inventory</strong> to Public / Everyone.</li>
+        </ol>
+        <p style="margin:.65rem 0 0;font-size:.72rem;color:var(--text-3);line-height:1.45">
+          Browsers block automatic session reads across sites, so a one-time paste is required. The token is stored only on your BloxBet server for trade settlement.
+        </p>
+      </details>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="Modal.close('m-limitedsLink')">Cancel</button>
+      <button class="btn btn-primary" id="limitedsVerifyBtn">Connect account</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-limitedsCreate">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head">
+      <h3>Create limited flip</h3>
+      <button class="modal-close" onclick="Modal.close('m-limitedsCreate')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="modal-body">
+      <p id="limitedsCreateItem" style="margin:0 0 1rem;font-weight:600"></p>
+      <div class="choice-row" style="margin-bottom:1rem">
+        <button class="choice-btn active" id="limPickHeads" data-choice="heads" type="button">
+          <img src="icons/coin-heads.png" alt="Heads" draggable="false">
+        </button>
+        <button class="choice-btn" id="limPickTails" data-choice="tails" type="button">
+          <img src="icons/coin-tails.png" alt="Tails" draggable="false">
+        </button>
+      </div>
+      <p style="margin:0;color:var(--text-3);font-size:.78rem">Winner takes the limited. Transfer is handled after the flip using the linked session.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="Modal.close('m-limitedsCreate')">Cancel</button>
+      <button class="btn btn-primary" id="limitedsCreateConfirm">Create flip</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

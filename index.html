@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BloxBet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+<div id="bbLoader" class="bb-loader">
+  <div class="bb-loader-bg"></div>
+  <div class="bb-loader-veil"></div>
+  <div class="bb-loader-vignette"></div>
+  <div class="bb-loader-glow"></div>
+
+  <div class="bb-leaves">
+    <div class="bb-leaf amber">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf rust">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf crimson">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf gold">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf copper">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf deep">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf amber">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf rust">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf crimson">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf gold">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf copper">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf deep">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+  </div>
+
+  <div class="bb-loader-inner">
+    <div class="bb-loader-lockup">
+      <div class="bb-loader-mark">
+        <img src="icons/bloxbet.png" alt="BloxBet" draggable="false">
+      </div>
+      <div class="bb-loader-text">
+        <span class="bb-blox">Blox</span><span class="bb-bet">Bet</span>
+      </div>
+    </div>
+    <div class="bb-loader-bar">
+      <div class="bb-loader-fill"></div>
+    </div>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-left">
+    <button class="menu-btn" data-tip="Menu"><img src="icons/menu.png" alt="" class="ico" draggable="false"></button>
+    <a href="index.html" class="nav-logo">
+      <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
+      <span class="nav-logo-text">BloxBet</span>
+    </a>
+  </div>
+  <div class="nav-center">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="games.html">Games</a>
+    <a class="nav-link" href="rewards.html">Rewards</a>
+    <a class="nav-link" href="community.html">Community</a>
+    <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+    <a class="nav-link" href="profile.html">Profile</a>
+  </div>
+  <div class="nav-right">
+    <div class="balance-chip">
+      <div>
+        <div class="label">Balance</div>
+        <div class="value"><span data-balance data-balance="12480">12,480</span><span class="unit">RC</span></div>
+      </div>
+      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')">
+        <img src="icons/plus.png" alt="" class="ico" draggable="false">
+      </button>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications">
+        <img src="icons/bell.png" alt="" class="ico" draggable="false">
+      </button>
+      <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
+    </div>
+    <div class="dropdown">
+      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">N</button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="profile.html">Profile</a>
+        <a class="dropdown-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;">Settings</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-section">Overview</div>
+  <a class="side-item" data-href="index.html" href="index.html">
+    <span class="icon"><img src="icons/home.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Home</span>
+  </a>
+  <a class="side-item" data-href="games.html" href="games.html">
+    <span class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Games</span>
+  </a>
+  <a class="side-item" data-href="rewards.html" href="rewards.html">
+    <span class="icon"><img src="icons/rewards.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Rewards</span>
+  </a>
+
+  <div class="sidebar-section">Social</div>
+  <a class="side-item" data-href="community.html" href="community.html">
+    <span class="icon"><img src="icons/community.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Community</span>
+  </a>
+  <a class="side-item" data-href="leaderboard.html" href="leaderboard.html">
+    <span class="icon"><img src="icons/leaderboard.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Leaderboard</span>
+  </a>
+
+  <div class="sidebar-section">Account</div>
+  <a class="side-item" data-href="profile.html" href="profile.html">
+    <span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Profile</span>
+  </a>
+  <a class="side-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;">
+    <span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Settings</span>
+  </a>
+
+  <a class="sidebar-discord" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">
+    <span class="icon"><img src="icons/discord.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Discord</span>
+  </a>
+
+  <div class="sidebar-toggle">
+    <span class="icon"><img src="icons/chevron-left.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Collapse</span>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="container page">
+
+    <div class="page-head">
+      <div>
+        <h1>Dashboard</h1>
+        <div class="sub" id="welcomeSub">—</div>
+      </div>
+      <div class="page-head-actions">
+        <button class="btn btn-ghost" onclick="location.href='coinflip.html'">
+          <img src="icons/coin.png" alt="" class="ico" draggable="false">
+          <span>Coin Flip</span>
+        </button>
+        <button class="btn btn-primary" onclick="Modal.open('m-deposit')">
+          <img src="icons/plus.png" alt="" class="ico" draggable="false">
+          <span>Add Funds</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Balance</div>
+        <div class="stat-value" data-stat="balance">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Wagered</div>
+        <div class="stat-value" data-stat="wagered">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Games Played</div>
+        <div class="stat-value" data-stat="games">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Win Rate</div>
+        <div class="stat-value" data-stat="winrate">—</div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2>Games</h2>
+      <a class="link" href="games.html">View all</a>
+    </div>
+    <div class="grid" id="featuredGames">
+      <div class="card" style="cursor:default">
+        <div class="card-art"></div>
+        <div class="card-title">Loading…</div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2>Recent Activity</h2>
+      <span class="chip"><span class="live-dot"></span>Live</span>
+    </div>
+    <div class="panel">
+      <div class="panel-body" id="recentActivity">
+        <div class="empty">
+          <div class="icon"><img src="icons/coin.png" alt="" class="ico" draggable="false"></div>
+          <h4>No flips yet</h4>
+          <p>Play your first coin flip to see your history here.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2>Leaderboard</h2>
+      <a class="link" href="leaderboard.html">Full leaderboard</a>
+    </div>
+    <div class="panel">
+      <div class="panel-body" id="lbPreview">
+        <div class="side-empty">Loading…</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a class="bn-item" data-href="index.html" href="index.html"><img src="icons/home.png" alt="" class="ico" draggable="false"><span>Home</span></a>
+    <a class="bn-item" data-href="games.html" href="games.html"><img src="icons/games.png" alt="" class="ico" draggable="false"><span>Games</span></a>
+    <a class="bn-item" data-href="rewards.html" href="rewards.html"><img src="icons/rewards.png" alt="" class="ico" draggable="false"><span>Rewards</span></a>
+    <a class="bn-item" data-href="community.html" href="community.html"><img src="icons/community.png" alt="" class="ico" draggable="false"><span>Social</span></a>
+    <a class="bn-item" data-href="profile.html" href="profile.html"><img src="icons/profile.png" alt="" class="ico" draggable="false"><span>Me</span></a>
+  </div>
+</nav>
+
+<div class="modal-overlay" id="m-deposit">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h3>Add Funds</h3>
+        <p>Top up your RoCoins balance.</p>
+      </div>
+      <button class="modal-close" onclick="Modal.close('m-deposit')">
+        <img src="icons/close.png" alt="" class="ico" draggable="false">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Amount</label>
+        <input type="number" id="depositAmount" value="1000" min="100" max="500000" step="100">
+      </div>
+      <div class="quick-bets" style="margin-top:.5rem">
+        <button class="quick-bet" data-deposit="500">500</button>
+        <button class="quick-bet" data-deposit="1000">1K</button>
+        <button class="quick-bet" data-deposit="5000">5K</button>
+        <button class="quick-bet" data-deposit="10000">10K</button>
+        <button class="quick-bet" data-deposit="50000">50K</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')">Cancel</button>
+      <button class="btn btn-primary" id="depositConfirmBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var loader = document.getElementById('bbLoader');
+    if(!loader) return;
+    setTimeout(function(){
+      loader.classList.add('hide');
+      setTimeout(function(){ loader.remove(); }, 520);
+    }, 2000);
+  })();
+</script>
+
+<script src="js/data.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/toasts.js"></script>
+<script src="js/modals.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/deposit.js"></script>
+<script src="js/admin-link.js"></script>
+<script>
+  (function(){
+    if(typeof Auth === 'undefined'){ console.error('[index] Auth missing'); return; }
+    if(!Auth.isLoggedIn()){ Auth.safeRedirect('login'); return; }
+
+    var me = Auth.getUser();
+
+    var sub = document.getElementById('welcomeSub');
+    if(sub && me) sub.textContent = '@' + (me.username || 'user');
+
+    var navAvatar = document.getElementById('navAvatar');
+    if(navAvatar && typeof renderAvatar === 'function') renderAvatar(navAvatar, me);
+
+    function fillStats(u){
+      if(!u) return;
+      var set = function(k, v){
+        var el = document.querySelector('[data-stat="' + k + '"]');
+        if(el) el.textContent = v;
+      };
+      set('balance', Number(u.balance || 0).toLocaleString());
+      set('wagered', Number(u.totalWagered || 0).toLocaleString());
+      set('games', Number(u.gamesPlayed || 0).toLocaleString());
+      var wr = u.gamesPlayed > 0 ? Math.round((u.gamesWon / u.gamesPlayed) * 100) : 0;
+      set('winrate', wr + '%');
+    }
+    fillStats(me);
+    Auth.refreshUser().then(function(fresh){ if(fresh) fillStats(fresh); });
+
+    var grid = document.getElementById('featuredGames');
+    (async function loadFeatured(){
+      try {
+        var res = await Auth.api('/games');
+        if(!res.ok) throw new Error();
+        var data = await res.json();
+        var list = (data.games || []).filter(function(g){ return g.available; }).slice(0, 4);
+
+        if(list.length === 0){
+          grid.innerHTML =
+            '<div class="empty" style="grid-column:1/-1">' +
+              '<div class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></div>' +
+              '<h4>No games available</h4>' +
+              '<p>Check back soon.</p>' +
+            '</div>';
+          return;
+        }
+
+        grid.innerHTML = '';
+        list.forEach(function(g){
+          var card = document.createElement('div');
+          card.className = 'card';
+          var badgeHtml = g.badge
+            ? '<span class="badge badge-' + g.badge + '">' + g.badge + '</span>'
+            : '';
+          var playersLabel = g.players > 0
+            ? g.players.toLocaleString() + ' playing'
+            : 'No players';
+          card.innerHTML =
+            '<div class="card-art">' + Icon(g.icon, 'ico-2xl') + '</div>' +
+            '<div class="card-head">' +
+              '<div class="card-title">' + g.name + '</div>' +
+              badgeHtml +
+            '</div>' +
+            '<div class="card-desc">' + g.desc + '</div>' +
+            '<div class="card-foot">' +
+              '<div class="card-meta">' +
+                (g.players > 0 ? '<span class="live-dot"></span>' : '') +
+                playersLabel +
+              '</div>' +
+              '<button class="btn btn-primary btn-sm">Play</button>' +
+            '</div>';
+          card.addEventListener('click', function(){
+            if(g.route) location.href = g.route;
+          });
+          grid.appendChild(card);
+        });
+      } catch(e){
+        grid.innerHTML = '<div class="side-empty">Could not load games.</div>';
+      }
+    })();
+
+    var act = document.getElementById('recentActivity');
+    (async function(){
+      if(!act) return;
+      try {
+        var res = await Auth.api('/game/coinflip/history');
+        if(!res.ok) return;
+        var data = await res.json();
+        var flips = (data.history || []).slice(0, 6);
+        if(flips.length === 0) return;
+        act.innerHTML = '';
+        flips.forEach(function(f){
+          var row = document.createElement('div');
+          row.className = 'activity-row';
+          var coinSrc = 'icons/coin-' + f.result + '.png';
+          row.innerHTML =
+            '<div class="avatar avatar-sm"><img src="' + coinSrc + '" alt="' + f.result + '" class="coin-ico" draggable="false"></div>' +
+            '<div class="activity-user"><span class="name">' + (f.result === 'heads' ? 'Heads' : 'Tails') + '</span></div>' +
+            '<div class="activity-action">' + f.bet.toLocaleString() + ' on ' + f.choice + '</div>' +
+            '<div class="activity-time">' + new Date(f.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + '</div>' +
+            '<div class="activity-result ' + (f.win ? 'result-win' : 'result-loss') + '">' +
+              (f.win ? '+' : '-') + Math.abs(f.net).toLocaleString() +
+            '</div>';
+          act.appendChild(row);
+        });
+      } catch(e){}
+    })();
+
+    var lb = document.getElementById('lbPreview');
+    (async function(){
+      if(!lb) return;
+      try {
+        var res = await Auth.api('/leaderboard?sort=wagered');
+        if(!res.ok) return;
+        var data = await res.json();
+        var entries = (data.entries || []).slice(0, 5);
+        if(entries.length === 0){
+          lb.innerHTML = '<div class="side-empty">No players yet. Be the first.</div>';
+          return;
+        }
+        lb.innerHTML = '';
+        entries.forEach(function(u){
+          var cls = u.rank === 1 ? 'top1' : u.rank === 2 ? 'top2' : u.rank === 3 ? 'top3' : '';
+          var row = document.createElement('div');
+          row.className = 'lb-row';
+          row.innerHTML =
+            '<div class="lb-rank ' + cls + '">#' + u.rank + '</div>' +
+            '<div class="lb-user">' +
+              (u.avatar && /^https?:/i.test(u.avatar)
+                ? '<div class="avatar avatar-sm"><img src="' + u.avatar + '" alt="" draggable="false"></div>'
+                : '<div class="avatar avatar-sm">' + (u.username || 'U')[0].toUpperCase() + '</div>') +
+              '<span class="name">' + u.username + '</span>' +
+            '</div>' +
+            '<div class="lb-score">' + Number(u.totalWagered || 0).toLocaleString() + '</div>' +
+            '<div class="lb-delta">wagered</div>';
+          lb.appendChild(row);
+        });
+      } catch(e){}
+    })();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,549 @@
+/* ============================================================
+   BLOXBET — GAME PAGES
+   Flat panels. Same coin physics. No glow.
+   ============================================================ */
+
+.game-wrap{
+  display:grid;
+  grid-template-columns:1fr 320px;
+  gap:1rem;
+  align-items:start;
+}
+
+/* ---------- Stage ---------- */
+.game-stage{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:2rem 1.5rem 1.5rem;
+  position:relative;
+  overflow:hidden;
+  min-height:520px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:1.75rem;
+}
+
+/* ============================================================
+   3D COIN — PNG faces + true cylinder edge
+   ============================================================ */
+
+.coin-stage{
+  position:relative;
+  width:200px;
+  height:200px;
+  perspective:1200px;
+  perspective-origin:50% 45%;
+  margin-top:16px;
+  margin-bottom:56px;
+  z-index:1;
+}
+
+.coin-shadow{
+  position:absolute;
+  bottom:-40px;
+  left:50%;
+  transform:translateX(-50%);
+  width:130px;
+  height:14px;
+  border-radius:50%;
+  background:radial-gradient(ellipse at center, rgba(0,0,0,.6), transparent 70%);
+  filter:blur(5px);
+  transition:transform var(--dur) var(--ease),
+             opacity var(--dur) var(--ease);
+  pointer-events:none;
+}
+
+.coin-tilt{
+  width:100%;
+  height:100%;
+  transform-style:preserve-3d;
+  transform:rotateX(-12deg);
+  position:relative;
+}
+
+.coin-flipper{
+  width:100%;
+  height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  will-change:transform;
+}
+
+.coin-body{
+  position:absolute;
+  inset:0;
+  transform-style:preserve-3d;
+  --thickness: 24px;
+}
+
+.coin-face{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  backface-visibility:hidden;
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+  filter:drop-shadow(0 6px 16px rgba(0,0,0,.4));
+}
+.coin-face.heads{
+  background-image:url('../icons/coin-heads.png');
+  transform:translateZ(calc(var(--thickness) / 2));
+}
+.coin-face.tails{
+  background-image:url('../icons/coin-tails.png');
+  transform:rotateY(180deg) translateZ(calc(var(--thickness) / 2));
+}
+
+.coin-face .shine{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255,255,255,.55) 50%,
+    transparent 70%
+  );
+  opacity:0;
+  pointer-events:none;
+  z-index:3;
+}
+.coin-stage.shine .coin-face .shine{
+  animation:shineSweep 600ms var(--ease);
+}
+@keyframes shineSweep{
+  0%{opacity:0;transform:translateX(-60%)}
+  40%{opacity:.8}
+  100%{opacity:0;transform:translateX(60%)}
+}
+
+.coin-flipper.spinning .coin-face{
+  filter:drop-shadow(0 6px 16px rgba(0,0,0,.4)) blur(.4px);
+}
+
+.coin-stage.idle .coin-flipper{
+  animation:idleBob 3.2s var(--ease) infinite;
+}
+@keyframes idleBob{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+
+.coin-stage.win::after,
+.coin-stage.lose::after{
+  content:'';
+  position:absolute;
+  inset:-32px;
+  border-radius:50%;
+  z-index:-1;
+  animation:resultGlow 800ms var(--ease) forwards;
+  pointer-events:none;
+}
+.coin-stage.win::after{
+  background:radial-gradient(circle, rgba(34,197,94,.35), transparent 70%);
+}
+.coin-stage.lose::after{
+  background:radial-gradient(circle, rgba(239,68,68,.35), transparent 70%);
+}
+@keyframes resultGlow{
+  from{opacity:1;transform:scale(.7)}
+  to{opacity:0;transform:scale(1.4)}
+}
+
+/* ---------- Edge ---------- */
+.coin-edge{
+  position:absolute;
+  inset:0;
+  transform-style:preserve-3d;
+  pointer-events:none;
+}
+.coin-edge span{
+  position:absolute;
+  top:50%;
+  left:50%;
+  height:var(--thickness);
+  transform-origin:50% 50%;
+  backface-visibility:hidden;
+  border-radius:1px;
+  background:
+    linear-gradient(
+      to right,
+      #4b5563 0%,
+      #94a3b8 25%,
+      #f1f5f9 50%,
+      #94a3b8 75%,
+      #374151 100%
+    );
+}
+.coin-flipper.spinning .coin-edge span{
+  filter:blur(.4px);
+}
+
+/* ============================================================
+   CONTROLS
+   ============================================================ */
+.game-controls{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1rem;
+  width:100%;
+  max-width:420px;
+  position:relative;
+  z-index:1;
+}
+
+.choice-row{
+  display:flex;
+  gap:.5rem;
+  width:100%;
+  justify-content:center;
+}
+.choice-btn{
+  flex:1;
+  max-width:160px;
+  aspect-ratio:1 / 1;
+  padding:.6rem;
+  border-radius:var(--r-md);
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  transition:border-color var(--dur-fast) var(--ease),
+             background var(--dur-fast) var(--ease),
+             transform var(--dur-fast) var(--ease);
+  position:relative;
+}
+.choice-btn:hover:not(:disabled){
+  background:var(--surface-3);
+  border-color:var(--border-2);
+}
+.choice-btn:active:not(:disabled){transform:scale(.98)}
+.choice-btn.active{
+  border-color:var(--accent);
+  background:var(--surface-2);
+}
+.choice-btn.active.tails-active{
+  border-color:var(--success);
+}
+.choice-btn:disabled{opacity:.5;cursor:not-allowed}
+
+.choice-btn img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+/* ---------- Bet input ---------- */
+.bet-row{
+  display:flex;
+  gap:.4rem;
+  width:100%;
+  align-items:stretch;
+}
+.bet-input-wrap{position:relative;flex:1}
+.bet-input-wrap .ico{
+  position:absolute;
+  left:.7rem;
+  top:50%;
+  transform:translateY(-50%);
+  width:14px;
+  height:14px;
+  opacity:.35;
+  pointer-events:none;
+}
+.bet-input{
+  width:100%;
+  height:100%;
+  background:var(--bg-2);
+  border:1px solid var(--border-2);
+  border-radius:var(--r-md);
+  padding:.6rem .75rem .6rem 2.1rem;
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;
+  font-size:.85rem;
+  font-weight:500;
+  outline:none;
+  transition:border-color var(--dur-fast) var(--ease);
+  -webkit-appearance:none;
+  appearance:none;
+  -moz-appearance:textfield;
+}
+.bet-input::-webkit-outer-spin-button,
+.bet-input::-webkit-inner-spin-button{
+  -webkit-appearance:none;
+  margin:0;
+}
+.bet-input:focus{border-color:var(--accent)}
+
+.quick-bets{display:flex;gap:.3rem;width:100%}
+.quick-bet{
+  flex:1;
+  padding:.4rem .3rem;
+  border-radius:var(--r-sm);
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  color:var(--text-2);
+  font-family:inherit;
+  font-size:.72rem;
+  font-weight:500;
+  cursor:pointer;
+  transition:background var(--dur-fast) var(--ease),
+             border-color var(--dur-fast) var(--ease),
+             color var(--dur-fast) var(--ease);
+  -webkit-appearance:none;
+  appearance:none;
+}
+.quick-bet:hover:not(:disabled){
+  background:var(--surface-3);
+  border-color:var(--border-2);
+  color:var(--text);
+}
+.quick-bet:disabled{opacity:.4;cursor:not-allowed}
+
+.flip-btn{
+  width:100%;
+  padding:.85rem 1rem;
+  border-radius:var(--r-md);
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  font-family:inherit;
+  font-size:.88rem;
+  font-weight:600;
+  letter-spacing:.005em;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.45rem;
+  transition:background var(--dur-fast) var(--ease),
+             transform var(--dur-fast) var(--ease),
+             opacity var(--dur-fast) var(--ease);
+  -webkit-appearance:none;
+  appearance:none;
+}
+.flip-btn:hover:not(:disabled){background:var(--accent-hi)}
+.flip-btn:active:not(:disabled){transform:scale(.98)}
+.flip-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.flip-btn .ico{width:16px;height:16px;opacity:1;filter:brightness(10)}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.game-sidebar{display:flex;flex-direction:column;gap:.75rem}
+
+.side-panel{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  overflow:hidden;
+}
+.side-panel-head{
+  padding:.7rem .9rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.5rem;
+  border-bottom:1px solid var(--border);
+}
+.side-panel-head h3{font-size:.78rem;font-weight:600}
+.side-panel-body{padding:.7rem .9rem}
+
+.history-strip{display:flex;flex-wrap:wrap;gap:.25rem}
+.history-chip{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-size:.65rem;
+  font-weight:700;
+  border:1px solid var(--border);
+  animation:chipIn 200ms var(--ease) both;
+  font-family:'JetBrains Mono',monospace;
+}
+@keyframes chipIn{
+  from{opacity:0;transform:scale(.7)}
+  to{opacity:1;transform:scale(1)}
+}
+.history-chip.heads{
+  background:rgba(245,158,11,.15);
+  color:#f5b849;
+  border-color:rgba(245,158,11,.3);
+}
+.history-chip.tails{
+  background:rgba(34,197,94,.15);
+  color:#4ade80;
+  border-color:rgba(34,197,94,.3);
+}
+.history-chip.win{outline:1px solid rgba(34,197,94,.4);outline-offset:1px}
+.history-chip.lose{opacity:.5}
+
+.flip-log{display:flex;flex-direction:column;max-height:240px;overflow-y:auto}
+.flip-log-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:.4rem 0;
+  border-bottom:1px solid var(--border);
+  font-size:.75rem;
+}
+.flip-log-row:last-child{border-bottom:none}
+.flip-log-row .left{display:flex;align-items:center;gap:.4rem;min-width:0}
+.flip-log-row .dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.flip-log-row .dot.heads{background:#f59e0b}
+.flip-log-row .dot.tails{background:#22c55e}
+.flip-log-row .bet{color:var(--text-3);font-size:.7rem}
+.flip-log-row .net{
+  font-weight:600;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;
+}
+.flip-log-row .net.win{color:var(--success)}
+.flip-log-row .net.lose{color:var(--danger)}
+
+/* ---------- Fair panel ---------- */
+.fair-grid{display:flex;flex-direction:column;gap:.5rem}
+.fair-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:.6rem;
+  font-size:.72rem;
+}
+.fair-row .label{
+  color:var(--text-3);
+  font-size:.66rem;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  font-weight:600;
+  flex-shrink:0;
+}
+.fair-row .value{
+  font-family:'JetBrains Mono',monospace;
+  color:var(--text-2);
+  font-size:.68rem;
+  max-width:170px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  text-align:right;
+}
+.fair-row .value.full{font-size:.64rem}
+
+/* ---------- Empty ---------- */
+.side-empty{
+  text-align:center;
+  color:var(--text-3);
+  font-size:.72rem;
+  padding:1.25rem 0;
+  line-height:1.5;
+}
+
+/* ---------- Result banner ---------- */
+.result-banner{
+  position:absolute;
+  top:1rem;
+  left:50%;
+  transform:translateX(-50%);
+  padding:.4rem .85rem;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:600;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity var(--dur) var(--ease);
+  z-index:2;
+}
+.result-banner.show{opacity:1;animation:bannerIn 300ms var(--ease)}
+@keyframes bannerIn{
+  from{transform:translate(-50%,-4px);opacity:0}
+  to{transform:translate(-50%,0);opacity:1}
+}
+.result-banner.win{
+  background:rgba(34,197,94,.12);
+  border:1px solid rgba(34,197,94,.3);
+  color:#4ade80;
+}
+.result-banner.lose{
+  background:rgba(239,68,68,.12);
+  border:1px solid rgba(239,68,68,.3);
+  color:#f87171;
+}
+
+/* ---------- Chat ---------- */
+.chat-msg{
+  display:flex;
+  flex-direction:column;
+  gap:.1rem;
+  padding:.35rem .55rem;
+  background:var(--bg-2);
+  border-radius:var(--r-sm);
+  border:1px solid var(--border);
+}
+.chat-meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.4rem;
+  font-size:.62rem;
+}
+.chat-name{font-weight:600}
+.chat-time{color:var(--text-3);font-size:.6rem}
+.chat-body{font-size:.74rem;color:var(--text);line-height:1.4;word-break:break-word}
+
+/* ---------- PvP create/wait/result ---------- */
+.pvp-view{
+  width:100%;
+  max-width:480px;
+  text-align:center;
+}
+.pvp-view h2{
+  font-size:1rem;
+  font-weight:600;
+  margin-bottom:.35rem;
+}
+.pvp-view p{
+  font-size:.78rem;
+  color:var(--text-3);
+  margin-bottom:1.25rem;
+  line-height:1.5;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:960px){
+  .game-wrap{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .game-stage{padding:1.5rem 1rem 1rem;min-height:460px;gap:1.5rem}
+  .coin-stage{width:170px;height:170px}
+  .choice-btn{max-width:120px;padding:.5rem}
+  .quick-bet{font-size:.66rem;padding:.35rem .2rem}
+  .flip-btn{padding:.75rem .85rem;font-size:.82rem}
+}
+.history-chip img{
+  width:70%;
+  height:70%;
+  object-fit:contain;
+  display:block;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-drag:none;
+}

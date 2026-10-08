@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Profile — BloxBet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<style>
+  /* ============================================================
+     PROFILE — v2
+     ============================================================ */
+
+  .pf-hero{
+    position:relative;
+    border:1px solid var(--border);
+    border-radius:var(--r-lg);
+    background:var(--surface);
+    overflow:hidden;
+    margin-bottom:1.25rem;
+  }
+
+  .pf-banner{
+    height:140px;
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(135deg,#0d1520 0%,#141c28 60%,#0d1520 100%);
+  }
+  .pf-banner::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,149,0,.14), transparent 45%),
+      radial-gradient(circle at 80% 70%, rgba(168,85,247,.10), transparent 45%);
+  }
+  .pf-banner.banner-grid{
+    background-image:
+      linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size:22px 22px;
+    background-color:#0d1218;
+  }
+  .pf-banner.banner-aurora{
+    background:linear-gradient(120deg,#0a1a2f 0%,#1a3a5c 40%,#2e1a5c 70%,#0a1a2f 100%);
+  }
+  .pf-banner.banner-ember{
+    background:linear-gradient(135deg,#1a0a0a 0%,#4a1a0a 50%,#1a0a0a 100%);
+  }
+  .pf-banner.banner-void{
+    background:linear-gradient(135deg,#050510 0%,#1a0a2e 50%,#050510 100%);
+  }
+
+  .pf-banner-grid-lines{
+    position:absolute;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size:24px 24px;
+    pointer-events:none;
+  }
+
+  .pf-hero-body{
+    padding:0 1.5rem 1.35rem;
+    position:relative;
+    display:flex;
+    align-items:flex-end;
+    gap:1.25rem;
+    flex-wrap:wrap;
+    margin-top:-44px;
+  }
+
+  .pf-avatar-wrap{
+    position:relative;
+    flex-shrink:0;
+  }
+  .pf-avatar{
+    width:104px;
+    height:104px;
+    border-radius:50%;
+    background:var(--surface-3);
+    display:grid;
+    place-items:center;
+    font-weight:700;
+    font-size:2.1rem;
+    color:var(--text);
+    border:4px solid var(--surface);
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 8px 24px rgba(0,0,0,.4);
+  }
+  .pf-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .pf-avatar-ring{
+    position:absolute;
+    inset:-4px;
+    border-radius:50%;
+    border:2px solid transparent;
+    pointer-events:none;
+  }
+  .pf-avatar-ring.ring-bronze{border-color:#b45309}
+  .pf-avatar-ring.ring-silver{border-color:#cbd5e1}
+  .pf-avatar-ring.ring-gold{border-color:#fbbf24;box-shadow:0 0 14px rgba(251,191,36,.4)}
+  .pf-avatar-ring.ring-prism{
+    border-color:transparent;
+    background:conic-gradient(from 0deg,#ef4444,#f59e0b,#22c55e,#3b82f6,#a855f7,#ef4444);
+    -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+            mask:radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+  }
+  .pf-online-dot{
+    position:absolute;
+    bottom:6px;
+    right:6px;
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:var(--success);
+    border:3px solid var(--surface);
+  }
+
+  .pf-hero-info{
+    flex:1;
+    min-width:240px;
+    padding-bottom:.4rem;
+  }
+  .pf-name-line{
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    flex-wrap:wrap;
+  }
+  .pf-name{
+    font-size:1.4rem;
+    font-weight:700;
+    letter-spacing:-.02em;
+    color:var(--text);
+  }
+  .pf-name.name-gold{color:#fbbf24}
+  .pf-name.name-cyan{color:#00d4ff}
+  .pf-name.name-purple{color:#a855f7}
+  .pf-name.name-red{color:#ef4444}
+  .pf-name.name-green{color:#22c55e}
+  .pf-verified{
+    width:18px;
+    height:18px;
+    object-fit:contain;
+    flex-shrink:0;
+  }
+  .pf-handle{
+    font-size:.85rem;
+    color:var(--text-3);
+    font-family:'JetBrains Mono',monospace;
+    margin-top:.2rem;
+  }
+  .pf-badges-row{
+    display:flex;
+    gap:.35rem;
+    margin-top:.65rem;
+    flex-wrap:wrap;
+  }
+  .pf-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:.3rem;
+    padding:.22rem .6rem;
+    border-radius:var(--r-sm);
+    font-size:.68rem;
+    font-weight:600;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--text-2);
+  }
+  .pf-badge.rank-bronze{color:#e8a270;border-color:rgba(180,83,9,.4);background:rgba(180,83,9,.08)}
+  .pf-badge.rank-silver{color:#cbd5e1;border-color:rgba(203,213,225,.3);background:rgba(203,213,225,.06)}
+  .pf-badge.rank-gold{color:#fbbf24;border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.08)}
+  .pf-badge.rank-platinum{color:#a5f3fc;border-color:rgba(165,243,252,.4);background:rgba(165,243,252,.08)}
+  .pf-badge.rank-diamond{color:#93c5fd;border-color:rgba(147,197,253,.4);background:rgba(147,197,253,.1)}
+  .pf-badge.rank-legend{color:#fcd34d;border-color:rgba(252,211,77,.5);background:linear-gradient(90deg,rgba(252,211,77,.1),rgba(251,146,60,.1));box-shadow:0 0 12px rgba(252,211,77,.2)}
+  .pf-badge.level{color:var(--accent);border-color:rgba(255,149,0,.35);background:rgba(255,149,0,.08)}
+  .pf-badge.chat-og{color:#c4b5fd;border-color:rgba(168,85,247,.35);background:rgba(168,85,247,.1)}
+  .pf-badge.chat-whale{color:#93c5fd;border-color:rgba(59,130,246,.35);background:rgba(59,130,246,.1)}
+  .pf-badge.chat-lucky{color:#86efac;border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.1)}
+
+  .pf-hero-actions{
+    display:flex;
+    gap:.5rem;
+    padding-bottom:.4rem;
+    flex-wrap:wrap;
+  }
+
+  .pf-xp-bar{
+    margin-top:1rem;
+    padding:0 1.5rem 1.15rem;
+  }
+  .pf-xp-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:.68rem;
+    color:var(--text-3);
+    font-family:'JetBrains Mono',monospace;
+    margin-bottom:.4rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+  .pf-xp-head .cur{color:var(--text-2)}
+  .pf-xp-track{
+    height:6px;
+    background:var(--bg-2);
+    border-radius:999px;
+    overflow:hidden;
+    position:relative;
+  }
+  .pf-xp-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2,#ffb84d));
+    border-radius:999px;
+    transition:width 800ms cubic-bezier(.2,.7,.3,1);
+    box-shadow:0 0 8px rgba(255,149,0,.5);
+  }
+
+  .pf-stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:.6rem;
+    margin-bottom:1.25rem;
+  }
+  .pf-stat{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--r-md);
+    padding:.85rem 1rem;
+    transition:border-color 120ms ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .pf-stat:hover{border-color:var(--border-2)}
+  .pf-stat-label{
+    font-size:.62rem;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    font-weight:600;
+    color:var(--text-3);
+    margin-bottom:.35rem;
+  }
+  .pf-stat-value{
+    font-family:'JetBrains Mono',monospace;
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--text);
+    letter-spacing:-.01em;
+    line-height:1.1;
+  }
+  .pf-stat-value.pos{color:#4ade80}
+  .pf-stat-value.neg{color:#f87171}
+  .pf-stat-value.accent{color:var(--accent)}
+  .pf-stat-sub{
+    font-size:.6rem;
+    color:var(--text-3);
+    margin-top:.25rem;
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  .pf-grid{
+    display:grid;
+    grid-template-columns:1fr 340px;
+    gap:1rem;
+    align-items:start;
+  }
+  .pf-col{
+    display:flex;
+    flex-direction:column;
+    gap:1rem;
+  }
+
+  .pf-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--r-lg);
+    overflow:hidden;
+  }
+  .pf-card-head{
+    padding:.75rem 1rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:.75rem;
+    border-bottom:1px solid var(--border);
+  }
+  .pf-card-head h3{
+    font-size:.8rem;
+    font-weight:600;
+    letter-spacing:-.005em;
+    color:var(--text);
+  }
+  .pf-card-head .hint{
+    font-size:.65rem;
+    color:var(--text-3);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .pf-card-body{padding:.25rem 0}
+
+  .pf-activity-row{
+    display:grid;
+    grid-template-columns:36px 1fr auto auto;
+    align-items:center;
+    gap:.75rem;
+    padding:.6rem 1rem;
+    border-bottom:1px solid var(--border);
+    transition:background 120ms ease;
+  }
+  .pf-activity-row:last-child{border-bottom:none}
+  .pf-activity-row:hover{background:var(--surface-2)}
+
+  .pf-act-icon{
+    width:32px;
+    height:32px;
+    border-radius:var(--r-sm);
+    display:grid;
+    place-items:center;
+    background:var(--surface-3);
+    border:1px solid var(--border-2);
+    font-size:.62rem;
+    font-weight:700;
+    color:var(--text-2);
+    font-family:'JetBrains Mono',monospace;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .pf-act-icon.win{
+    background:rgba(34,197,94,.1);
+    border-color:rgba(34,197,94,.35);
+    color:#4ade80;
+  }
+  .pf-act-icon.lose{
+    background:rgba(239,68,68,.1);
+    border-color:rgba(239,68,68,.3);
+    color:#f87171;
+  }
+
+  .pf-act-main{min-width:0}
+  .pf-act-title{
+    font-size:.8rem;
+    font-weight:500;
+    color:var(--text);
+    line-height:1.3;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .pf-act-detail{
+    font-size:.68rem;
+    color:var(--text-3);
+    font-family:'JetBrains Mono',monospace;
+    margin-top:.1rem;
+  }
+
+  .pf-act-net{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.82rem;
+    font-weight:600;
+    text-align:right;
+    letter-spacing:-.01em;
+  }
+  .pf-act-net.pos{color:#4ade80}
+  .pf-act-net.neg{color:#f87171}
+
+  .pf-act-time{
+    font-size:.65rem;
+    color:var(--text-3);
+    font-family:'JetBrains Mono',monospace;
+    text-align:right;
+    min-width:56px;
+  }
+
+  .pf-tx-row{
+    display:grid;
+    grid-template-columns:32px 1fr auto auto;
+    align-items:center;
+    gap:.7rem;
+    padding:.55rem 1rem;
+    border-bottom:1px solid var(--border);
+    font-size:.78rem;
+  }
+  .pf-tx-row:last-child{border-bottom:none}
+  .pf-tx-row:hover{background:var(--surface-2)}
+  .pf-tx-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--text-3);
+    justify-self:center;
+  }
+  .pf-tx-dot.pos{background:#4ade80;box-shadow:0 0 8px rgba(34,197,94,.5)}
+  .pf-tx-dot.neg{background:#f87171;box-shadow:0 0 8px rgba(239,68,68,.5)}
+  .pf-tx-label{
+    color:var(--text-2);
+    font-size:.72rem;
+    text-transform:capitalize;
+  }
+  .pf-tx-amt{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:600;
+    font-size:.78rem;
+    text-align:right;
+  }
+  .pf-tx-amt.pos{color:#4ade80}
+  .pf-tx-amt.neg{color:#f87171}
+  .pf-tx-time{
+    font-size:.62rem;
+    color:var(--text-3);
+    font-family:'JetBrains Mono',monospace;
+    min-width:56px;
+    text-align:right;
+  }
+
+  .pf-ach-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(60px,1fr));
+    gap:.5rem;
+    padding:.85rem 1rem 1rem;
+  }
+  .pf-ach{
+    aspect-ratio:1;
+    border-radius:var(--r-md);
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    display:grid;
+    place-items:center;
+    font-size:.62rem;
+    font-weight:700;
+    color:var(--text-3);
+    font-family:'JetBrains Mono',monospace;
+    position:relative;
+    cursor:default;
+    transition:transform 120ms ease, border-color 120ms ease;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .pf-ach.unlocked{
+    background:linear-gradient(135deg,rgba(255,149,0,.14),rgba(255,184,77,.08));
+    border-color:rgba(255,149,0,.4);
+    color:var(--accent);
+    box-shadow:0 0 14px rgba(255,149,0,.15);
+  }
+  .pf-ach.unlocked:hover{
+    transform:translateY(-2px);
+    border-color:var(--accent);
+  }
+  .pf-ach[data-tip]:hover::after{
+    content:attr(data-tip);
+    position:absolute;
+    bottom:calc(100% + 6px);
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--surface-3);
+    border:1px solid var(--border-2);
+    color:var(--text);
+    font-size:.65rem;
+    font-weight:500;
+    padding:.3rem .55rem;
+    border-radius:var(--r-sm);
+    white-space:nowrap;
+    z-index:20;
+    text-transform:none;
+    letter-spacing:0;
+    pointer-events:none;
+  }
+
+  .pf-streak-strip{
+    display:flex;
+    gap:.3rem;
+    padding:.85rem 1rem;
+  }
+  .pf-streak-cell{
+    flex:1;
+    aspect-ratio:1;
+    max-width:26px;
+    border-radius:5px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    position:relative;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+  }
+  .pf-streak-cell img{
+    width:80%;
+    height:80%;
+    object-fit:contain;
+    display:block;
+  }
+  .pf-streak-cell.win{
+    background:linear-gradient(180deg,rgba(34,197,94,.35),rgba(34,197,94,.15));
+    border-color:rgba(34,197,94,.5);
+    box-shadow:0 0 6px rgba(34,197,94,.3);
+  }
+  .pf-streak-cell.lose{
+    background:linear-gradient(180deg,rgba(239,68,68,.25),rgba(239,68,68,.08));
+    border-color:rgba(239,68,68,.35);
+  }
+
+  .pf-ref-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:.5rem 1rem;
+    border-bottom:1px solid var(--border);
+    font-size:.72rem;
+  }
+  .pf-ref-row:last-child{border-bottom:none}
+  .pf-ref-row .lbl{
+    color:var(--text-3);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-weight:600;
+    font-size:.6rem;
+  }
+  .pf-ref-code{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.85rem;
+    font-weight:700;
+    color:var(--accent);
+    letter-spacing:.08em;
+    padding:.15rem .5rem;
+    background:rgba(255,149,0,.08);
+    border:1px dashed rgba(255,149,0,.4);
+    border-radius:var(--r-sm);
+    cursor:pointer;
+    transition:background 120ms ease;
+  }
+  .pf-ref-code:hover{background:rgba(255,149,0,.15)}
+  .pf-ref-code.copied{
+    background:rgba(34,197,94,.15);
+    border-color:rgba(34,197,94,.5);
+    color:#4ade80;
+  }
+
+  .pf-equip-row{
+    display:flex;
+    align-items:center;
+    gap:.7rem;
+    padding:.55rem 1rem;
+    border-bottom:1px solid var(--border);
+    font-size:.72rem;
+  }
+  .pf-equip-row:last-child{border-bottom:none}
+  .pf-equip-key{
+    font-size:.62rem;
+    color:var(--text-3);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:600;
+    min-width:86px;
+  }
+  .pf-equip-val{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--text-2);
+    font-size:.72rem;
+  }
+  .pf-swatch{
+    width:14px;
+    height:14px;
+    border-radius:4px;
+    border:1px solid var(--border-2);
+    display:inline-block;
+    vertical-align:-2px;
+    margin-right:.35rem;
+  }
+
+  .pf-empty{
+    padding:1.5rem 1rem;
+    text-align:center;
+    font-size:.72rem;
+    color:var(--text-3);
+    line-height:1.5;
+  }
+
+  @media (max-width:960px){
+    .pf-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    .pf-banner{height:100px}
+    .pf-hero-body{
+      padding:0 1rem 1rem;
+      margin-top:-36px;
+      gap:.85rem;
+    }
+    .pf-avatar{width:80px;height:80px;font-size:1.5rem;border-width:3px}
+    .pf-name{font-size:1.1rem}
+    .pf-hero-info{min-width:0;flex:1}
+    .pf-hero-actions{width:100%;padding-bottom:0}
+    .pf-hero-actions .btn{flex:1}
+    .pf-xp-bar{padding:0 1rem 1rem}
+    .pf-stats{grid-template-columns:repeat(2,1fr);gap:.5rem}
+    .pf-stat{padding:.7rem .8rem}
+    .pf-stat-value{font-size:.92rem}
+    .pf-activity-row{
+      grid-template-columns:32px 1fr auto;
+      gap:.6rem;
+      padding:.55rem .85rem;
+    }
+    .pf-act-time{display:none}
+    .pf-tx-row{grid-template-columns:24px 1fr auto;gap:.5rem;padding:.5rem .85rem}
+    .pf-tx-time{display:none}
+    .pf-ach-grid{grid-template-columns:repeat(auto-fill,minmax(52px,1fr));padding:.75rem .85rem .9rem}
+  }
+</style>
+</head>
+<body>
+
+<div id="bbLoader" class="bb-loader">
+  <div class="bb-loader-bg"></div>
+  <div class="bb-loader-veil"></div>
+  <div class="bb-loader-vignette"></div>
+  <div class="bb-loader-glow"></div>
+
+  <div class="bb-leaves">
+    <div class="bb-leaf amber">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf rust">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf crimson">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf gold">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf copper">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf deep">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf amber">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf rust">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf crimson">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf gold">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf copper">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+    <div class="bb-leaf deep">
+      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
+    </div>
+  </div>
+
+  <div class="bb-loader-inner">
+    <div class="bb-loader-lockup">
+      <div class="bb-loader-mark">
+        <img src="icons/bloxbet.png" alt="BloxBet" draggable="false">
+      </div>
+      <div class="bb-loader-text">
+        <span class="bb-blox">Blox</span><span class="bb-bet">Bet</span>
+      </div>
+    </div>
+    <div class="bb-loader-bar">
+      <div class="bb-loader-fill"></div>
+    </div>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-left">
+    <button class="menu-btn" data-tip="Menu"><img src="icons/menu.png" alt="" class="ico" draggable="false"></button>
+    <a href="index.html" class="nav-logo">
+      <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
+      <span class="nav-logo-text">BloxBet</span>
+    </a>
+  </div>
+  <div class="nav-center">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="games.html">Games</a>
+    <a class="nav-link" href="rewards.html">Rewards</a>
+    <a class="nav-link" href="community.html">Community</a>
+    <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+    <a class="nav-link" href="profile.html">Profile</a>
+  </div>
+  <div class="nav-right">
+    <div class="balance-chip">
+      <div>
+        <div class="label">Balance</div>
+        <div class="value"><span data-balance data-balance="12480">12,480</span><span class="unit">RC</span></div>
+      </div>
+      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')"><img src="icons/plus.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications"><img src="icons/bell.png" alt="" class="ico" draggable="false"></button>
+      <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
+    </div>
+    <div class="dropdown">
+      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">N</button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="profile.html">Profile</a>
+        <a class="dropdown-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;">Settings</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-section">Overview</div>
+  <a class="side-item" data-href="index.html" href="index.html"><span class="icon"><img src="icons/home.png" alt="" class="ico" draggable="false"></span><span class="label">Home</span></a>
+  <a class="side-item" data-href="games.html" href="games.html"><span class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></span><span class="label">Games</span></a>
+  <a class="side-item" data-href="rewards.html" href="rewards.html"><span class="icon"><img src="icons/rewards.png" alt="" class="ico" draggable="false"></span><span class="label">Rewards</span></a>
+  <div class="sidebar-section">Social</div>
+  <a class="side-item" data-href="community.html" href="community.html"><span class="icon"><img src="icons/community.png" alt="" class="ico" draggable="false"></span><span class="label">Community</span></a>
+  <a class="side-item" data-href="leaderboard.html" href="leaderboard.html"><span class="icon"><img src="icons/leaderboard.png" alt="" class="ico" draggable="false"></span><span class="label">Leaderboard</span></a>
+  <div class="sidebar-section">Account</div>
+  <a class="side-item" data-href="profile.html" href="profile.html"><span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span><span class="label">Profile</span></a>
+  <a class="side-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;"><span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span><span class="label">Settings</span></a>
+  <a class="sidebar-discord" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">
+    <span class="icon"><img src="icons/discord.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Discord</span>
+  </a>
+  <div class="sidebar-toggle">
+    <span class="icon"><img src="icons/chevron-left.png" alt="" class="ico" draggable="false"></span>
+    <span class="label">Collapse</span>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="container page">
+
+    <div class="pf-hero">
+      <div class="pf-banner" id="pfBanner">
+        <div class="pf-banner-grid-lines"></div>
+      </div>
+
+      <div class="pf-hero-body">
+        <div class="pf-avatar-wrap">
+          <div class="pf-avatar" id="pfAvatar">N</div>
+          <div class="pf-avatar-ring" id="pfAvatarRing"></div>
+          <div class="pf-online-dot"></div>
+        </div>
+
+        <div class="pf-hero-info">
+          <div class="pf-name-line">
+            <span class="pf-name" id="pfName">—</span>
+            <img src="icons/verified.png" alt="" class="pf-verified" id="pfVerified" style="display:none" draggable="false">
+          </div>
+          <div class="pf-handle" id="pfHandle">@loading</div>
+          <div class="pf-badges-row" id="pfBadges"></div>
+        </div>
+
+        <div class="pf-hero-actions">
+          <button class="btn btn-ghost btn-sm" onclick="location.href='community.html'">
+            <span>View Activity</span>
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="Auth.logout()">
+            <img src="icons/logout.png" alt="" class="ico" draggable="false">
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="pf-xp-bar">
+        <div class="pf-xp-head">
+          <span>Progress</span>
+          <span class="cur"><span id="pfXpCur">0</span> / <span id="pfXpMax">500</span> XP · Level <span id="pfXpLevel">1</span></span>
+        </div>
+        <div class="pf-xp-track">
+          <div class="pf-xp-fill" id="pfXpFill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pf-stats">
+      <div class="pf-stat">
+        <div class="pf-stat-label">Balance</div>
+        <div class="pf-stat-value" id="pfBalance">—</div>
+        <div class="pf-stat-sub">RoCoins</div>
+      </div>
+      <div class="pf-stat">
+        <div class="pf-stat-label">Total Wagered</div>
+        <div class="pf-stat-value" id="pfWagered">—</div>
+        <div class="pf-stat-sub">all-time</div>
+      </div>
+      <div class="pf-stat">
+        <div class="pf-stat-label">Net Profit</div>
+        <div class="pf-stat-value" id="pfNet">—</div>
+        <div class="pf-stat-sub">won − lost</div>
+      </div>
+      <div class="pf-stat">
+        <div class="pf-stat-label">Win Rate</div>
+        <div class="pf-stat-value" id="pfWinRate">—</div>
+        <div class="pf-stat-sub" id="pfWinRateSub">—</div>
+      </div>
+      <div class="pf-stat">
+        <div class="pf-stat-label">Biggest Win</div>
+        <div class="pf-stat-value accent" id="pfBiggest">—</div>
+        <div class="pf-stat-sub">single flip</div>
+      </div>
+      <div class="pf-stat">
+        <div class="pf-stat-label">Global Rank</div>
+        <div class="pf-stat-value" id="pfRank">—</div>
+        <div class="pf-stat-sub" id="pfRankSub">by wagered</div>
+      </div>
+    </div>
+
+    <div class="pf-grid">
+
+      <div class="pf-col">
+
+        <div class="pf-card">
+          <div class="pf-card-head">
+            <h3>Recent Activity</h3>
+            <span class="hint" id="pfActivityCount">—</span>
+          </div>
+          <div class="pf-card-body" id="pfActivity">
+            <div class="pf-empty">Loading…</div>
+          </div>
+        </div>
+
+        <div class="pf-card">
+          <div class="pf-card-head">
+            <h3>Coin Flip Streak</h3>
+            <span class="hint" id="pfStreakHint">last 20 flips</span>
+          </div>
+          <div class="pf-streak-strip" id="pfStreakStrip"></div>
+        </div>
+
+        <div class="pf-card">
+          <div class="pf-card-head">
+            <h3>Transactions</h3>
+            <span class="hint" id="pfTxCount">—</span>
+          </div>
+          <div class="pf-card-body" id="pfTransactions">
+            <div class="pf-empty">Loading…</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pf-col">
+
+        <div class="pf-card">
+          <div class="pf-card-head">
+            <h3>Achievements</h3>
+            <span class="hint" id="pfAchCount">0 / 0</span>
+          </div>
+          <div class="pf-ach-grid" id="pfAchGrid"></div>
+        </div>
+
+        <div class="pf-card">
+          <div class="pf-card-head">
+            <h3>Referrals</h3>
+            <span class="hint" id="pfRefCount">0</span>
+          </div>
+          <div class="pf-card-body">
+            <div class="pf-ref-row">
+              <span class="lbl">Your Code</span>
+              <span class="pf-ref-code" id="pfRefCode">—</span>
+            </div>
+            <div class="pf-ref-row">
+              <span class="lbl">Earnings</span>
+              <span class="pf-stat-value" style="font-size:.85rem" id="pfRefEarnings">0 RC</span>
+            </div>
+            <div class="pf-ref-row">
+              <span class="lbl">Cap</span>
+              <span style="font-family:'JetBrains Mono',monospace;color:var(--text-2);font-size:.72rem" id="pfRefCap">0 / 10</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pf-card">
+          <div class="pf-card-head">
+            <h3>Cosmetics</h3>
+          </div>
+          <div class="pf-card-body" id="pfCosmetics">
+            <div class="pf-empty">No cosmetics equipped.</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a class="bn-item" data-href="index.html" href="index.html"><img src="icons/home.png" alt="" class="ico" draggable="false"><span>Home</span></a>
+    <a class="bn-item" data-href="games.html" href="games.html"><img src="icons/games.png" alt="" class="ico" draggable="false"><span>Games</span></a>
+    <a class="bn-item" data-href="rewards.html" href="rewards.html"><img src="icons/rewards.png" alt="" class="ico" draggable="false"><span>Rewards</span></a>
+    <a class="bn-item" data-href="community.html" href="community.html"><img src="icons/community.png" alt="" class="ico" draggable="false"><span>Social</span></a>
+    <a class="bn-item" data-href="profile.html" href="profile.html"><img src="icons/profile.png" alt="" class="ico" draggable="false"><span>Me</span></a>
+  </div>
+</nav>
+
+<div class="modal-overlay" id="m-deposit">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>Add Funds</h3><p>Top up your RoCoins balance.</p></div>
+      <button class="modal-close" onclick="Modal.close('m-deposit')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Amount</label>
+        <input type="number" id="depositAmount" value="1000" min="100" max="500000" step="100">
+      </div>
+      <div class="quick-bets" style="margin-top:.5rem">
+        <button class="quick-bet" data-deposit="500">500</button>
+        <button class="quick-bet" data-deposit="1000">1K</button>
+        <button class="quick-bet" data-deposit="5000">5K</button>
+        <button class="quick-bet" data-deposit="10000">10K</button>
+        <button class="quick-bet" data-deposit="50000">50K</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')">Cancel</button>
+      <button class="btn btn-primary" id="depositConfirmBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var loader = document.getElementById('bbLoader');
+    if(!loader) return;
+    setTimeout(function(){
+      loader.classList.add('hide');
+      setTimeout(function(){ loader.remove(); }, 520);
+    }, 2000);
+  })();
+</script>
+
+<script src="js/data.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/toasts.js"></script>
+<script src="js/modals.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/deposit.js"></script>
+<script src="js/admin-link.js"></script>
+<script>
+  (function(){
+    if(typeof Auth === 'undefined'){ console.error('[profile] Auth missing'); return; }
+    if(!Auth.isLoggedIn()){ Auth.safeRedirect('login'); return; }
+
+    var me = Auth.getUser() || {};
+    var navAvatar = document.getElementById('navAvatar');
+    if(navAvatar && typeof renderAvatar === 'function') renderAvatar(navAvatar, me);
+
+    function fmt(n){
+      n = Number(n) || 0;
+      if(Math.abs(n) >= 1e6) return (n/1e6).toFixed(2) + 'M';
+      if(Math.abs(n) >= 1e3) return (n/1e3).toFixed(1) + 'K';
+      return n.toLocaleString();
+    }
+    function fmtFull(n){ return Number(n || 0).toLocaleString(); }
+    function esc(s){
+      return String(s).replace(/[&<>"']/g, function(c){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+      });
+    }
+    function timeAgo(ts){
+      var s = Math.floor((Date.now() - ts) / 1000);
+      if(s < 5)   return 'just now';
+      if(s < 60)  return s + 's';
+      var m = Math.floor(s / 60);
+      if(m < 60)  return m + 'm';
+      var h = Math.floor(m / 60);
+      if(h < 24)  return h + 'h';
+      return Math.floor(h / 24) + 'd';
+    }
+
+    function rankClass(rank){
+      var r = String(rank || 'bronze').toLowerCase();
+      return 'rank-' + r;
+    }
+    function nameColorClass(nameColor){
+      if(!nameColor) return '';
+      var n = String(nameColor).toLowerCase();
+      if(n.indexOf('gold') !== -1)   return 'name-gold';
+      if(n.indexOf('cyan') !== -1)   return 'name-cyan';
+      if(n.indexOf('purple') !== -1) return 'name-purple';
+      if(n.indexOf('red') !== -1)    return 'name-red';
+      if(n.indexOf('green') !== -1)  return 'name-green';
+      return '';
+    }
+    function ringClassFromAvatarRing(avatarRing){
+      if(!avatarRing) return '';
+      var s = String(avatarRing);
+      if(s.indexOf('linear') !== -1 || s.indexOf('prism') !== -1) return 'ring-prism';
+      if(s.indexOf('gold')   !== -1) return 'ring-gold';
+      if(s.indexOf('silver') !== -1) return 'ring-silver';
+      if(s.indexOf('bronze') !== -1) return 'ring-bronze';
+      return '';
+    }
+    function bannerClassFromBanner(banner){
+      if(!banner) return '';
+      var s = String(banner);
+      if(s.indexOf('grid')   !== -1) return 'banner-grid';
+      if(s.indexOf('aurora') !== -1) return 'banner-aurora';
+      if(s.indexOf('ember')  !== -1) return 'banner-ember';
+      if(s.indexOf('void')   !== -1) return 'banner-void';
+      return '';
+    }
+    function chatBadgeClass(badge){
+      if(!badge) return '';
+      var b = String(badge).toLowerCase();
+      if(b === 'og')    return 'chat-og';
+      if(b === 'whale') return 'chat-whale';
+      if(b === 'lucky') return 'chat-lucky';
+      return '';
+    }
+
+    function renderHero(u){
+      if(!u) return;
+
+      var displayName = u.displayName || u.username || 'User';
+      var username = u.username || 'user';
+
+      var banner = document.getElementById('pfBanner');
+      banner.className = 'pf-banner ' + bannerClassFromBanner(u.profileBanner);
+
+      var av = document.getElementById('pfAvatar');
+      if(u.avatar && /^https?:/i.test(u.avatar)){
+        av.innerHTML = '<img src="' + u.avatar + '" alt="" draggable="false" onerror="this.parentNode.textContent=\'' + (displayName[0] || 'U').toUpperCase() + '\'">';
+      } else {
+        av.textContent = (displayName[0] || 'U').toUpperCase();
+      }
+
+      var ring = document.getElementById('pfAvatarRing');
+      ring.className = 'pf-avatar-ring ' + ringClassFromAvatarRing(u.avatarRing);
+
+      var nameEl = document.getElementById('pfName');
+      nameEl.className = 'pf-name ' + nameColorClass(u.nameColor);
+      nameEl.textContent = displayName;
+      if(u.nameColor && /^#[0-9a-f]{3,8}$/i.test(u.nameColor)){
+        nameEl.style.color = u.nameColor;
+      } else {
+        nameEl.style.color = '';
+      }
+
+      var v = document.getElementById('pfVerified');
+      v.style.display = u.hasVerifiedBadge ? 'inline-block' : 'none';
+
+      document.getElementById('pfHandle').textContent = '@' + username;
+
+      var badges = document.getElementById('pfBadges');
+      badges.innerHTML = '';
+
+      var rankName = u.rank || 'Bronze';
+      badges.innerHTML += '<span class="pf-badge ' + rankClass(rankName) + '">' + esc(rankName) + '</span>';
+      badges.innerHTML += '<span class="pf-badge level">Level ' + (u.level || 1) + '</span>';
+
+      if(u.chatBadge){
+        var cb = chatBadgeClass(u.chatBadge);
+        if(cb) badges.innerHTML += '<span class="pf-badge ' + cb + '">' + esc(u.chatBadge) + '</span>';
+      }
+
+      var xp = Number(u.xp) || 0;
+      var level = Number(u.level) || 1;
+      var xpInLevel = xp % 500;
+      var pct = Math.min(100, Math.round((xpInLevel / 500) * 100));
+      document.getElementById('pfXpCur').textContent = xpInLevel;
+      document.getElementById('pfXpMax').textContent = 500;
+      document.getElementById('pfXpLevel').textContent = level;
+      setTimeout(function(){
+        document.getElementById('pfXpFill').style.width = pct + '%';
+      }, 80);
+    }
+
+    function renderStats(u){
+      if(!u) return;
+
+      document.getElementById('pfBalance').textContent = fmtFull(u.balance) + ' RC';
+      document.getElementById('pfWagered').textContent = fmtFull(u.totalWagered) + ' RC';
+
+      var net = (u.totalWon || 0) - (u.totalLost || 0);
+      var netEl = document.getElementById('pfNet');
+      netEl.textContent = (net >= 0 ? '+' : '') + fmtFull(net) + ' RC';
+      netEl.className = 'pf-stat-value ' + (net >= 0 ? 'pos' : 'neg');
+
+      var played = u.gamesPlayed || 0;
+      var won = u.gamesWon || 0;
+      var wr = played > 0 ? Math.round((won / played) * 100) : 0;
+      document.getElementById('pfWinRate').textContent = wr + '%';
+      document.getElementById('pfWinRateSub').textContent = won + ' / ' + played + ' games';
+
+      document.getElementById('pfBiggest').textContent = fmtFull(u.biggestWin || 0) + ' RC';
+    }
+
+    var KIND_LABEL = { flip: 'FLIP', mines: 'MINE', crash: 'CRSH', case: 'CASE' };
+
+    async function loadActivity(){
+      var el = document.getElementById('pfActivity');
+      try {
+        var res = await Auth.api('/profile/me/activity?limit=25');
+        if(!res.ok) throw new Error();
+        var data = await res.json();
+        var rows = data.activity || [];
+
+        document.getElementById('pfActivityCount').textContent = rows.length + ' recent';
+
+        if(rows.length === 0){
+          el.innerHTML = '<div class="pf-empty">No activity yet. Play a game to see it here.</div>';
+          return;
+        }
+
+        el.innerHTML = '';
+        rows.forEach(function(r){
+          var row = document.createElement('div');
+          row.className = 'pf-activity-row';
+
+          var kindLabel = KIND_LABEL[r.kind] || r.kind.slice(0, 4).toUpperCase();
+          var iconClass = 'pf-act-icon ' + (r.win ? 'win' : 'lose');
+
+          var iconContent;
+          if(r.kind === 'flip' && (r.detail === 'heads' || r.detail === 'tails')){
+            iconContent = '<img src="icons/coin-' + r.detail + '.png" alt="' + r.detail + '" style="width:80%;height:80%;object-fit:contain" draggable="false">';
+          } else {
+            iconContent = kindLabel;
+          }
+
+          var title;
+          if(r.kind === 'flip'){
+            title = r.win ? 'Won a coin flip' : 'Lost a coin flip';
+          } else if(r.kind === 'mines'){
+            title = r.win ? 'Cashed out of Mines' : 'Hit a mine';
+          } else if(r.kind === 'crash'){
+            title = r.win ? 'Cashed out of Crash' : 'Crashed';
+          } else if(r.kind === 'case'){
+            title = r.win ? 'Won a Case Battle' : 'Lost a Case Battle';
+          } else {
+            title = r.kind;
+          }
+
+          var netStr = (r.net >= 0 ? '+' : '') + fmtFull(r.net);
+          var netClass = r.net >= 0 ? 'pos' : 'neg';
+
+          row.innerHTML =
+            '<div class="' + iconClass + '">' + iconContent + '</div>' +
+            '<div class="pf-act-main">' +
+              '<div class="pf-act-title">' + esc(title) + '</div>' +
+              '<div class="pf-act-detail">bet ' + fmtFull(r.bet) + ' · ' + esc(r.detail || '') + '</div>' +
+            '</div>' +
+            '<div class="pf-act-net ' + netClass + '">' + netStr + '</div>' +
+            '<div class="pf-act-time">' + timeAgo(r.timestamp) + '</div>';
+
+          el.appendChild(row);
+        });
+
+      } catch(e){
+        el.innerHTML = '<div class="pf-empty">Could not load activity.</div>';
+      }
+    }
+
+    async function loadStreakStrip(){
+      var el = document.getElementById('pfStreakStrip');
+      try {
+        var res = await Auth.api('/game/coinflip/history');
+        if(!res.ok) throw new Error();
+        var data = await res.json();
+        var flips = (data.history || []).slice(0, 20).reverse();
+
+        if(flips.length === 0){
+          el.innerHTML = '<div class="pf-empty" style="padding:0">No flips yet.</div>';
+          return;
+        }
+
+        el.innerHTML = '';
+        flips.forEach(function(f){
+          var cell = document.createElement('div');
+          cell.className = 'pf-streak-cell ' + (f.win ? 'win' : 'lose');
+          cell.title = (f.result || '') + ' · ' + (f.win ? '+' : '') + (f.net || 0);
+          cell.innerHTML = '<img src="icons/coin-' + f.result + '.png" alt="' + f.result + '" draggable="false">';
+          el.appendChild(cell);
+        });
+      } catch(e){
+        el.innerHTML = '<div class="pf-empty" style="padding:0">—</div>';
+      }
+    }
+
+    var TX_LABEL = {
+      deposit: 'Deposit',
+      referral_welcome: 'Referral bonus',
+      referral_bonus: 'Referral earned',
+      case_battle_win: 'Case battle win',
+      unlock_reward: '7-day reward',
+      shop_purchase: 'Shop purchase',
+      case_battle_refund: 'Battle refund',
+      coinflip: 'Coin flip',
+      admin_adjust: 'Admin adjust'
+    };
+
+    async function loadTransactions(){
+      var el = document.getElementById('pfTransactions');
+      try {
+        var res = await Auth.api('/profile/me/transactions?limit=15');
+        if(!res.ok) throw new Error();
+        var data = await res.json();
+        var rows = data.transactions || [];
+
+        document.getElementById('pfTxCount').textContent = rows.length + ' recent';
+
+        if(rows.length === 0){
+          el.innerHTML = '<div class="pf-empty">No transactions yet.</div>';
+          return;
+        }
+
+        el.innerHTML = '';
+        rows.forEach(function(t){
+          var row = document.createElement('div');
+          row.className = 'pf-tx-row';
+
+          var label = TX_LABEL[t.type] || t.type.replace(/_/g, ' ');
+          var pos = t.amount >= 0;
+          var dotClass = 'pf-tx-dot ' + (pos ? 'pos' : 'neg');
+          var amtClass = 'pf-tx-amt ' + (pos ? 'pos' : 'neg');
+          var amtStr = (pos ? '+' : '') + fmtFull(t.amount);
+
+          row.innerHTML =
+            '<div class="' + dotClass + '"></div>' +
+            '<div class="pf-tx-label">' + esc(label) + '</div>' +
+            '<div class="' + amtClass + '">' + amtStr + '</div>' +
+            '<div class="pf-tx-time">' + timeAgo(t.timestamp) + '</div>';
+
+          el.appendChild(row);
+        });
+      } catch(e){
+        el.innerHTML = '<div class="pf-empty">Could not load transactions.</div>';
+      }
+    }
+
+    async function loadAchievements(){
+      var el = document.getElementById('pfAchGrid');
+      try {
+        var res = await Auth.api('/achievements');
+        if(!res.ok) throw new Error();
+        var data = await res.json();
+        var all = data.achievements || [];
+
+        var unlocked = all.filter(function(a){ return a.unlocked; });
+        document.getElementById('pfAchCount').textContent = unlocked.length + ' / ' + all.length;
+
+        el.innerHTML = '';
+        all.forEach(function(a){
+          var cell = document.createElement('div');
+          cell.className = 'pf-ach' + (a.unlocked ? ' unlocked' : '');
+          cell.dataset.tip = a.name + (a.unlocked ? '' : ' (locked)');
+          var code = a.name.replace(/[^A-Za-z0-9]/g, '').slice(0, 3).toUpperCase();
+          cell.textContent = code;
+          el.appendChild(cell);
+        });
+      } catch(e){
+        el.innerHTML = '<div class="pf-empty">Could not load achievements.</div>';
+      }
+    }
+
+    async function loadReferrals(){
+      try {
+        var res = await Auth.api('/referrals/me');
+        if(!res.ok) throw new Error();
+        var data = await res.json();
+
+        var codeEl = document.getElementById('pfRefCode');
+        codeEl.textContent = data.code || '—';
+        codeEl.addEventListener('click', function(){
+          if(!data.code) return;
+          navigator.clipboard.writeText(data.code).then(function(){
+            codeEl.classList.add('copied');
+            var prev = codeEl.textContent;
+            codeEl.textContent = 'Copied';
+            setTimeout(function(){
+              codeEl.classList.remove('copied');
+              codeEl.textContent = prev;
+            }, 1200);
+            Toast.success('Copied', 'Referral code copied to clipboard.');
+          }).catch(function(){
+            Toast.error('Copy failed', 'Select and copy manually.');
+          });
+        });
+
+        document.getElementById('pfRefEarnings').textContent = fmtFull(data.earnings) + ' RC';
+        document.getElementById('pfRefCount').textContent = (data.count || 0) + ' / ' + (data.maxReferrals || 10);
+        document.getElementById('pfRefCap').textContent = (data.count || 0) + ' / ' + (data.maxReferrals || 10);
+      } catch(e){}
+    }
+
+    async function loadCosmetics(){
+      var el = document.getElementById('pfCosmetics');
+      try {
+        var res = await Auth.api('/shop/owned');
+        if(!res.ok) throw new Error();
+        var data = await res.json();
+        var eq = data.equipped || {};
+
+        var rows = [];
+
+        if(eq.nameColor){
+          var swatch = /^#[0-9a-f]{3,8}$/i.test(eq.nameColor)
+            ? '<span class="pf-swatch" style="background:' + eq.nameColor + '"></span>'
+            : '';
+          rows.push('<div class="pf-equip-row"><span class="pf-equip-key">Name Color</span><span class="pf-equip-val">' + swatch + esc(eq.nameColor) + '</span></div>');
+        }
+        if(eq.avatarRing){
+          rows.push('<div class="pf-equip-row"><span class="pf-equip-key">Avatar Ring</span><span class="pf-equip-val">' + esc(eq.avatarRing) + '</span></div>');
+        }
+        if(eq.profileBanner){
+          rows.push('<div class="pf-equip-row"><span class="pf-equip-key">Banner</span><span class="pf-equip-val">' + esc(eq.profileBanner) + '</span></div>');
+        }
+        if(eq.chatBadge){
+          rows.push('<div class="pf-equip-row"><span class="pf-equip-key">Chat Badge</span><span class="pf-equip-val">' + esc(eq.chatBadge) + '</span></div>');
+        }
+
+        if(rows.length === 0){
+          el.innerHTML = '<div class="pf-empty">No cosmetics equipped. Visit the shop to dress up your profile.</div>';
+          return;
+        }
+
+        el.innerHTML = rows.join('');
+      } catch(e){
+        el.innerHTML = '<div class="pf-empty">—</div>';
+      }
+    }
+
+    async function loadSummary(){
+      try {
+        var res = await Auth.api('/profile/me/summary');
+        if(!res.ok) return;
+        var data = await res.json();
+        var s = data.summary || {};
+
+        document.getElementById('pfRank').textContent = '#' + (s.globalRank || '—');
+        document.getElementById('pfRankSub').textContent = (s.achievements || 0) + ' achievements';
+      } catch(e){}
+    }
+
+    function render(u){
+      if(!u) return;
+      renderHero(u);
+      renderStats(u);
+    }
+
+    render(me);
+    Auth.refreshUser().then(function(fresh){ if(fresh) render(fresh); });
+
+    loadActivity();
+    loadStreakStrip();
+    loadTransactions();
+    loadAchievements();
+    loadReferrals();
+    loadCosmetics();
+    loadSummary();
+
+    setInterval(function(){
+      Auth.refreshUser().then(function(fresh){
+        if(fresh){
+          renderHero(fresh);
+          renderStats(fresh);
+        }
+      });
+    }, 30000);
+
+  })();
+</script>
+</body>
+</html>

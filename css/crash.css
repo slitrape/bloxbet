@@ -1,0 +1,553 @@
+/* ============================================================
+   BLOXBET — CRASH
+   Canvas graph, live player list, bet panel, sidebar info.
+   ============================================================ */
+
+.crash-wrap{
+  display:grid;
+  grid-template-columns:1fr 320px;
+  gap:1rem;
+  align-items:start;
+}
+
+/* ============================================================
+   CANVAS STAGE
+   ============================================================ */
+.crash-stage{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:0;
+  overflow:hidden;
+  position:relative;
+  min-height:560px;
+  display:flex;
+  flex-direction:column;
+}
+
+.crash-canvas-wrap{
+  position:relative;
+  flex:1;
+  min-height:400px;
+  background:linear-gradient(180deg, #0a0e15 0%, #0b1119 100%);
+  overflow:hidden;
+}
+.crash-canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+/* Big multiplier display floating over canvas */
+.crash-big-mult{
+  position:absolute;
+  top:1.5rem;
+  left:1.75rem;
+  display:flex;
+  flex-direction:column;
+  gap:.15rem;
+  pointer-events:none;
+  z-index:3;
+}
+.crash-big-mult .value{
+  font-size:3rem;
+  font-weight:700;
+  letter-spacing:-.03em;
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;
+  line-height:1;
+  transition:color 200ms var(--ease);
+}
+.crash-big-mult .value.state-waiting{color:var(--text-2)}
+.crash-big-mult .value.state-running{color:#4ade80}
+.crash-big-mult .value.state-crashed{color:#f87171}
+.crash-big-mult .label{
+  font-size:.68rem;
+  color:var(--text-3);
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  font-weight:600;
+}
+
+/* State badge top right */
+.crash-state-badge{
+  position:absolute;
+  top:1.5rem;
+  right:1.5rem;
+  padding:.4rem .85rem;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  color:var(--text-2);
+  z-index:3;
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+}
+.crash-state-badge.waiting{
+  color:#f5b849;
+  background:rgba(245,158,11,.1);
+  border-color:rgba(245,158,11,.3);
+}
+.crash-state-badge.starting{
+  color:#f5b849;
+  background:rgba(245,158,11,.15);
+  border-color:rgba(245,158,11,.5);
+  animation:crashPulse 600ms ease-in-out infinite alternate;
+}
+@keyframes crashPulse{
+  from{opacity:.7}
+  to{opacity:1}
+}
+.crash-state-badge.running{
+  color:#4ade80;
+  background:rgba(34,197,94,.1);
+  border-color:rgba(34,197,94,.3);
+}
+.crash-state-badge.crashed{
+  color:#f87171;
+  background:rgba(239,68,68,.12);
+  border-color:rgba(239,68,68,.35);
+}
+
+/* Countdown line at bottom of canvas */
+.crash-countdown{
+  position:absolute;
+  bottom:1.25rem;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:.85rem;
+  color:var(--text-2);
+  font-family:'JetBrains Mono',monospace;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  background:rgba(10,14,20,.75);
+  padding:.4rem .85rem;
+  border-radius:999px;
+  border:1px solid var(--border);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.crash-countdown .num{
+  color:var(--accent);
+  font-weight:700;
+  font-size:.95rem;
+}
+
+/* "Crashed at" overlay when the round explodes */
+.crash-crashed-flash{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 50% 50%, rgba(239,68,68,.25), transparent 60%);
+  z-index:2;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 200ms var(--ease);
+}
+.crash-crashed-flash.show{opacity:1;animation:crashedFlash 900ms var(--ease)}
+@keyframes crashedFlash{
+  0%{opacity:0}
+  20%{opacity:1}
+  100%{opacity:0}
+}
+
+/* ============================================================
+   BET PANEL BELOW CANVAS
+   ============================================================ */
+.crash-bet-panel{
+  padding:1.1rem 1.25rem 1.25rem;
+  border-top:1px solid var(--border);
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:1rem;
+  align-items:stretch;
+  background:var(--surface);
+}
+
+.crash-bet-controls{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.5rem;
+}
+
+.crash-field{
+  display:flex;
+  flex-direction:column;
+  gap:.35rem;
+}
+.crash-field label{
+  font-size:.66rem;
+  color:var(--text-3);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:600;
+}
+.crash-field .input-wrap{
+  position:relative;
+}
+.crash-field .input-wrap .ico{
+  position:absolute;
+  left:.75rem;
+  top:50%;
+  transform:translateY(-50%);
+  width:14px;
+  height:14px;
+  opacity:.4;
+  pointer-events:none;
+}
+.crash-field input{
+  width:100%;
+  background:var(--bg-2);
+  border:1px solid var(--border-2);
+  border-radius:var(--r-md);
+  padding:.65rem .75rem .65rem 2.2rem;
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;
+  font-size:.88rem;
+  font-weight:500;
+  outline:none;
+  transition:border-color var(--dur-fast) var(--ease);
+  -webkit-appearance:none;
+  appearance:none;
+  -moz-appearance:textfield;
+}
+.crash-field input::-webkit-outer-spin-button,
+.crash-field input::-webkit-inner-spin-button{
+  -webkit-appearance:none;
+  margin:0;
+}
+.crash-field input:focus{border-color:var(--accent)}
+.crash-field input:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.crash-quick-row{
+  grid-column:1 / -1;
+  display:flex;
+  gap:.35rem;
+}
+.crash-quick-btn{
+  flex:1;
+  padding:.45rem .3rem;
+  border-radius:var(--r-sm);
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  color:var(--text-2);
+  font-family:inherit;
+  font-size:.72rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:background var(--dur-fast) var(--ease),
+             border-color var(--dur-fast) var(--ease),
+             color var(--dur-fast) var(--ease);
+  -webkit-appearance:none;
+  appearance:none;
+}
+.crash-quick-btn:hover:not(:disabled){
+  background:var(--surface-3);
+  border-color:var(--border-2);
+  color:var(--text);
+}
+.crash-quick-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Action buttons */
+.crash-actions{
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+  min-width:180px;
+}
+
+.crash-btn{
+  padding:.85rem 1.25rem;
+  border-radius:var(--r-md);
+  border:none;
+  font-family:inherit;
+  font-size:.9rem;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;
+  transition:background var(--dur-fast) var(--ease),
+             transform var(--dur-fast) var(--ease),
+             opacity var(--dur-fast) var(--ease);
+  -webkit-appearance:none;
+  appearance:none;
+}
+.crash-btn:active:not(:disabled){transform:scale(.98)}
+.crash-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+.crash-btn-primary{
+  background:var(--accent);
+  color:#fff;
+}
+.crash-btn-primary:hover:not(:disabled){background:var(--accent-hi)}
+
+.crash-btn-success{
+  background:var(--success);
+  color:#fff;
+}
+.crash-btn-success:hover:not(:disabled){background:#16a34a}
+
+.crash-btn-ghost{
+  background:var(--surface-2);
+  color:var(--text);
+  border:1px solid var(--border);
+}
+.crash-btn-ghost:hover:not(:disabled){
+  background:var(--surface-3);
+  border-color:var(--border-2);
+}
+
+.crash-btn .ico{
+  width:16px;
+  height:16px;
+  opacity:1;
+  filter:brightness(10);
+}
+
+/* Cashout button variant — big and green with live multiplier */
+.crash-cashout-btn{
+  padding:1.1rem 1.25rem;
+  flex-direction:column;
+  gap:.15rem;
+  position:relative;
+}
+.crash-cashout-btn .main-line{
+  font-size:1rem;
+  font-weight:700;
+}
+.crash-cashout-btn .sub-line{
+  font-size:.7rem;
+  opacity:.85;
+  font-weight:500;
+}
+
+.crash-cashout-btn.pending{
+  background:#a16207;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.crash-side{
+  display:flex;
+  flex-direction:column;
+  gap:.75rem;
+}
+
+.crash-panel{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  overflow:hidden;
+}
+.crash-panel-head{
+  padding:.7rem .9rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.crash-panel-head h3{font-size:.78rem;font-weight:600}
+.crash-panel-head .count{
+  font-size:.68rem;
+  color:var(--text-3);
+  font-family:'JetBrains Mono',monospace;
+}
+.crash-panel-body{padding:0}
+
+/* Player list */
+.crash-players{
+  max-height:340px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+}
+.crash-player-row{
+  display:grid;
+  grid-template-columns:24px 1fr auto;
+  align-items:center;
+  gap:.5rem;
+  padding:.5rem .9rem;
+  border-bottom:1px solid var(--border);
+  font-size:.75rem;
+  transition:background var(--dur-fast) var(--ease);
+}
+.crash-player-row:last-child{border-bottom:none}
+.crash-player-row:hover{background:var(--surface-2)}
+.crash-player-row.cashed{
+  background:rgba(34,197,94,.06);
+}
+.crash-player-row.cashed .bet-amount{
+  color:var(--success);
+}
+.crash-player-row .avatar{
+  width:24px;height:24px;font-size:.6rem;
+}
+.crash-player-row .name{
+  color:var(--text);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-weight:500;
+}
+.crash-player-row .bet-amount{
+  font-family:'JetBrains Mono',monospace;
+  font-weight:600;
+  color:var(--text-2);
+  font-size:.72rem;
+}
+.crash-player-row .cashout-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;
+  color:var(--success);
+  font-size:.72rem;
+}
+
+.crash-players-empty{
+  padding:1.25rem .9rem;
+  text-align:center;
+  font-size:.72rem;
+  color:var(--text-3);
+}
+
+/* Recent crash history strip */
+.crash-history-strip{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.3rem;
+  padding:.75rem .9rem;
+}
+.crash-history-chip{
+  padding:.2rem .5rem;
+  border-radius:var(--r-sm);
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  font-weight:700;
+  border:1px solid var(--border);
+  background:var(--surface-2);
+  color:var(--text-2);
+}
+.crash-history-chip.low{
+  color:#f87171;
+  border-color:rgba(239,68,68,.3);
+  background:rgba(239,68,68,.08);
+}
+.crash-history-chip.mid{
+  color:#f5b849;
+  border-color:rgba(245,158,11,.3);
+  background:rgba(245,158,11,.08);
+}
+.crash-history-chip.high{
+  color:#4ade80;
+  border-color:rgba(34,197,94,.3);
+  background:rgba(34,197,94,.08);
+}
+.crash-history-chip.mega{
+  color:#a78bfa;
+  border-color:rgba(139,92,246,.4);
+  background:rgba(139,92,246,.1);
+  box-shadow:0 0 12px rgba(139,92,246,.25);
+}
+
+/* ============================================================
+   EDGE / FAIRNESS INFO PANEL (disclosed)
+   ============================================================ */
+.crash-info-rows{
+  display:flex;
+  flex-direction:column;
+  padding:.5rem .9rem .75rem;
+  gap:.35rem;
+}
+.crash-info-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  font-size:.7rem;
+}
+.crash-info-row .label{
+  color:var(--text-3);
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  font-weight:600;
+  font-size:.62rem;
+}
+.crash-info-row .value{
+  color:var(--text-2);
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;
+  text-align:right;
+  max-width:170px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.crash-info-row .value.emphasis{
+  color:var(--accent);
+}
+
+/* ============================================================
+   RESULT BANNER
+   ============================================================ */
+.crash-banner{
+  position:absolute;
+  top:1.5rem;
+  left:50%;
+  transform:translateX(-50%);
+  padding:.55rem 1.1rem;
+  border-radius:999px;
+  font-size:.82rem;
+  font-weight:600;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity var(--dur) var(--ease);
+  z-index:4;
+}
+.crash-banner.show{opacity:1;animation:bannerIn 300ms var(--ease)}
+@keyframes bannerIn{
+  from{transform:translate(-50%,-4px);opacity:0}
+  to{transform:translate(-50%,0);opacity:1}
+}
+.crash-banner.win{
+  background:rgba(34,197,94,.15);
+  border:1px solid rgba(34,197,94,.4);
+  color:#4ade80;
+}
+.crash-banner.lose{
+  background:rgba(239,68,68,.15);
+  border:1px solid rgba(239,68,68,.4);
+  color:#f87171;
+}
+.crash-banner.info{
+  background:rgba(79,140,255,.12);
+  border:1px solid rgba(79,140,255,.35);
+  color:#93c5fd;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:960px){
+  .crash-wrap{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .crash-stage{min-height:auto}
+  .crash-canvas-wrap{min-height:300px}
+  .crash-big-mult .value{font-size:2.2rem}
+  .crash-bet-panel{padding:.9rem}
+  .crash-bet-controls{grid-template-columns:1fr 1fr}
+  .crash-actions{min-width:auto}
+  .crash-cashout-btn{padding:.85rem 1rem}
+}

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Verify — BloxBet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-body">
+
+<div id="bbLoader" class="bb-loader">
+  <div class="bb-loader-bg"></div>
+  <div class="bb-loader-veil"></div>
+  <div class="bb-loader-vignette"></div>
+  <div class="bb-loader-glow"></div>
+  <div class="bb-loader-inner">
+    <div class="bb-loader-lockup">
+      <div class="bb-loader-mark">
+        <img src="icons/bloxbet.png" alt="BloxBet" draggable="false">
+      </div>
+      <div class="bb-loader-text">
+        <span class="bb-blox">Blox</span><span class="bb-bet">Bet</span>
+      </div>
+    </div>
+    <div class="bb-loader-bar">
+      <div class="bb-loader-fill"></div>
+    </div>
+  </div>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-brand">
+    <img src="icons/bloxbet.png" alt="" class="auth-brand-mark" draggable="false">
+    <span class="auth-brand-text">BloxBet</span>
+  </div>
+
+  <div class="auth-card">
+    <div class="auth-steps">
+      <span class="auth-step-dot done"></span>
+      <span class="auth-step-dot active"></span>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+      <div id="profileAvatar" style="width:48px;height:48px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;font-weight:700;overflow:hidden;border:1px solid var(--border-2);flex-shrink:0;position:relative">?</div>
+      <div style="min-width:0">
+        <div style="display:flex;align-items:center;gap:.35rem">
+          <span id="profileDisplayText" style="font-weight:600;font-size:.95rem">—</span>
+          <img id="profileVerified" src="icons/verified.png" alt="" class="ico" style="width:14px;height:14px;display:none" draggable="false">
+        </div>
+        <div id="profileUsername" style="font-size:.75rem;color:var(--text-3)">@—</div>
+        <div id="profileMeta" style="font-size:.7rem;color:var(--text-3);margin-top:.15rem;display:flex;gap:.5rem;flex-wrap:wrap"></div>
+      </div>
+    </div>
+
+    <h1 class="auth-title">Verify ownership</h1>
+    <p class="auth-sub">Put this phrase in your Roblox bio, save, then click Verify.</p>
+
+    <div style="background:var(--bg-2);border:1px solid var(--border-2);border-radius:var(--r-md);padding:.85rem 1rem;margin-bottom:.85rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem">
+      <code id="phrase" style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text);word-break:break-word;line-height:1.4">—</code>
+      <button type="button" class="btn btn-ghost btn-sm" id="copyBtn" style="flex-shrink:0">Copy</button>
+    </div>
+
+    <ol class="auth-instructions">
+      <li><span class="num">1</span> Open Roblox → Profile → About → Edit</li>
+      <li><span class="num">2</span> Paste the phrase into your bio and Save</li>
+      <li><span class="num">3</span> Come back here and click Verify</li>
+    </ol>
+
+    <div id="status" class="auth-status"></div>
+
+    <button type="button" class="auth-btn" id="verifyBtn" style="margin-top:.5rem">
+      <img src="icons/check.png" alt="" class="ico" draggable="false">
+      <span>Verify</span>
+    </button>
+
+    <p style="text-align:center;margin-top:1rem">
+      <a href="/login.html" id="backLink" style="font-size:.78rem;color:var(--text-3)">← Different account</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var loader = document.getElementById('bbLoader');
+    if(!loader) return;
+    setTimeout(function(){
+      loader.classList.add('hide');
+      setTimeout(function(){ loader.remove(); }, 320);
+    }, 2000);
+  })();
+</script>
+
+<script src="js/auth.js"></script>
+<script>
+  (function(){
+    if(typeof Auth === 'undefined'){ console.error('[verify] Auth missing'); return; }
+
+    var pending = Auth.getPendingSession();
+    if(!pending){ Auth.safeRedirect('login'); return; }
+
+    var phraseEl   = document.getElementById('phrase');
+    var copyBtn    = document.getElementById('copyBtn');
+    var verifyBtn  = document.getElementById('verifyBtn');
+    var statusEl   = document.getElementById('status');
+    var backLink   = document.getElementById('backLink');
+
+    var profileAvatar    = document.getElementById('profileAvatar');
+    var profileDisplay   = document.getElementById('profileDisplayText');
+    var profileVerified  = document.getElementById('profileVerified');
+    var profileUsername  = document.getElementById('profileUsername');
+    var profileMeta      = document.getElementById('profileMeta');
+
+    (function renderProfile(){
+      var user = pending.user || {};
+      var displayName = user.displayName || user.username || pending.username || 'Unknown';
+      var username    = user.username || pending.username || 'unknown';
+      var avatarUrl   = user.avatar || null;
+      var isVerified  = !!user.hasVerifiedBadge;
+
+      if(avatarUrl && /^https?:\/\//i.test(avatarUrl)){
+        profileAvatar.innerHTML = '<img src="' + avatarUrl + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:50%" onerror="this.parentNode.textContent=\'' + (displayName[0] || '?').toUpperCase() + '\'">';
+      } else {
+        profileAvatar.textContent = (displayName[0] || '?').toUpperCase();
+      }
+
+      profileDisplay.textContent = displayName;
+      if(isVerified) profileVerified.style.display = 'inline-block';
+
+      profileUsername.textContent = '@' + username;
+
+      var metaHTML = '';
+      if(user.created){
+        try {
+          var d = new Date(user.created);
+          var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          metaHTML += '<span>Joined ' + months[d.getMonth()] + ' ' + d.getFullYear() + '</span>';
+        } catch(e){}
+      }
+      if(isVerified) metaHTML += '<span>Verified</span>';
+      profileMeta.innerHTML = metaHTML;
+    })();
+
+    phraseEl.textContent = pending.phrase;
+
+    function showStatus(type, msg){
+      var icons = { error:'alert', success:'check', info:'info' };
+      statusEl.className = 'auth-status show ' + type;
+      statusEl.innerHTML = '<img src="icons/' + (icons[type]||'info') + '.png" alt="" class="ico" draggable="false"><span>' + msg + '</span>';
+    }
+    function hideStatus(){ statusEl.className = 'auth-status'; }
+
+    if(pending.demo){
+      showStatus('info', 'Demo mode. Any phrase works.');
+    }
+
+    function copyText(text){
+      text = String(text || '');
+      if(navigator.clipboard && typeof navigator.clipboard.writeText === 'function'){
+        return navigator.clipboard.writeText(text).catch(function(){
+          return fallbackCopy(text);
+        });
+      }
+      return fallbackCopy(text);
+    }
+
+    function fallbackCopy(text){
+      return new Promise(function(resolve, reject){
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.top = '0';
+          ta.style.left = '0';
+          ta.style.width = '1px';
+          ta.style.height = '1px';
+          ta.style.padding = '0';
+          ta.style.border = 'none';
+          ta.style.outline = 'none';
+          ta.style.boxShadow = 'none';
+          ta.style.background = 'transparent';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          ta.setSelectionRange(0, ta.value.length);
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if(ok) resolve();
+          else reject(new Error('copy failed'));
+        } catch(err){ reject(err); }
+      });
+    }
+
+    copyBtn.addEventListener('click', function(){
+      var phrase = (phraseEl && phraseEl.textContent) || (pending && pending.phrase) || '';
+      copyText(phrase).then(function(){
+        var prev = copyBtn.textContent;
+        copyBtn.textContent = 'Copied';
+        copyBtn.disabled = true;
+        setTimeout(function(){
+          copyBtn.textContent = prev || 'Copy';
+          copyBtn.disabled = false;
+        }, 1400);
+      }).catch(function(){
+        try {
+          var range = document.createRange();
+          range.selectNodeContents(phraseEl);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch(e){}
+        showStatus('info', 'Selected — press Ctrl+C / Cmd+C to copy.');
+      });
+    });
+
+    backLink.addEventListener('click', function(e){
+      e.preventDefault();
+      sessionStorage.removeItem('bb_pending_session');
+      location.href = '/login.html';
+    });
+
+    verifyBtn.addEventListener('click', async function(){
+      hideStatus();
+      verifyBtn.disabled = true;
+      verifyBtn.innerHTML = '<div class="spinner"></div><span>Checking…</span>';
+
+      try {
+        await Auth.verifyBio();
+        showStatus('success', 'Verified. Redirecting…');
+        setTimeout(function(){ location.href = '/index.html'; }, 600);
+      } catch (err) {
+        showStatus('error', err.message || 'Verification failed.');
+        verifyBtn.disabled = false;
+        verifyBtn.innerHTML = '<img src="icons/check.png" alt="" class="ico" draggable="false"><span>Verify</span>';
+      }
+    });
+  })();
+</script>
+</body>
+</html>

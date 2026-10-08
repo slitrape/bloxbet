@@ -1,0 +1,16 @@
+{
+  "name": "bloxbet",
+  "version": "1.2.0",
+  "private": true,
+  "description": "BloxBet — full stack (static + Express + SQLite + WS)",
+  "scripts": {
+    "start": "node server/server.js",
+    "postinstall": "cd server && npm install --omit=dev"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "git": "^0.1.5"
+  }
+}

@@ -1,0 +1,519 @@
+/* ============================================================
+   BLOXBET — COMPONENT EXTRAS
+   ============================================================ */
+
+/* ============ DROPDOWN ============ */
+.dropdown{position:relative}
+.dropdown-menu{
+  position:absolute;
+  top:calc(100% + 6px);
+  right:0;
+  min-width:180px;
+  background:var(--surface);
+  border:1px solid var(--border-2);
+  border-radius:var(--r-md);
+  box-shadow:var(--shadow-lg);
+  padding:.25rem;
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(-4px);
+  transition:opacity var(--dur) var(--ease),
+             transform var(--dur) var(--ease),
+             visibility var(--dur) var(--ease);
+  z-index:120;
+}
+.dropdown.open .dropdown-menu{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0);
+}
+.dropdown-item{
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.45rem .6rem;
+  border-radius:var(--r-sm);
+  font-size:.78rem;
+  color:var(--text-2);
+  cursor:pointer;
+  transition:background var(--dur-fast) var(--ease),
+             color var(--dur-fast) var(--ease);
+}
+.dropdown-item:hover{background:var(--surface-2);color:var(--text)}
+.dropdown-item.danger{color:#f87171}
+.dropdown-item.danger:hover{background:rgba(239,68,68,.08)}
+.dropdown-divider{height:1px;background:var(--border);margin:.25rem 0}
+
+/* ============ SEGMENTED CONTROL ============ */
+.segmented{
+  display:inline-flex;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-md);
+  padding:2px;
+  gap:2px;
+}
+.segmented button{
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:.75rem;
+  font-weight:500;
+  color:var(--text-3);
+  padding:.35rem .75rem;
+  border-radius:calc(var(--r-md) - 2px);
+  transition:background var(--dur-fast) var(--ease),
+             color var(--dur-fast) var(--ease);
+}
+.segmented button:hover{color:var(--text)}
+.segmented button.active{
+  background:var(--surface-3);
+  color:var(--text);
+}
+
+/* ============ PROGRESS ============ */
+.progress{
+  height:4px;
+  background:var(--surface-2);
+  border-radius:2px;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  background:var(--accent);
+  border-radius:2px;
+  transition:width var(--dur-slow) var(--ease);
+}
+
+/* ============ TOOLTIP ============ */
+[data-tip]{position:relative}
+[data-tip]:hover::after{
+  content:attr(data-tip);
+  position:absolute;
+  bottom:calc(100% + 6px);
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--surface-3);
+  color:var(--text);
+  font-size:.68rem;
+  font-weight:500;
+  padding:.3rem .5rem;
+  border-radius:var(--r-sm);
+  white-space:nowrap;
+  border:1px solid var(--border-2);
+  box-shadow:var(--shadow-md);
+  animation:tipIn var(--dur-fast) var(--ease);
+  pointer-events:none;
+  z-index:200;
+}
+@keyframes tipIn{
+  from{opacity:0;transform:translate(-50%,2px)}
+  to{opacity:1;transform:translate(-50%,0)}
+}
+
+/* ============ SKELETON ============ */
+.skel{
+  background:linear-gradient(90deg,
+    var(--surface-2) 25%,
+    var(--surface-3) 50%,
+    var(--surface-2) 75%);
+  background-size:200% 100%;
+  animation:skel 1.4s ease-in-out infinite;
+  border-radius:var(--r-sm);
+}
+@keyframes skel{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
+}
+.skel-text{height:10px;margin:.3rem 0;border-radius:4px}
+.skel-line{height:8px;margin:.25rem 0;border-radius:4px}
+.skel-card{height:160px;border-radius:var(--r-lg)}
+.skel-avatar{width:32px;height:32px;border-radius:50%}
+
+/* ============================================================
+   LOADING SCREEN
+   Blurred bg, ambient glow, real SVG maple leaves falling,
+   bold wordmark, clean progress bar.
+   ============================================================ */
+
+.bb-loader{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  background:#06080b;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  transition:opacity 500ms cubic-bezier(.4,0,.2,1),
+             visibility 500ms cubic-bezier(.4,0,.2,1);
+}
+.bb-loader.hide{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+.bb-loader-bg{
+  position:absolute;
+  inset:-40px;
+  background-image:url('../icons/loading-bg.jpg');
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  filter:blur(14px) saturate(1.15) brightness(.6);
+  transform:scale(1.08);
+  z-index:0;
+  animation:bbBgDrift 30s ease-in-out infinite alternate;
+  will-change:transform;
+}
+@keyframes bbBgDrift{
+  0%{transform:scale(1.08) translate(0,0)}
+  100%{transform:scale(1.14) translate(-2%,-1.5%)}
+}
+
+.bb-loader-veil{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    180deg,
+    rgba(6,8,11,.3) 0%,
+    rgba(6,8,11,.45) 45%,
+    rgba(6,8,11,.6) 100%
+  );
+  z-index:1;
+  pointer-events:none;
+}
+
+.bb-loader-vignette{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(
+    ellipse at center,
+    transparent 42%,
+    rgba(0,0,0,.25) 75%,
+    rgba(0,0,0,.55) 100%
+  );
+  z-index:2;
+  pointer-events:none;
+}
+
+.bb-loader-glow{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(
+    ellipse 60% 50% at 50% 50%,
+    rgba(255,149,0,.18) 0%,
+    rgba(255,149,0,.06) 35%,
+    transparent 70%
+  );
+  z-index:3;
+  pointer-events:none;
+  animation:bbGlowPulse 4s ease-in-out infinite;
+}
+@keyframes bbGlowPulse{
+  0%,100%{opacity:.85}
+  50%{opacity:1}
+}
+
+/* ---------- Falling maple leaves — real SVG shapes ---------- */
+.bb-leaves{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  pointer-events:none;
+  overflow:hidden;
+}
+.bb-leaf{
+  position:absolute;
+  top:0;
+  width:32px;
+  height:32px;
+  opacity:0;
+  will-change:transform, opacity;
+  filter:drop-shadow(0 3px 8px rgba(0,0,0,.5))
+         drop-shadow(0 0 10px rgba(255,120,0,.35));
+  animation:leafFall linear infinite;
+}
+.bb-leaf svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+/* Each leaf falls top to bottom with side-to-side sway + rotation.
+   The intermediate keyframes create a natural "fluttering" path
+   instead of a straight drop. */
+@keyframes leafFall{
+  0%{
+    transform:translate3d(0,-15vh,0) rotate(0deg);
+    opacity:0;
+  }
+  8%{
+    opacity:.9;
+  }
+  25%{
+    transform:translate3d(24px,25vh,0) rotate(90deg);
+  }
+  50%{
+    transform:translate3d(-18px,50vh,0) rotate(200deg);
+  }
+  75%{
+    transform:translate3d(28px,75vh,0) rotate(300deg);
+  }
+  92%{
+    opacity:.9;
+  }
+  100%{
+    transform:translate3d(-12px,115vh,0) rotate(400deg);
+    opacity:0;
+  }
+}
+
+/* Staggered leaves — different horizontal start, duration, delay,
+   size, and rotation axis. Depth is faked with opacity + scale. */
+.bb-leaf:nth-child(1)  {left:4%;  width:26px;height:26px; animation-duration:12s; animation-delay:0s;   opacity:1; animation-name:leafFallA}
+.bb-leaf:nth-child(2)  {left:12%; width:18px;height:18px; animation-duration:16s; animation-delay:1.8s; animation-name:leafFallB}
+.bb-leaf:nth-child(3)  {left:21%; width:32px;height:32px; animation-duration:14s; animation-delay:4.2s; animation-name:leafFallA}
+.bb-leaf:nth-child(4)  {left:29%; width:22px;height:22px; animation-duration:18s; animation-delay:0.9s; animation-name:leafFallC}
+.bb-leaf:nth-child(5)  {left:37%; width:28px;height:28px; animation-duration:13s; animation-delay:6.1s; animation-name:leafFallB}
+.bb-leaf:nth-child(6)  {left:46%; width:24px;height:24px; animation-duration:15s; animation-delay:3.4s; animation-name:leafFallA}
+.bb-leaf:nth-child(7)  {left:54%; width:36px;height:36px; animation-duration:17s; animation-delay:5.3s; animation-name:leafFallC}
+.bb-leaf:nth-child(8)  {left:62%; width:20px;height:20px; animation-duration:14s; animation-delay:2.4s; animation-name:leafFallB}
+.bb-leaf:nth-child(9)  {left:70%; width:30px;height:30px; animation-duration:12s; animation-delay:4.8s; animation-name:leafFallA}
+.bb-leaf:nth-child(10) {left:78%; width:26px;height:26px; animation-duration:16s; animation-delay:1.2s; animation-name:leafFallC}
+.bb-leaf:nth-child(11) {left:86%; width:22px;height:22px; animation-duration:15s; animation-delay:7.1s; animation-name:leafFallB}
+.bb-leaf:nth-child(12) {left:93%; width:34px;height:34px; animation-duration:13s; animation-delay:0.3s; animation-name:leafFallA}
+
+/* Three fall variants — different sway rhythms so the field of
+   leaves doesn't move in sync. */
+@keyframes leafFallA{
+  0%   {transform:translate3d(0,-15vh,0) rotate(0deg);   opacity:0}
+  8%   {opacity:.9}
+  25%  {transform:translate3d(28px,25vh,0) rotate(85deg)}
+  50%  {transform:translate3d(-22px,50vh,0) rotate(195deg)}
+  75%  {transform:translate3d(32px,75vh,0) rotate(310deg)}
+  92%  {opacity:.9}
+  100% {transform:translate3d(-14px,115vh,0) rotate(410deg); opacity:0}
+}
+@keyframes leafFallB{
+  0%   {transform:translate3d(0,-15vh,0) rotate(0deg);   opacity:0}
+  8%   {opacity:.9}
+  30%  {transform:translate3d(-32px,30vh,0) rotate(-70deg)}
+  55%  {transform:translate3d(24px,55vh,0) rotate(-180deg)}
+  80%  {transform:translate3d(-30px,80vh,0) rotate(-290deg)}
+  92%  {opacity:.9}
+  100% {transform:translate3d(18px,115vh,0) rotate(-390deg); opacity:0}
+}
+@keyframes leafFallC{
+  0%   {transform:translate3d(0,-15vh,0) rotate(0deg);   opacity:0}
+  8%   {opacity:.9}
+  22%  {transform:translate3d(38px,22vh,0) rotate(60deg)}
+  48%  {transform:translate3d(-34px,48vh,0) rotate(170deg)}
+  74%  {transform:translate3d(40px,74vh,0) rotate(280deg)}
+  92%  {opacity:.9}
+  100% {transform:translate3d(-8px,115vh,0) rotate(370deg); opacity:0}
+}
+
+/* Leaf colors — full autumn palette, not just orange */
+.bb-leaf.amber   svg path{fill:#ff9500}
+.bb-leaf.rust    svg path{fill:#c2410c}
+.bb-leaf.crimson svg path{fill:#b91c1c}
+.bb-leaf.gold    svg path{fill:#fbbf24}
+.bb-leaf.copper  svg path{fill:#d97706}
+.bb-leaf.deep    svg path{fill:#7c2d12}
+
+/* ---------- Inner content ---------- */
+.bb-loader-inner{
+  position:relative;
+  z-index:4;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  animation:bbIn 800ms cubic-bezier(.2,.7,.3,1) both;
+}
+@keyframes bbIn{
+  from{opacity:0;transform:scale(.96)}
+  to{opacity:1;transform:scale(1)}
+}
+
+.bb-loader-lockup{
+  display:grid;
+  grid-template-columns:auto auto;
+  align-items:center;
+  column-gap:1.35rem;
+  position:relative;
+  padding:.5rem 1.5rem;
+}
+
+.bb-loader-mark{
+  grid-column:1;
+  width:112px;
+  height:112px;
+  flex-shrink:0;
+  position:relative;
+  display:grid;
+  place-items:center;
+  z-index:1;
+  animation:bbMarkFloat 3400ms ease-in-out infinite;
+}
+.bb-loader-mark img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  user-select:none;
+  -webkit-user-drag:none;
+  pointer-events:none;
+  filter:
+    drop-shadow(0 8px 20px rgba(0,0,0,.6))
+    drop-shadow(0 0 30px rgba(34,120,60,.35));
+}
+@keyframes bbMarkFloat{
+  0%,100%{
+    transform:translateY(0);
+    filter:drop-shadow(0 0 0 rgba(255,149,0,0));
+  }
+  50%{
+    transform:translateY(-4px);
+    filter:drop-shadow(0 0 24px rgba(255,149,0,.4));
+  }
+}
+
+.bb-loader-text{
+  grid-column:2;
+  display:inline-flex;
+  align-items:baseline;
+  font-family:'Space Grotesk','Inter Tight','Inter',system-ui,sans-serif;
+  font-size:5rem;
+  font-weight:700;
+  letter-spacing:-.06em;
+  line-height:.9;
+  position:relative;
+  z-index:1;
+  white-space:nowrap;
+}
+
+.bb-loader-text .bb-blox{
+  color:#ffffff;
+  text-shadow:
+    0 0 24px rgba(255,255,255,.35),
+    0 0 52px rgba(255,255,255,.15),
+    0 6px 14px rgba(0,0,0,.65);
+}
+
+.bb-loader-text .bb-bet{
+  color:#ff9500;
+  text-shadow:
+    0 0 22px rgba(255,149,0,.75),
+    0 0 52px rgba(255,149,0,.45),
+    0 0 100px rgba(255,149,0,.25),
+    0 6px 14px rgba(0,0,0,.65);
+}
+
+.bb-loader-text::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255,255,255,.7) 50%,
+    transparent 62%
+  );
+  background-size:220% 100%;
+  background-position:-130% 0;
+  background-repeat:no-repeat;
+  -webkit-background-clip:text;
+          background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  pointer-events:none;
+  animation:bbShimmer 2800ms cubic-bezier(.45,.05,.35,1) 500ms infinite;
+}
+@keyframes bbShimmer{
+  0%  {background-position:-130% 0;opacity:0}
+  15% {opacity:1}
+  55% {background-position:230% 0;opacity:1}
+  70% {opacity:0}
+  100%{background-position:230% 0;opacity:0}
+}
+
+.bb-loader-bar{
+  width:300px;
+  height:4px;
+  margin-top:2.25rem;
+  background:rgba(255,255,255,.08);
+  border-radius:999px;
+  overflow:hidden;
+  position:relative;
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  box-shadow:0 0 20px rgba(255,149,0,.1);
+}
+.bb-loader-bar::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,149,0,.08) 50%,
+    transparent 100%);
+  animation:bbRailPulse 2400ms ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes bbRailPulse{
+  0%,100%{opacity:.5}
+  50%{opacity:1}
+}
+
+.bb-loader-fill{
+  position:absolute;
+  top:0;
+  left:0;
+  bottom:0;
+  width:0%;
+  background:linear-gradient(90deg,#ffb84d 0%,#ff9500 60%,#ff7a00 100%);
+  border-radius:999px;
+  box-shadow:
+    0 0 14px rgba(255,149,0,.75),
+    0 0 30px rgba(255,149,0,.4);
+  animation:bbBar 2000ms cubic-bezier(.3,.05,.2,1) forwards;
+}
+@keyframes bbBar{
+  0%   {width:0%}
+  8%   {width:14%}
+  22%  {width:38%}
+  44%  {width:58%}
+  68%  {width:76%}
+  86%  {width:91%}
+  100% {width:100%}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .bb-loader-inner,
+  .bb-loader-mark,
+  .bb-loader-text::after,
+  .bb-loader-bg,
+  .bb-loader-glow,
+  .bb-loader-bar::before,
+  .bb-loader-fill,
+  .bb-leaf{
+    animation:none !important;
+  }
+  .bb-loader-text::after{display:none}
+  .bb-loader-fill{width:100%}
+  .bb-leaves{display:none}
+}
+
+@media (max-width:640px){
+  .bb-loader-mark{width:80px;height:80px}
+  .bb-loader-text{font-size:3.25rem}
+  .bb-loader-lockup{column-gap:1rem;padding:.5rem 1rem}
+  .bb-loader-bar{width:220px;margin-top:1.75rem}
+  .bb-loader-bg{filter:blur(12px) saturate(1.15) brightness(.58)}
+  .bb-leaf{transform:scale(.75)}
+}

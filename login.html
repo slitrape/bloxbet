@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sign in — BloxBet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-body">
+
+<div id="bbLoader" class="bb-loader">
+  <div class="bb-loader-bg"></div>
+  <div class="bb-loader-veil"></div>
+  <div class="bb-loader-vignette"></div>
+  <div class="bb-loader-glow"></div>
+  <div class="bb-loader-inner">
+    <div class="bb-loader-lockup">
+      <div class="bb-loader-mark">
+        <img src="icons/bloxbet.png" alt="BloxBet" draggable="false">
+      </div>
+      <div class="bb-loader-text">
+        <span class="bb-blox">Blox</span><span class="bb-bet">Bet</span>
+      </div>
+    </div>
+    <div class="bb-loader-bar">
+      <div class="bb-loader-fill"></div>
+    </div>
+  </div>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-brand">
+    <img src="icons/bloxbet.png" alt="" class="auth-brand-mark" draggable="false">
+    <span class="auth-brand-text">BloxBet</span>
+  </div>
+
+  <div class="auth-card">
+    <div class="auth-steps">
+      <span class="auth-step-dot active"></span>
+      <span class="auth-step-dot"></span>
+    </div>
+
+    <h1 class="auth-title">Sign in with Roblox</h1>
+    <p class="auth-sub">Enter your Roblox username. You’ll place a short phrase in your bio to prove ownership.</p>
+
+    <form id="loginForm" autocomplete="username">
+      <div class="auth-field">
+        <label for="username">Roblox username</label>
+        <div class="auth-input-wrap">
+          <img src="icons/profile.png" alt="" class="ico" draggable="false">
+          <input class="auth-input" id="username" name="username" type="text" maxlength="20" placeholder="Your username" required autofocus>
+        </div>
+      </div>
+
+      <div id="status" class="auth-status"></div>
+
+      <button type="submit" class="auth-btn" id="loginBtn">
+        <span>Continue</span>
+        <img src="icons/chevron-right.png" alt="" class="ico" draggable="false">
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var loader = document.getElementById('bbLoader');
+    if(!loader) return;
+    setTimeout(function(){
+      loader.classList.add('hide');
+      setTimeout(function(){ loader.remove(); }, 320);
+    }, 2000);
+  })();
+</script>
+
+<script src="js/auth.js"></script>
+<script>
+  (function(){
+    if(typeof Auth === 'undefined'){ console.error('[login] Auth missing'); return; }
+    if(Auth.isLoggedIn()){ Auth.safeRedirect('index'); return; }
+
+    var form = document.getElementById('loginForm');
+    var btn  = document.getElementById('loginBtn');
+    var statusEl = document.getElementById('status');
+
+    function showStatus(type, msg){
+      var icons = { error:'alert', success:'check', info:'info' };
+      statusEl.className = 'auth-status show ' + type;
+      statusEl.innerHTML = '<img src="icons/' + (icons[type]||'info') + '.png" alt="" class="ico" draggable="false"><span>' + msg + '</span>';
+    }
+    function hideStatus(){ statusEl.className = 'auth-status'; }
+
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      hideStatus();
+
+      var username = document.getElementById('username').value.trim();
+      if(username.length < 3){
+        showStatus('error', 'Username must be at least 3 characters.');
+        return;
+      }
+      if(!/^[A-Za-z0-9_]+$/.test(username)){
+        showStatus('error', 'Only letters, numbers, and underscores.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div><span>Loading…</span>';
+
+      try {
+        var result = await Auth.startLogin(username);
+        if(result && result.demo){
+          await new Promise(function(r){ setTimeout(r, 300); });
+        }
+        location.href = '/verify.html';
+      } catch (err) {
+        showStatus('error', err.message || 'Something went wrong.');
+        btn.disabled = false;
+        btn.innerHTML = '<span>Continue</span><img src="icons/chevron-right.png" alt="" class="ico" draggable="false">';
+      }
+    });
+  })();
+</script>
+</body>
+</html>
