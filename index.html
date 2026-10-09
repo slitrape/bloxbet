@@ -122,7 +122,7 @@
         <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">?</button>
         <div class="dropdown-menu">
           <a class="dropdown-item" href="profile.html">Profile</a>
-          <a class="dropdown-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;">Settings</a>
+          <a class="dropdown-item" href="settings.html">Settings</a>
           <div class="dropdown-divider"></div>
           <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
         </div>
@@ -161,7 +161,7 @@
     <span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span>
     <span class="label">Profile</span>
   </a>
-  <a class="side-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;">
+  <a class="side-item" data-href="settings.html" href="settings.html">
     <span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span>
     <span class="label">Settings</span>
   </a>

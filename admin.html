@@ -6,60 +6,113 @@
 <title>Admin — BloxBet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
 <style>
-.ad-wrap{max-width:1100px;margin:0 auto}
-.ad-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.6rem;margin-bottom:1.1rem}
-.ad-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.85rem 1rem}
-.ad-stat-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--text-3);margin-bottom:.3rem}
-.ad-stat-value{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;letter-spacing:-.01em}
+.ad-shell{max-width:1120px;margin:0 auto}
+.ad-hero{
+  display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem;
+  margin-bottom:1.25rem;padding:1.25rem 1.35rem;border-radius:var(--r-xl);
+  border:1px solid var(--border);
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 0%, rgba(255,149,0,.14), transparent 55%),
+    var(--surface);
+}
+.ad-hero h1{font-size:1.35rem;font-weight:800;letter-spacing:-.03em;margin:0 0 .25rem}
+.ad-hero p{margin:0;font-size:.78rem;color:var(--text-3);max-width:36ch;line-height:1.45}
+.ad-hero-actions{display:flex;gap:.45rem;flex-wrap:wrap}
+
+.ad-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:.55rem;margin-bottom:1.15rem}
+@media(max-width:960px){.ad-stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.ad-stats{grid-template-columns:repeat(2,1fr)}}
+.ad-stat{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);
+  padding:.8rem .9rem;min-height:72px;
+}
+.ad-stat-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--text-3);margin-bottom:.35rem}
+.ad-stat-value{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;letter-spacing:-.02em}
 .ad-stat-value.accent{color:var(--accent)}
 .ad-stat-sub{font-size:.6rem;color:var(--text-3);margin-top:.2rem;font-family:'JetBrains Mono',monospace}
-.ad-tabs{display:flex;gap:.2rem;margin-bottom:1rem;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.ad-tab{padding:.55rem .9rem;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--text-3);font-family:inherit;font-size:.76rem;font-weight:600;cursor:pointer;margin-bottom:-1px}
+
+.ad-tabs{
+  display:flex;gap:.2rem;padding:.3rem;background:var(--bg-2);border:1px solid var(--border);
+  border-radius:var(--r-md);margin-bottom:1rem;flex-wrap:wrap;
+}
+.ad-tab{
+  appearance:none;border:none;background:transparent;color:var(--text-3);
+  font-family:inherit;font-size:.76rem;font-weight:600;padding:.5rem .85rem;
+  border-radius:calc(var(--r-md) - 2px);cursor:pointer;
+}
 .ad-tab:hover{color:var(--text-2)}
-.ad-tab.active{color:var(--text);border-color:var(--accent)}
+.ad-tab.active{background:var(--surface-2);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
+
 .ad-panel{display:none}
 .ad-panel.active{display:block}
+.ad-note{font-size:.72rem;color:var(--text-3);margin:0 0 .85rem;line-height:1.45}
+
 .ad-toolbar{display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap;align-items:center}
 .ad-toolbar input,.ad-toolbar select{
   background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-sm);
-  color:var(--text);font-family:inherit;font-size:.78rem;padding:.45rem .65rem;outline:none;
+  color:var(--text);font-family:inherit;font-size:.78rem;padding:.5rem .7rem;outline:none;min-width:180px;
 }
 .ad-toolbar input:focus{border-color:var(--accent)}
-.ad-table{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden}
-.ad-row{display:grid;gap:.75rem;align-items:center;padding:.55rem .9rem;border-bottom:1px solid var(--border);font-size:.74rem}
+
+.ad-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;
+}
+.ad-row{
+  display:grid;gap:.75rem;align-items:center;padding:.6rem .95rem;
+  border-bottom:1px solid var(--border);font-size:.74rem;
+}
 .ad-row:last-child{border-bottom:none}
 .ad-row:hover{background:var(--surface-2)}
-.ad-row.head{background:var(--surface-2);color:var(--text-3);font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
-.ad-users .ad-row{grid-template-columns:36px 1.2fr .8fr .7fr .7fr auto}
-.ad-tx .ad-row{grid-template-columns:1fr 1fr .8fr .8fr .9fr}
-.ad-logs .ad-row{grid-template-columns:1.1fr .9fr 1fr 1.4fr .7fr}
-.ad-chat .ad-row{grid-template-columns:1fr 2fr auto auto}
+.ad-row.head{
+  background:rgba(255,255,255,.02);color:var(--text-3);font-size:.62rem;
+  text-transform:uppercase;letter-spacing:.05em;font-weight:600;
+}
+.ad-users .ad-row{grid-template-columns:36px minmax(120px,1.3fr) .8fr .8fr .7fr auto}
+.ad-tx .ad-row{grid-template-columns:1.1fr .9fr .8fr .8fr .9fr}
+.ad-logs .ad-row{grid-template-columns:1fr .9fr 1fr 1.5fr .8fr}
+.ad-chat .ad-row{grid-template-columns:1fr 2.2fr auto auto}
 .ad-live-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
-@media(max-width:800px){.ad-live-grid{grid-template-columns:1fr}.ad-users .ad-row{grid-template-columns:36px 1fr auto}}
-.ad-avatar{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--surface-3);display:grid;place-items:center;font-weight:600;font-size:.75rem}
-.ad-avatar img{width:100%;height:100%;object-fit:cover}
+@media(max-width:800px){
+  .ad-live-grid{grid-template-columns:1fr}
+  .ad-users .ad-row{grid-template-columns:36px 1fr auto}
+  .ad-users .hide-sm{display:none}
+}
+
+.ad-avatar{
+  width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--surface-3);
+  display:grid;place-items:center;font-weight:600;font-size:.72rem;position:relative;flex-shrink:0;
+}
+.ad-avatar img{width:100%;height:100%;object-fit:cover;position:relative;z-index:1}
 .ad-mono{font-family:'JetBrains Mono',monospace;font-size:.7rem}
-.ad-badge{display:inline-flex;padding:.15rem .4rem;border-radius:4px;font-size:.62rem;font-weight:600;background:var(--surface-3);color:var(--text-2)}
+.ad-badge{
+  display:inline-flex;align-items:center;padding:.15rem .45rem;border-radius:999px;
+  font-size:.62rem;font-weight:600;background:var(--surface-3);color:var(--text-2);
+}
 .ad-badge.admin{background:rgba(255,149,0,.15);color:var(--accent-2)}
 .ad-badge.win{background:rgba(34,197,94,.12);color:#4ade80}
 .ad-badge.lose{background:rgba(239,68,68,.12);color:#fca5a5}
-.ad-actions{display:flex;gap:.3rem;flex-wrap:wrap}
-.ad-empty{padding:2rem;text-align:center;color:var(--text-3);font-size:.78rem}
-.ad-note{font-size:.72rem;color:var(--text-3);margin-bottom:.75rem;line-height:1.45}
+.ad-actions{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end}
+.ad-empty{padding:2.25rem 1rem;text-align:center;color:var(--text-3);font-size:.78rem}
+.ad-section-title{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);font-weight:600;margin:0 0 .5rem;padding:0 .15rem}
+.ad-pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:.35rem;box-shadow:0 0 0 0 rgba(74,222,128,.5);animation:adPulse 1.6s infinite}
+@keyframes adPulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.45)}70%{box-shadow:0 0 0 8px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
 </style>
 </head>
 <body>
+<script>
+(function(){try{if(localStorage.getItem('bb_token')&&localStorage.getItem('bb_user'))document.documentElement.classList.add('bb-logged-in')}catch(e){}})();
+</script>
+
 <nav class="nav">
   <div class="nav-left">
     <button class="menu-btn" data-tip="Menu"><img src="icons/menu.png" alt="" class="ico" draggable="false"></button>
     <a href="index.html" class="nav-logo">
       <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
       <span class="nav-logo-text">BloxBet</span>
-      <span class="chip" style="margin-left:.4rem">Admin</span>
     </a>
   </div>
   <div class="nav-center">
@@ -89,23 +142,25 @@
 </nav>
 
 <main class="main" style="margin-left:0">
-  <div class="container page ad-wrap">
-    <div class="page-head">
+  <div class="container page ad-shell">
+    <div class="ad-hero">
       <div>
         <h1>Control panel</h1>
-        <div class="sub">Operators only · actions are logged</div>
+        <p>Live ops, economy, and audit trail. Every balance and role change is logged.</p>
       </div>
-      <div class="page-head-actions">
+      <div class="ad-hero-actions">
         <button class="btn btn-ghost btn-sm" id="btnRefresh">Refresh</button>
+        <a class="btn btn-secondary btn-sm" href="index.html">Exit</a>
       </div>
     </div>
 
     <div class="ad-stats" id="adStats">
-      <div class="ad-stat"><div class="ad-stat-label">Users</div><div class="ad-stat-value" id="stUsers">—</div></div>
+      <div class="ad-stat"><div class="ad-stat-label">Users</div><div class="ad-stat-value" id="stUsers">—</div><div class="ad-stat-sub" id="stUsersSub">total</div></div>
+      <div class="ad-stat"><div class="ad-stat-label">Active 24h</div><div class="ad-stat-value" id="stActive">—</div></div>
       <div class="ad-stat"><div class="ad-stat-label">Balance pool</div><div class="ad-stat-value accent" id="stPool">—</div></div>
       <div class="ad-stat"><div class="ad-stat-label">Flips 24h</div><div class="ad-stat-value" id="stFlips">—</div></div>
       <div class="ad-stat"><div class="ad-stat-label">Wagered 24h</div><div class="ad-stat-value" id="stWager">—</div></div>
-      <div class="ad-stat"><div class="ad-stat-label">Online ~5m</div><div class="ad-stat-value" id="stOnline">—</div></div>
+      <div class="ad-stat"><div class="ad-stat-label">Online</div><div class="ad-stat-value" id="stOnline">—</div><div class="ad-stat-sub"><span class="ad-pulse"></span>last 5 min</div></div>
     </div>
 
     <div class="ad-tabs" id="adTabs">
@@ -117,41 +172,46 @@
     </div>
 
     <div class="ad-panel active" id="panel-live">
-      <p class="ad-note">Recent activity and players seen in the last 5 minutes.</p>
       <div class="ad-live-grid">
-        <div class="ad-table" id="liveOnline"><div class="ad-empty">Loading…</div></div>
-        <div class="ad-table" id="liveFlips"><div class="ad-empty">Loading…</div></div>
+        <div>
+          <div class="ad-section-title">Players online</div>
+          <div class="ad-card" id="liveOnline"><div class="ad-empty">Loading…</div></div>
+        </div>
+        <div>
+          <div class="ad-section-title">Recent flips</div>
+          <div class="ad-card" id="liveFlips"><div class="ad-empty">Loading…</div></div>
+        </div>
       </div>
     </div>
 
     <div class="ad-panel" id="panel-users">
       <div class="ad-toolbar">
-        <input type="search" id="userSearch" placeholder="Search username…" style="min-width:200px">
+        <input type="search" id="userSearch" placeholder="Search username or id…">
         <button class="btn btn-ghost btn-sm" id="userSearchBtn">Search</button>
       </div>
-      <div class="ad-table ad-users" id="userTable"></div>
+      <div class="ad-card ad-users" id="userTable"></div>
     </div>
 
     <div class="ad-panel" id="panel-tx">
       <div class="ad-toolbar">
         <button class="btn btn-ghost btn-sm" id="txReload">Reload</button>
       </div>
-      <div class="ad-table ad-tx" id="txTable"></div>
+      <div class="ad-card ad-tx" id="txTable"></div>
     </div>
 
     <div class="ad-panel" id="panel-chat">
       <div class="ad-toolbar">
         <button class="btn btn-ghost btn-sm" id="chatReload">Reload</button>
       </div>
-      <div class="ad-table ad-chat" id="chatTable"></div>
+      <div class="ad-card ad-chat" id="chatTable"></div>
     </div>
 
     <div class="ad-panel" id="panel-logs">
-      <p class="ad-note">Every balance change, admin grant, chat delete, and operator note.</p>
+      <p class="ad-note">Operator actions: balance changes, admin grants, chat deletes, notes.</p>
       <div class="ad-toolbar">
         <button class="btn btn-ghost btn-sm" id="logsReload">Reload</button>
       </div>
-      <div class="ad-table ad-logs" id="logsTable"></div>
+      <div class="ad-card ad-logs" id="logsTable"></div>
     </div>
   </div>
 </main>
@@ -165,7 +225,7 @@
   if(!Auth.isLoggedIn()){ Auth.safeRedirect('login'); return; }
   var me = Auth.getUser();
   if(!me || !me.isAdmin){
-    Toast && Toast.error ? Toast.error('Forbidden', 'Admin only') : alert('Admin only');
+    if(window.Toast) Toast.error('Forbidden','Admin only');
     Auth.safeRedirect('index');
     return;
   }
@@ -174,7 +234,9 @@
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
   function fmt(n){ return Number(n||0).toLocaleString(); }
   function ago(ts){
-    var s = Math.floor((Date.now()-ts)/1000);
+    if(!ts) return '—';
+    var s = Math.floor((Date.now()-Number(ts))/1000);
+    if(s<0) s = 0;
     if(s<60) return s+'s';
     if(s<3600) return Math.floor(s/60)+'m';
     if(s<86400) return Math.floor(s/3600)+'h';
@@ -182,9 +244,9 @@
   }
   function av(u){
     var id = u.id || u.userId;
-    var letter = (u.username||'U')[0].toUpperCase();
-    if(!id) return '<div class="ad-avatar">'+letter+'</div>';
-    return '<div class="ad-avatar"><img src="/api/avatar/'+id+'" alt="" referrerpolicy="no-referrer" onerror="this.remove()"><span style="position:absolute">'+letter+'</span></div>';
+    var letter = ((u.username||u.displayName||'U')[0]||'U').toUpperCase();
+    if(!id || id === 'demo') return '<div class="ad-avatar">'+letter+'</div>';
+    return '<div class="ad-avatar"><img src="/api/avatar/'+encodeURIComponent(id)+'" alt="" referrerpolicy="no-referrer" onerror="this.remove()"></div>';
   }
 
   document.querySelectorAll('.ad-tab').forEach(function(tab){
@@ -200,15 +262,18 @@
   async function loadStats(){
     try{
       var res = await Auth.api('/admin/stats');
-      if(!res.ok) return;
-      var d = await res.json();
-      var users = d.users || {};
-      var eco = d.economy || {};
-      var act = d.activity || {};
-      document.getElementById('stUsers').textContent = fmt(users.total || d.userCount || 0);
-      document.getElementById('stPool').textContent = fmt(eco.totalBalance || 0);
-      document.getElementById('stFlips').textContent = fmt(act.flips24h || 0);
-      document.getElementById('stWager').textContent = fmt(act.flipsWagered24h || 0);
+      if(res.ok){
+        var d = await res.json();
+        var users = d.users || {};
+        var eco = d.economy || {};
+        var act = d.activity || {};
+        document.getElementById('stUsers').textContent = fmt(users.total||0);
+        document.getElementById('stUsersSub').textContent = '+' + fmt(users.new24h||0) + ' new / 24h';
+        document.getElementById('stActive').textContent = fmt(users.active24h||0);
+        document.getElementById('stPool').textContent = fmt(eco.totalBalance||0);
+        document.getElementById('stFlips').textContent = fmt(act.flips24h||0);
+        document.getElementById('stWager').textContent = fmt(act.flipsWagered24h||0);
+      }
     }catch(e){}
     try{
       var live = await Auth.api('/admin/live');
@@ -225,44 +290,41 @@
     var d = await res.json();
     var on = d.online || [];
     var onlineEl = document.getElementById('liveOnline');
-    if(!on.length){ onlineEl.innerHTML = '<div class="ad-empty">No recent players</div>'; }
-    else {
-      onlineEl.innerHTML = '<div class="ad-row head"><span>Player</span><span>Balance</span><span>Rank</span><span>Seen</span></div>' +
-        on.map(function(u){
-          return '<div class="ad-row"><span>'+esc(u.username)+'</span><span class="ad-mono">'+fmt(u.balance)+'</span><span>'+esc(u.rank||'—')+'</span><span class="ad-mono">'+ago(u.lastSeen)+'</span></div>';
-        }).join('');
-    }
+    if(!on.length) onlineEl.innerHTML = '<div class="ad-empty">No recent players</div>';
+    else onlineEl.innerHTML = '<div class="ad-row head"><span>Player</span><span>Balance</span><span>Rank</span><span>Seen</span></div>' +
+      on.map(function(u){
+        return '<div class="ad-row"><span style="font-weight:600">'+esc(u.username)+'</span><span class="ad-mono">'+fmt(u.balance)+'</span><span>'+esc(u.rank||'—')+'</span><span class="ad-mono">'+ago(u.lastSeen)+'</span></div>';
+      }).join('');
+
     var flips = d.recentFlips || [];
     var fl = document.getElementById('liveFlips');
-    if(!flips.length){ fl.innerHTML = '<div class="ad-empty">No flips yet</div>'; }
-    else {
-      fl.innerHTML = '<div class="ad-row head"><span>Player</span><span>Bet</span><span>Net</span><span>When</span></div>' +
-        flips.map(function(f){
-          return '<div class="ad-row"><span>'+esc(f.username||'?')+'</span><span class="ad-mono">'+fmt(f.bet)+'</span><span class="ad-badge '+(f.win?'win':'lose')+'">'+(f.net>=0?'+':'')+fmt(f.net)+'</span><span class="ad-mono">'+ago(f.at)+'</span></div>';
-        }).join('');
-    }
+    if(!flips.length) fl.innerHTML = '<div class="ad-empty">No flips yet</div>';
+    else fl.innerHTML = '<div class="ad-row head"><span>Player</span><span>Bet</span><span>Net</span><span>When</span></div>' +
+      flips.map(function(f){
+        return '<div class="ad-row"><span>'+esc(f.username||'?')+'</span><span class="ad-mono">'+fmt(f.bet)+'</span><span class="ad-badge '+(f.win?'win':'lose')+'">'+(f.net>=0?'+':'')+fmt(f.net)+'</span><span class="ad-mono">'+ago(f.at)+'</span></div>';
+      }).join('');
   }
 
   async function loadUsers(q){
     var url = '/admin/users' + (q ? ('?q='+encodeURIComponent(q)) : '');
     var res = await Auth.api(url);
-    if(!res.ok) return;
+    if(!res.ok){ document.getElementById('userTable').innerHTML = '<div class="ad-empty">Failed to load</div>'; return; }
     var d = await res.json();
     var users = d.users || [];
     var el = document.getElementById('userTable');
-    if(!users.length){ el.innerHTML = '<div class="ad-empty">No users</div>'; return; }
-    el.innerHTML = '<div class="ad-row head"><span></span><span>User</span><span>Balance</span><span>Wagered</span><span>Role</span><span></span></div>' +
+    if(!users.length){ el.innerHTML = '<div class="ad-empty">No users found</div>'; return; }
+    el.innerHTML = '<div class="ad-row head"><span></span><span>User</span><span class="hide-sm">Balance</span><span class="hide-sm">Wagered</span><span>Role</span><span></span></div>' +
       users.map(function(u){
         return '<div class="ad-row">' +
           av(u) +
           '<div><div style="font-weight:600">'+esc(u.displayName||u.username)+'</div><div class="ad-mono" style="color:var(--text-3)">@'+esc(u.username)+'</div></div>' +
-          '<span class="ad-mono">'+fmt(u.balance)+'</span>' +
-          '<span class="ad-mono">'+fmt(u.totalWagered||0)+'</span>' +
+          '<span class="ad-mono hide-sm">'+fmt(u.balance)+'</span>' +
+          '<span class="ad-mono hide-sm">'+fmt(u.totalWagered||0)+'</span>' +
           (u.isAdmin?'<span class="ad-badge admin">Admin</span>':'<span class="ad-badge">User</span>') +
           '<div class="ad-actions">' +
             '<button class="btn btn-ghost btn-sm" data-act="add" data-id="'+esc(u.id)+'">+RC</button>' +
             '<button class="btn btn-ghost btn-sm" data-act="set" data-id="'+esc(u.id)+'">Set</button>' +
-            '<button class="btn btn-ghost btn-sm" data-act="admin" data-id="'+esc(u.id)+'" data-admin="'+(u.isAdmin?1:0)+'">'+(u.isAdmin?'Revoke':'Make admin')+'</button>' +
+            '<button class="btn btn-ghost btn-sm" data-act="admin" data-id="'+esc(u.id)+'" data-admin="'+(u.isAdmin?1:0)+'">'+(u.isAdmin?'Revoke':'Admin')+'</button>' +
           '</div></div>';
       }).join('');
 
@@ -272,13 +334,13 @@
         var act = btn.getAttribute('data-act');
         if(act === 'admin'){
           var make = btn.getAttribute('data-admin') !== '1';
-          if(!confirm(make ? 'Grant admin?' : 'Revoke admin?')) return;
+          if(!confirm(make ? 'Grant admin to this user?' : 'Revoke admin?')) return;
           var r = await Auth.api('/admin/users/'+id+'/admin', { method:'POST', body: JSON.stringify({ isAdmin: make }) });
-          if(r.ok){ Toast.success('Updated','Admin flag saved'); loadUsers(document.getElementById('userSearch').value.trim()); }
+          if(r.ok){ Toast.success('Saved','Admin flag updated'); loadUsers(document.getElementById('userSearch').value.trim()); }
           else Toast.error('Failed','Could not update admin');
           return;
         }
-        var amount = prompt(act === 'add' ? 'Amount to add' : 'Set balance to');
+        var amount = prompt(act === 'add' ? 'RoCoins to add' : 'Set balance to');
         if(amount == null) return;
         amount = parseInt(amount, 10);
         if(!Number.isFinite(amount) || amount < 0){ Toast.error('Invalid','Need a non-negative integer'); return; }
@@ -286,7 +348,7 @@
           method:'POST',
           body: JSON.stringify({ action: act === 'add' ? 'add' : 'set', amount: amount })
         });
-        if(r.ok){ Toast.success('Balance updated','Saved'); loadUsers(document.getElementById('userSearch').value.trim()); loadStats(); }
+        if(r.ok){ Toast.success('Balance updated','Logged in audit trail'); loadUsers(document.getElementById('userSearch').value.trim()); loadStats(); }
         else Toast.error('Failed','Balance change rejected');
       });
     });
@@ -299,7 +361,7 @@
     var rows = d.transactions || d.rows || [];
     var el = document.getElementById('txTable');
     if(!rows.length){ el.innerHTML = '<div class="ad-empty">No transactions</div>'; return; }
-    el.innerHTML = '<div class="ad-row head"><span>User</span><span>Type</span><span>Amount</span><span>Balance</span><span>When</span></div>' +
+    el.innerHTML = '<div class="ad-row head"><span>User</span><span>Type</span><span>Amount</span><span>Balance after</span><span>When</span></div>' +
       rows.map(function(t){
         return '<div class="ad-row"><span>'+esc(t.username||t.userId||'—')+'</span><span class="ad-badge">'+esc(t.type)+'</span><span class="ad-mono">'+fmt(t.amount)+'</span><span class="ad-mono">'+fmt(t.balanceAfter||t.balance_after||0)+'</span><span class="ad-mono">'+ago(t.createdAt||t.created_at)+'</span></div>';
       }).join('');
@@ -314,11 +376,11 @@
     if(!rows.length){ el.innerHTML = '<div class="ad-empty">No chat messages</div>'; return; }
     el.innerHTML = '<div class="ad-row head"><span>User</span><span>Message</span><span>When</span><span></span></div>' +
       rows.map(function(m){
-        return '<div class="ad-row'+(m.deleted?' deleted':'')+'"><span class="ad-mono">'+esc(m.username)+'</span><span>'+esc(m.message||m.text)+'</span><span class="ad-mono">'+ago(m.createdAt||m.created_at)+'</span><span><button class="btn btn-ghost btn-sm" data-del="'+esc(m.id)+'">Delete</button></span></div>';
+        return '<div class="ad-row"><span class="ad-mono">'+esc(m.username)+'</span><span>'+esc(m.message||m.text)+'</span><span class="ad-mono">'+ago(m.createdAt||m.created_at)+'</span><span><button class="btn btn-ghost btn-sm" data-del="'+esc(m.id)+'">Delete</button></span></div>';
       }).join('');
     el.querySelectorAll('[data-del]').forEach(function(btn){
       btn.addEventListener('click', async function(){
-        if(!confirm('Delete message?')) return;
+        if(!confirm('Delete this message?')) return;
         var r = await Auth.api('/admin/chat/'+btn.getAttribute('data-del'), { method:'DELETE' });
         if(r.ok){ Toast.success('Deleted','Message removed'); loadChat(); }
       });
@@ -331,12 +393,12 @@
     var d = await res.json();
     var rows = d.logs || [];
     var el = document.getElementById('logsTable');
-    if(!rows.length){ el.innerHTML = '<div class="ad-empty">No audit events yet</div>'; return; }
+    if(!rows.length){ el.innerHTML = '<div class="ad-empty">No audit events yet — actions will appear here</div>'; return; }
     el.innerHTML = '<div class="ad-row head"><span>When</span><span>Admin</span><span>Action</span><span>Target / detail</span><span>IP</span></div>' +
       rows.map(function(l){
         var detail = l.detail || '';
-        try { var j = JSON.parse(detail); detail = JSON.stringify(j); } catch(e){}
-        return '<div class="ad-row"><span class="ad-mono">'+ago(l.createdAt)+'</span><span>'+esc(l.adminUsername||'—')+'</span><span class="ad-badge">'+esc(l.action)+'</span><span class="ad-mono">'+esc(l.targetUsername||l.targetId||'')+' '+esc(detail).slice(0,80)+'</span><span class="ad-mono">'+esc(l.ip||'')+'</span></div>';
+        try { detail = JSON.stringify(JSON.parse(detail)); } catch(e){}
+        return '<div class="ad-row"><span class="ad-mono">'+ago(l.createdAt)+'</span><span>'+esc(l.adminUsername||'—')+'</span><span class="ad-badge">'+esc(l.action)+'</span><span class="ad-mono">'+esc(l.targetUsername||l.targetId||'')+' '+esc(detail).slice(0,90)+'</span><span class="ad-mono">'+esc(l.ip||'')+'</span></div>';
       }).join('');
   }
 
@@ -365,7 +427,11 @@
 
   loadStats();
   loadLive();
-  setInterval(function(){ loadStats(); if(document.querySelector('.ad-tab.active').dataset.tab==='live') loadLive(); }, 20000);
+  setInterval(function(){
+    loadStats();
+    var t = document.querySelector('.ad-tab.active');
+    if(t && t.dataset.tab==='live') loadLive();
+  }, 20000);
 })();
 </script>
 </body>

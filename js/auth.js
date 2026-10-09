@@ -170,7 +170,7 @@ const Auth = (() => {
       const user = {
         username: pending.username, displayName: pending.username,
         avatar: null, avatarLetter: (pending.username || 'U')[0].toUpperCase(),
-        hasVerifiedBadge: false, balance: 12480, level: 1, rank: 'Bronze', demo: true
+        hasVerifiedBadge: false, balance: 0, level: 1, rank: 'Bronze', demo: true
       };
       setSession('demo-token-' + Date.now(), user);
       sessionStorage.removeItem(SESSION_KEY);

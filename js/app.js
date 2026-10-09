@@ -181,6 +181,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+
+  /* ---------- settings.html sidebar ---------- */
+  (function(){
+    var sidebar = document.querySelector('.sidebar');
+    if(!sidebar) return;
+    var existing = sidebar.querySelector('a[href="settings.html"], a[data-href="settings.html"]');
+    if(existing){
+      existing.setAttribute('href','settings.html');
+      existing.setAttribute('data-href','settings.html');
+      existing.onclick = null;
+      return;
+    }
+    var account = null;
+    sidebar.querySelectorAll('.sidebar-section').forEach(function(s){
+      if((s.textContent||'').trim().toLowerCase()==='account') account = s;
+    });
+    var item = document.createElement('a');
+    item.className = 'side-item';
+    item.href = 'settings.html';
+    item.setAttribute('data-href','settings.html');
+    item.innerHTML = '<span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span><span class="label">Settings</span>';
+    var toggle = sidebar.querySelector('.sidebar-toggle');
+    if(account && account.nextElementSibling){
+      // insert after profile if possible
+      var profile = sidebar.querySelector('a[href="profile.html"]');
+      if(profile && profile.parentNode === sidebar) profile.after(item);
+      else if(toggle) sidebar.insertBefore(item, toggle);
+      else sidebar.appendChild(item);
+    } else if(toggle) sidebar.insertBefore(item, toggle);
+    else sidebar.appendChild(item);
+  })();
+
   /* ---------- Dropdowns ---------- */
   document.querySelectorAll('.dropdown').forEach(dd => {
     const trigger = dd.querySelector('[data-dropdown]');

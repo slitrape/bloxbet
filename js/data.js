@@ -9,7 +9,7 @@ const BB = {
     handle: "@larpware",
     tag: "Founder",
     avatar: "N",
-    balance: 12480,
+    balance: 0,
     level: 27,
     rank: "Diamond"
   },
