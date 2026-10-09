@@ -706,37 +706,55 @@
         ? '<img src="' + avUrl + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + initial + '\'">'
         : initial;
 
-      const side = m.creatorChoice === 'heads' ? 'heads' : 'tails';
-      const sideImg = 'icons/coin-' + side + '.png';
+      const side = m.side || 'heads';
+      const sideImg = side === 'tails' ? 'icons/coin-tails.png' : 'icons/coin-heads.png';
+      const oppSide = side === 'heads' ? 'tails' : 'heads';
+      const oppImg = oppSide === 'tails' ? 'icons/coin-tails.png' : 'icons/coin-heads.png';
+      const bet = Number(m.bet) || 0;
+      const rangeLo = Math.floor(bet * 0.95);
+      const rangeHi = Math.ceil(bet * 1.05);
 
-      const bottom = isOwn
-        ? '<span class="pvp-match-own-tag">Your Match</span>'
-        : '<button class="pvp-join-btn" data-match="' + m.id + '">Join · ' + fmtFull(m.bet) + ' RC</button>';
+      const actions = isOwn
+        ? '<button type="button" class="pvp-view-btn" data-view="' + m.id + '">View</button>' +
+          '<span class="pvp-match-own-tag">Yours</span>'
+        : '<button type="button" class="pvp-join-btn">Join</button>' +
+          '<button type="button" class="pvp-view-btn" data-view="' + m.id + '">View</button>';
 
       card.innerHTML =
-        '<div class="pvp-match-top">' +
-          '<div class="pvp-match-avatar"' + (m.creatorId ? ' data-user-id="' + m.creatorId + '"' : '') + '>' + avatarHtml + '</div>' +
-          '<div class="pvp-match-who">' +
-            '<div class="pvp-match-name">' + escapeHtml(m.creatorUsername) + '</div>' +
-            '<div class="pvp-match-time">' + timeAgo(m.createdAt) + ' ago</div>' +
+        '<div class="pvp-row-players">' +
+          '<div class="pvp-player" data-user-id="' + (m.creatorId || '') + '">' +
+            '<div class="pvp-player-av">' + avatarHtml +
+              '<span class="pvp-side-badge ' + side + '"><img src="' + sideImg + '" alt="" draggable="false"></span>' +
+            '</div>' +
+            '<div class="pvp-player-name">' + escapeHtml(m.creatorUsername || 'Player') + '</div>' +
           '</div>' +
-          '<div class="pvp-match-side ' + side + '">' +
-            '<img src="' + sideImg + '" alt="" draggable="false">' +
-            '<span>' + side + '</span>' +
+          '<div class="pvp-vs">VS</div>' +
+          '<div class="pvp-player open">' +
+            '<div class="pvp-player-av empty">' +
+              '<img src="' + oppImg + '" class="pvp-side-preview" alt="" draggable="false">' +
+            '</div>' +
+            '<div class="pvp-player-name muted">Waiting…</div>' +
           '</div>' +
         '</div>' +
-        '<div class="pvp-match-bottom">' +
-          '<div class="pvp-match-bet">' +
-            '<div class="pvp-match-bet-label">Bet</div>' +
-            '<div class="pvp-match-bet-value">' + fmtFull(m.bet) + '<span class="rc">RC</span></div>' +
-          '</div>' +
-          bottom +
-        '</div>';
+        '<div class="pvp-row-coin">' +
+          '<img src="' + sideImg + '" alt="' + side + '" class="pvp-coin-lg" draggable="false">' +
+        '</div>' +
+        '<div class="pvp-row-value">' +
+          '<div class="pvp-pot"><img src="icons/coin.png" alt="" class="pvp-gem" draggable="false">' + fmtFull(bet) + '</div>' +
+          '<div class="pvp-range">' + fmtFull(rangeLo) + ' – ' + fmtFull(rangeHi) + '</div>' +
+        '</div>' +
+        '<div class="pvp-row-actions">' + actions + '</div>';
 
       pvpMatchesEl.appendChild(card);
 
       const joinBtn = card.querySelector('.pvp-join-btn');
       if(joinBtn) joinBtn.addEventListener('click', () => joinMatch(m.id, joinBtn));
+      card.querySelectorAll('[data-view]').forEach(function(b){
+        b.addEventListener('click', function(){
+          if(typeof window.openMatchView === 'function') window.openMatchView(m);
+          else if(isOwn && typeof showWaitingModal === 'function') showWaitingModal(m);
+        });
+      });
     });
   }
 
