@@ -192,9 +192,11 @@
         if(p){
           slotDots +=
             '<div class="cb-slot-dot filled">' +
-              (p.avatar && /^https?:/i.test(p.avatar)
-                ? '<img src="' + p.avatar + '" alt="" draggable="false">'
-                : (p.username || 'U')[0].toUpperCase()) +
+              (function(){
+                var u = (typeof resolveAvatarUrl === 'function') ? resolveAvatarUrl(p) : p.avatar;
+                var L = (p.username || 'U')[0].toUpperCase();
+                return u ? '<img src="' + u + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + L + '\'">' : L;
+              })()) +
             '</div>';
         } else {
           slotDots += '<div class="cb-slot-dot">+</div>';

@@ -4,23 +4,45 @@
    ============================================================ */
 
 /* ---------- Global avatar helper ---------- */
+function headshotUrlFromId(id){
+  if(!id || id === 'demo') return null;
+  return 'https://www.roblox.com/headshot-thumbnail/image?userId=' + id + '&width=150&height=150&format=png';
+}
+
 function resolveAvatarUrl(user){
   if(!user) return null;
-  var url = user.avatar || null;
-  if(url && /^https?:\/\//i.test(url)) return url;
-  var id = user.id || user.userId || user.robloxId || null;
-  if(id && id !== 'demo'){
-    return 'https://www.roblox.com/headshot-thumbnail/image?userId=' + id + '&width=150&height=150&format=png';
+  if(typeof user === 'string' || typeof user === 'number'){
+    return headshotUrlFromId(user);
   }
-  return null;
+  var url = user.avatar || user.creatorAvatar || user.joinerAvatar || user.uavatar || null;
+  if(url && /^https?:\/\//i.test(String(url))) return String(url);
+  var id = user.id || user.userId || user.creatorId || user.joinerId || user.robloxId || user.uid || null;
+  return headshotUrlFromId(id);
+}
+
+function avatarLetter(user){
+  var n = (user && (user.avatarLetter || user.displayName || user.username || user.creatorUsername || user.name)) || 'U';
+  return String(n).charAt(0).toUpperCase();
+}
+
+/** HTML snippet for any user object — headshot for everyone when an id exists */
+function avatarHtml(user, sizeClass){
+  sizeClass = sizeClass || 'avatar-sm';
+  var letter = avatarLetter(user);
+  var url = resolveAvatarUrl(user);
+  if(!url){
+    return '<div class="avatar ' + sizeClass + '">' + letter + '</div>';
+  }
+  return '<div class="avatar ' + sizeClass + '">' +
+    '<img src="' + url + '" alt="" draggable="false" referrerpolicy="no-referrer" ' +
+    'onerror="this.onerror=null;this.style.display=\'none\';if(this.parentNode)this.parentNode.textContent=\'' + letter + '\'">' +
+    '</div>';
 }
 
 function renderAvatar(el, user, opts){
   if(!el) return;
   opts = opts || {};
-  var fallbackLetter = (user && (user.avatarLetter || user.displayName || user.username)) || 'U';
-  fallbackLetter = String(fallbackLetter).charAt(0).toUpperCase();
-
+  var letter = avatarLetter(user);
   var url = resolveAvatarUrl(user);
 
   if(url){
@@ -31,19 +53,20 @@ function renderAvatar(el, user, opts){
     img.draggable = false;
     img.referrerPolicy = 'no-referrer';
     img.onerror = function(){
-      // try alternate roblox endpoint once
-      if(!img.dataset.triedAlt && user && (user.id || user.userId)){
+      if(!img.dataset.triedAlt){
         img.dataset.triedAlt = '1';
-        var id = user.id || user.userId;
-        img.src = 'https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=' + id + '&size=150x150&format=Png&isCircular=false';
-        return;
+        var id = user && (user.id || user.userId || user.creatorId);
+        if(id && id !== 'demo'){
+          img.src = 'https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=' + id + '&size=150x150&format=Png&isCircular=false';
+          return;
+        }
       }
       el.innerHTML = '';
-      el.textContent = fallbackLetter;
+      el.textContent = letter;
     };
     el.appendChild(img);
   } else {
-    el.textContent = fallbackLetter;
+    el.textContent = letter;
   }
 }
 

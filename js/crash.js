@@ -332,9 +332,11 @@
       var row = document.createElement('div');
       row.className = 'crash-player-row' + (p.cashedOut ? ' cashed' : '');
 
-      var avatarHtml = (p.avatar && /^https?:/i.test(p.avatar))
-        ? '<div class="avatar"><img src="' + p.avatar + '" alt="" draggable="false"></div>'
-        : '<div class="avatar">' + (p.username || 'U')[0].toUpperCase() + '</div>';
+      var _av = (typeof resolveAvatarUrl === 'function') ? resolveAvatarUrl(p) : (p.avatar || null);
+      var _let = (p.username || 'U')[0].toUpperCase();
+      var avatarHtml = _av
+        ? '<div class="avatar"><img src="' + _av + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + _let + '\'"></div>'
+        : '<div class="avatar">' + _let + '</div>';
 
       var name = p.username + (String(p.userId) === meId ? ' (you)' : '');
 

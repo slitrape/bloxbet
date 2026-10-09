@@ -24,7 +24,9 @@
   function renderAvatar(username, avatar, hasVerifiedBadge, userId){
     const letter = (username || 'U')[0].toUpperCase();
     const initial = '<div class="avatar avatar-sm" style="background:linear-gradient(135deg,var(--accent),var(--accent-2))">' + letter + '</div>';
-    var url = avatar;
+    var url = (typeof resolveAvatarUrl === 'function')
+      ? resolveAvatarUrl({ avatar: avatar, id: userId })
+      : avatar;
     if((!url || !/^https?:\/\//i.test(url)) && userId && userId !== 'demo'){
       url = 'https://www.roblox.com/headshot-thumbnail/image?userId=' + userId + '&width=150&height=150&format=png';
     }

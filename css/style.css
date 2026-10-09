@@ -1365,3 +1365,11 @@ a{color:inherit;text-decoration:none}
   .guest-title{font-size:1.35rem}
   .nav-auth-guest .btn-sm{padding:.4rem .7rem}
 }
+
+
+/* Hide guest auth CTAs when session exists (no flash) */
+html.bb-logged-in #navAuthGuest,
+html.bb-logged-in #guestHero { display: none !important; }
+html.bb-logged-in #navAuthUser { display: flex !important; }
+html.bb-logged-in #dashboardHead { display: block !important; }
+html:not(.bb-logged-in) #navAuthUser { display: none !important; }

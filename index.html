@@ -11,6 +11,16 @@
 <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
+<script>
+(function(){
+  try {
+    if(localStorage.getItem('bb_token') && localStorage.getItem('bb_user')){
+      document.documentElement.classList.add('bb-logged-in');
+    }
+  } catch(e){}
+})();
+</script>
+
 
 <div id="bbLoader" class="bb-loader">
   <div class="bb-loader-bg"></div>
@@ -463,9 +473,13 @@
           row.innerHTML =
             '<div class="lb-rank ' + cls + '">#' + u.rank + '</div>' +
             '<div class="lb-user">' +
-              (u.avatar && /^https?:/i.test(u.avatar)
-                ? '<div class="avatar avatar-sm"><img src="' + u.avatar + '" alt="" draggable="false" referrerpolicy="no-referrer"></div>'
-                : '<div class="avatar avatar-sm">' + (u.username || 'U')[0].toUpperCase() + '</div>') +
+              (function(){
+                var url = (typeof resolveAvatarUrl === 'function') ? resolveAvatarUrl(u) : u.avatar;
+                var L = (u.username || 'U')[0].toUpperCase();
+                return url
+                  ? '<div class="avatar avatar-sm"><img src="' + url + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + L + '\'"></div>'
+                  : '<div class="avatar avatar-sm">' + L + '</div>';
+              })() +
               '<span class="name">' + u.username + '</span>' +
             '</div>' +
             '<div class="lb-score">' + Number(u.totalWagered || 0).toLocaleString() + '</div>' +

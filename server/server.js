@@ -911,9 +911,7 @@ function serializeUser(u){
     id: u.id,
     username: u.username,
     displayName: u.display_name || u.username,
-    avatar: (u.avatar && String(u.avatar).startsWith('http'))
-      ? u.avatar
-      : (u.id ? ('https://www.roblox.com/headshot-thumbnail/image?userId=' + u.id + '&width=150&height=150&format=png') : null),
+    avatar: avatarForUser(u),
     avatarLetter: (u.display_name || u.username || 'U')[0].toUpperCase(),
     hasVerifiedBadge: !!u.has_verified_badge,
     balance: u.balance,
@@ -1070,8 +1068,12 @@ async function getRobloxUserFull(userId){
 
 function avatarForUser(u){
   if(!u) return null;
+  const id = u.id || u.user_id || u.creator_id || null;
+  // Prefer stable Roblox headshot from id so every user gets a real image
+  if(id && String(id) !== 'demo'){
+    return 'https://www.roblox.com/headshot-thumbnail/image?userId=' + id + '&width=150&height=150&format=png';
+  }
   if(u.avatar && String(u.avatar).startsWith('http')) return u.avatar;
-  if(u.id) return 'https://www.roblox.com/headshot-thumbnail/image?userId=' + u.id + '&width=150&height=150&format=png';
   return null;
 }
 
@@ -1577,7 +1579,7 @@ app.post('/api/pvp/coinflip/:id/chat', requireAuth, (req, res) => {
     const chat = {
       id, matchId, userId: user.id,
       username: user.display_name || user.username,
-      avatar: user.avatar, message, timestamp: now
+      avatar: avatarForUser(user), message, timestamp: now
     };
 
     broadcastToMatch(matchId, { type: 'chat', chat });
@@ -1591,7 +1593,7 @@ app.post('/api/pvp/coinflip/:id/chat', requireAuth, (req, res) => {
 function serializePvpChat(c){
   return {
     id: c.id, matchId: c.match_id, userId: c.user_id,
-    username: c.username, avatar: c.avatar,
+    username: c.username, avatar: avatarForUser({ id: c.user_id || c.userId, avatar: c.avatar }) || c.avatar,
     message: c.message, timestamp: c.created_at
   };
 }
@@ -1650,7 +1652,7 @@ app.post('/api/chat/global', chatLimiter, requireAuth, (req, res) => {
       id,
       userId: user.id,
       username,
-      avatar: user.avatar,
+      avatar: avatarForUser(user),
       nameColor,
       chatBadge,
       message,
@@ -1693,7 +1695,7 @@ function serializeGlobalChat(c){
     id: c.id,
     userId: c.user_id,
     username: c.username,
-    avatar: c.avatar,
+    avatar: avatarForUser({ id: c.user_id || c.userId, avatar: c.avatar }) || c.avatar,
     nameColor: c.name_color,
     chatBadge: c.chat_badge,
     message: c.message,
@@ -1830,7 +1832,7 @@ app.get('/api/flips/recent', requireAuth, (req, res) => {
       id: r.id,
       userId: r.user_id,
       username: r.udname || r.uname || 'Unknown',
-      avatar: r.uavatar,
+      avatar: avatarForUser({ id: r.user_id || r.uid, avatar: r.uavatar }) || r.uavatar,
       level: r.ulevel || 1,
       rank: r.urank || 'Bronze',
       hasVerifiedBadge: !!r.uverified,
@@ -2064,7 +2066,7 @@ function resolveCaseBattle(battleId){
     const refreshedPlayers = stmts.getBattlePlayers.all(battleId).map(p => ({
       userId: p.user_id,
       username: p.username,
-      avatar: p.avatar,
+      avatar: avatarForUser(p) || p.avatar,
       slot: p.slot,
       reel: p.reel_json ? JSON.parse(p.reel_json) : [],
       item: {
@@ -2141,7 +2143,7 @@ function serializeCaseBattle(b, players){
   const playerList = (players || stmts.getBattlePlayers.all(b.id)).map(p => ({
     userId: p.user_id,
     username: p.username,
-    avatar: p.avatar,
+    avatar: avatarForUser(p) || p.avatar,
     slot: p.slot,
     item: p.rolled_item_id ? {
       itemId: p.rolled_item_id,
@@ -2797,7 +2799,7 @@ app.get('/api/crash/state', requireAuth, (req, res) => {
     state.playerBets = betsForRound.map(b => ({
       userId: b.userId,
       username: b.username,
-      avatar: b.avatar,
+      avatar: avatarForUser({ id: b.userId, avatar: b.avatar }) || b.avatar,
       bet: b.bet,
       cashedOut: !!b.cashedOut,
       cashoutMultiplier: b.cashoutMultiplier || null,
@@ -2871,7 +2873,7 @@ app.post('/api/crash/bet', crashLimiter, requireAuth, (req, res) => {
       betId,
       userId: user.id,
       username: user.display_name || user.username,
-      avatar: user.avatar,
+      avatar: avatarForUser(user),
       bet: betNum,
       edge,
       autoCashout,
@@ -2889,7 +2891,7 @@ app.post('/api/crash/bet', crashLimiter, requireAuth, (req, res) => {
       roundId: crashEngineState.currentRoundId,
       userId: user.id,
       username: user.display_name || user.username,
-      avatar: user.avatar,
+      avatar: avatarForUser(user),
       bet: betNum,
       autoCashout
     });
