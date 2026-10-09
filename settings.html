@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Settings — BloxBet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<style>
+  .set-grid{display:grid;gap:1rem;max-width:640px}
+  .set-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--r-xl);
+    padding:1.15rem 1.25rem;
+  }
+  .set-card h2{
+    font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--text-3);font-weight:600;margin-bottom:.85rem;
+  }
+  .set-row{
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+    padding:.65rem 0;border-bottom:1px solid var(--border);
+  }
+  .set-row:last-child{border-bottom:none;padding-bottom:0}
+  .set-row:first-of-type{padding-top:0}
+  .set-label{font-size:.85rem;font-weight:600;color:var(--text)}
+  .set-desc{font-size:.72rem;color:var(--text-3);margin-top:.15rem;line-height:1.4}
+  .set-toggle{
+    width:40px;height:22px;border-radius:999px;border:1px solid var(--border-2);
+    background:var(--surface-3);position:relative;cursor:pointer;flex-shrink:0;
+    transition:background .15s ease;
+  }
+  .set-toggle.on{background:var(--accent);border-color:var(--accent)}
+  .set-toggle::after{
+    content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;
+    border-radius:50%;background:#fff;transition:transform .15s ease;
+  }
+  .set-toggle.on::after{transform:translateX(18px)}
+  .set-profile{
+    display:flex;align-items:center;gap:.85rem;margin-bottom:.25rem;
+  }
+  .set-avatar{
+    width:52px;height:52px;border-radius:50%;overflow:hidden;
+    background:var(--surface-3);border:1px solid var(--border-2);
+    display:grid;place-items:center;font-weight:700;font-size:1.1rem;
+  }
+  .set-avatar img{width:100%;height:100%;object-fit:cover}
+  .set-meta .name{font-weight:700;font-size:.95rem}
+  .set-meta .handle{font-size:.75rem;color:var(--text-3);font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+<script>
+(function(){try{if(localStorage.getItem('bb_token')&&localStorage.getItem('bb_user'))document.documentElement.classList.add('bb-logged-in')}catch(e){}})();
+</script>
+
+<nav class="nav">
+  <div class="nav-left">
+    <button class="menu-btn" data-tip="Menu"><img src="icons/menu.png" alt="" class="ico" draggable="false"></button>
+    <a href="index.html" class="nav-logo">
+      <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
+      <span class="nav-logo-text">BloxBet</span>
+    </a>
+  </div>
+  <div class="nav-center">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="games.html">Games</a>
+    <a class="nav-link" href="rewards.html">Rewards</a>
+    <a class="nav-link" href="community.html">Community</a>
+    <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+    <a class="nav-link" href="profile.html">Profile</a>
+  </div>
+  <div class="nav-right">
+    <div class="balance-chip">
+      <div>
+        <div class="label">Balance</div>
+        <div class="value"><span data-balance data-balance="0">0</span><span class="unit">RC</span></div>
+      </div>
+      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')">
+        <img src="icons/plus.png" alt="" class="ico" draggable="false">
+      </button>
+    </div>
+    <div class="dropdown">
+      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">?</button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="profile.html">Profile</a>
+        <a class="dropdown-item" href="settings.html">Settings</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-section">Overview</div>
+  <a class="side-item" data-href="index.html" href="index.html"><span class="icon"><img src="icons/home.png" alt="" class="ico" draggable="false"></span><span class="label">Home</span></a>
+  <a class="side-item" data-href="games.html" href="games.html"><span class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></span><span class="label">Games</span></a>
+  <a class="side-item" data-href="rewards.html" href="rewards.html"><span class="icon"><img src="icons/rewards.png" alt="" class="ico" draggable="false"></span><span class="label">Rewards</span></a>
+  <div class="sidebar-section">Account</div>
+  <a class="side-item" data-href="profile.html" href="profile.html"><span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span><span class="label">Profile</span></a>
+  <a class="side-item active" data-href="settings.html" href="settings.html"><span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span><span class="label">Settings</span></a>
+</aside>
+
+<main class="main">
+  <div class="container page">
+    <div class="page-head">
+      <div>
+        <h1>Settings</h1>
+        <div class="sub">Account preferences</div>
+      </div>
+    </div>
+
+    <div class="set-grid">
+      <div class="set-card">
+        <h2>Account</h2>
+        <div class="set-profile">
+          <div class="set-avatar" id="setAvatar">?</div>
+          <div class="set-meta">
+            <div class="name" id="setName">—</div>
+            <div class="handle" id="setHandle">@—</div>
+          </div>
+        </div>
+        <div class="set-row">
+          <div>
+            <div class="set-label">Linked Roblox</div>
+            <div class="set-desc">Identity is verified through your Roblox account.</div>
+          </div>
+          <span class="chip" id="setLinked">Connected</span>
+        </div>
+        <div class="set-row">
+          <div>
+            <div class="set-label">Open profile</div>
+            <div class="set-desc">Public stats, rank, and activity.</div>
+          </div>
+          <a class="btn btn-ghost btn-sm" href="profile.html">View</a>
+        </div>
+      </div>
+
+      <div class="set-card">
+        <h2>Preferences</h2>
+        <div class="set-row">
+          <div>
+            <div class="set-label">Sound effects</div>
+            <div class="set-desc">Game and UI audio cues.</div>
+          </div>
+          <button type="button" class="set-toggle" id="togSound" aria-label="Sound"></button>
+        </div>
+        <div class="set-row">
+          <div>
+            <div class="set-label">Compact numbers</div>
+            <div class="set-desc">Show 12.4K instead of 12,400 where possible.</div>
+          </div>
+          <button type="button" class="set-toggle" id="togCompact" aria-label="Compact"></button>
+        </div>
+        <div class="set-row">
+          <div>
+            <div class="set-label">Confirm large bets</div>
+            <div class="set-desc">Ask before placing bets over 10% of balance.</div>
+          </div>
+          <button type="button" class="set-toggle on" id="togConfirm" aria-label="Confirm"></button>
+        </div>
+      </div>
+
+      <div class="set-card">
+        <h2>Session</h2>
+        <div class="set-row">
+          <div>
+            <div class="set-label">Stay signed in</div>
+            <div class="set-desc">Session is kept until you sign out.</div>
+          </div>
+          <span class="chip">On</span>
+        </div>
+        <div class="set-row">
+          <div>
+            <div class="set-label">Sign out</div>
+            <div class="set-desc">Clear this device session.</div>
+          </div>
+          <button type="button" class="btn btn-danger btn-sm" onclick="Auth.logout()">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="m-deposit">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>Add Funds</h3><p>Top up your RoCoins balance.</p></div>
+      <button class="modal-close" onclick="Modal.close('m-deposit')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Amount</label>
+        <input type="number" id="depositAmount" value="1000" min="100" step="100">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')">Cancel</button>
+      <button class="btn btn-primary" id="depositConfirmBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/toasts.js"></script>
+<script src="js/modals.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/deposit.js"></script>
+<script src="js/admin-link.js"></script>
+<script>
+(function(){
+  if(typeof Auth === 'undefined') return;
+  if(!Auth.isLoggedIn()){ Auth.safeRedirect('login'); return; }
+  var me = Auth.getUser() || {};
+  if(typeof renderAvatar === 'function'){
+    renderAvatar(document.getElementById('navAvatar'), me);
+    renderAvatar(document.getElementById('setAvatar'), me);
+  }
+  document.getElementById('setName').textContent = me.displayName || me.username || 'User';
+  document.getElementById('setHandle').textContent = '@' + (me.username || 'user');
+
+  function bindToggle(id, key, defOn){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var on = localStorage.getItem(key);
+    if(on === null) on = defOn ? '1' : '0';
+    el.classList.toggle('on', on === '1');
+    el.addEventListener('click', function(){
+      var next = el.classList.toggle('on');
+      localStorage.setItem(key, next ? '1' : '0');
+    });
+  }
+  bindToggle('togSound', 'bb_pref_sound', true);
+  bindToggle('togCompact', 'bb_pref_compact', false);
+  bindToggle('togConfirm', 'bb_pref_confirm', true);
+
+  Auth.refreshUser().then(function(u){
+    if(!u) return;
+    if(typeof renderAvatar === 'function'){
+      renderAvatar(document.getElementById('navAvatar'), u);
+      renderAvatar(document.getElementById('setAvatar'), u);
+    }
+    document.getElementById('setName').textContent = u.displayName || u.username || 'User';
+    document.getElementById('setHandle').textContent = '@' + (u.username || 'user');
+  });
+})();
+</script>
+</body>
+</html>

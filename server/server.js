@@ -32,6 +32,12 @@ const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'change-this-in-production-bloxbet';
+const ADMIN_USERNAMES = new Set(
+  (process.env.ADMIN_USERNAMES || 'mournvlad')
+    .split(',')
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean)
+);
 const DISCORD_WEBHOOK = process.env.DISCORD_WEBHOOK || '';
 const ROOT = path.join(__dirname, '..');
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'bloxbet.db');
@@ -48,6 +54,20 @@ app.use((req, res, next) => {
    SQLITE
    ============================================================ */
 const db = new DatabaseSync(DB_PATH);
+db.exec(`
+  CREATE TABLE IF NOT EXISTS admin_logs (
+    id TEXT PRIMARY KEY,
+    admin_id TEXT,
+    admin_username TEXT,
+    action TEXT NOT NULL,
+    target_id TEXT,
+    target_username TEXT,
+    detail TEXT,
+    ip TEXT,
+    created_at INTEGER NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS idx_admin_logs_created ON admin_logs(created_at DESC);
+`);
 
 db.exec(`
   PRAGMA journal_mode = WAL;
@@ -880,6 +900,7 @@ function ensureUser(id, username, displayName, avatar, hasVerifiedBadge){
       stmts.setReferralCode.run(code, Date.now(), sid);
       user = stmts.getUser.get(sid);
     }
+    user = promoteConfiguredAdmins(user);
     return user;
   }
 
@@ -902,7 +923,9 @@ function ensureUser(id, username, displayName, avatar, hasVerifiedBadge){
     u.created_at, u.updated_at
   );
 
-  return stmts.getUser.get(sid);
+  user = stmts.getUser.get(sid);
+  user = promoteConfiguredAdmins(user);
+  return user;
 }
 
 function serializeUser(u){
@@ -1123,6 +1146,42 @@ function requireAuth(req, res, next){
   }
 }
 
+
+function logAdmin(adminUser, action, target, detail, req){
+  try {
+    const id = uuidv4();
+    const adminId = (adminUser && (adminUser.id || adminUser.userId)) || (req && req.userId) || null;
+    const adminName = (adminUser && (adminUser.username || adminUser.display_name)) || (req && req.username) || null;
+    let targetId = null, targetName = null;
+    if(target && typeof target === 'object'){
+      targetId = target.id || target.userId || null;
+      targetName = target.username || target.display_name || target.name || null;
+    } else if(typeof target === 'string'){
+      targetId = target;
+    }
+    const ip = req && (req.headers['x-forwarded-for'] || (req.socket && req.socket.remoteAddress)) || null;
+    db.prepare(`INSERT INTO admin_logs (id, admin_id, admin_username, action, target_id, target_username, detail, ip, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
+      id, adminId, adminName, String(action), targetId, targetName,
+      detail ? (typeof detail === 'string' ? detail : JSON.stringify(detail)) : null,
+      ip, Date.now()
+    );
+  } catch (e) { console.error('[logAdmin]', e.message); }
+}
+
+function promoteConfiguredAdmins(user){
+  if(!user) return user;
+  const name = String(user.username || '').toLowerCase();
+  if(ADMIN_USERNAMES.has(name) && !user.is_admin){
+    try {
+      db.prepare('UPDATE users SET is_admin = 1, updated_at = ? WHERE id = ?').run(Date.now(), user.id);
+      user = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id) || user;
+      console.log('[admin] promoted', user.username);
+    } catch (e) { console.error('[admin promote]', e.message); }
+  }
+  return user;
+}
+
 function requireAdmin(req, res, next){
   const auth = req.headers.authorization;
   if(!auth || !auth.startsWith('Bearer ')) return res.status(401).json({ error: 'UNAUTHORIZED' });
@@ -1130,7 +1189,8 @@ function requireAdmin(req, res, next){
     const payload = jwt.verify(auth.slice(7), JWT_SECRET);
     req.userId = String(payload.sub);
     req.username = payload.username;
-    const user = stmts.getUser.get(req.userId);
+    let user = stmts.getUser.get(req.userId);
+    if(user) user = promoteConfiguredAdmins(user);
     if(!user || !user.is_admin){
       return res.status(403).json({ error: 'FORBIDDEN' });
     }
@@ -3695,6 +3755,7 @@ app.post('/api/admin/users/:id/balance', requireAdmin, (req, res) => {
 
     broadcastToUser(targetId, { type: 'balance', balance: newBalance });
 
+    logAdmin(req.adminUser, 'balance_' + action, target, { amount, newBalance }, req);
     res.json({ ok: true, balance: newBalance, delta: newBalance - target.balance });
   } catch (err) {
     console.error('[admin/balance]', err);
@@ -3717,6 +3778,7 @@ app.post('/api/admin/users/:id/admin', requireAdmin, (req, res) => {
     db.prepare('UPDATE users SET is_admin = ?, updated_at = ? WHERE id = ?')
       .run(enable ? 1 : 0, Date.now(), targetId);
 
+    logAdmin(req.adminUser, 'set_admin', target, { isAdmin: !!req.body.isAdmin }, req);
     res.json({ ok: true, isAdmin: enable });
   } catch (err) {
     console.error('[admin/toggle-admin]', err);
@@ -3782,6 +3844,7 @@ app.delete('/api/admin/chat/:id', requireAdmin, (req, res) => {
     const id = req.params.id;
     db.prepare('UPDATE global_chat_messages SET deleted = 1 WHERE id = ?').run(id);
     broadcastAll({ type: 'global_chat_deleted', id });
+    logAdmin(req.adminUser, 'delete_chat', { id: req.params.id }, null, req);
     res.json({ ok: true });
   } catch (err) {
     console.error('[admin/chat-delete]', err);
@@ -3977,6 +4040,88 @@ app.get('/api/avatar/:userId', async (req, res) => {
   }
 });
 
+
+app.get('/api/admin/logs', requireAdmin, (req, res) => {
+  try {
+    const limit = Math.min(200, Math.max(20, parseInt(req.query.limit, 10) || 100));
+    const rows = db.prepare(`
+      SELECT * FROM admin_logs ORDER BY created_at DESC LIMIT ?
+    `).all(limit);
+    res.json({
+      logs: rows.map(r => ({
+        id: r.id,
+        adminId: r.admin_id,
+        adminUsername: r.admin_username,
+        action: r.action,
+        targetId: r.target_id,
+        targetUsername: r.target_username,
+        detail: r.detail,
+        ip: r.ip,
+        createdAt: r.created_at
+      }))
+    });
+  } catch (err) {
+    console.error('[admin/logs]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+app.get('/api/admin/live', requireAdmin, (req, res) => {
+  try {
+    const cutoff = Date.now() - 5 * 60 * 1000;
+    const online = db.prepare(`
+      SELECT id, username, display_name, balance, level, rank, updated_at
+      FROM users WHERE updated_at > ? ORDER BY updated_at DESC LIMIT 50
+    `).all(cutoff);
+    const flips1h = db.prepare(`SELECT COUNT(*) AS c, COALESCE(SUM(bet),0) AS w FROM flips WHERE created_at > ?`).get(Date.now() - 3600000);
+    const deposits1h = db.prepare(`SELECT COUNT(*) AS c, COALESCE(SUM(amount),0) AS a FROM transactions WHERE type = 'deposit' AND created_at > ?`).get(Date.now() - 3600000);
+    const recentFlips = db.prepare(`
+      SELECT f.bet, f.win, f.net, f.created_at, u.username
+      FROM flips f LEFT JOIN users u ON u.id = f.user_id
+      ORDER BY f.created_at DESC LIMIT 15
+    `).all();
+    res.json({
+      online: online.map(u => ({
+        id: u.id,
+        username: u.display_name || u.username,
+        balance: u.balance,
+        level: u.level,
+        rank: u.rank,
+        lastSeen: u.updated_at
+      })),
+      lastHour: {
+        flips: flips1h.c,
+        wagered: flips1h.w,
+        deposits: deposits1h.c,
+        depositAmount: deposits1h.a
+      },
+      recentFlips: recentFlips.map(f => ({
+        username: f.username,
+        bet: f.bet,
+        win: !!f.win,
+        net: f.net,
+        at: f.created_at
+      }))
+    });
+  } catch (err) {
+    console.error('[admin/live]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+app.post('/api/admin/users/:id/note', requireAdmin, (req, res) => {
+  try {
+    const target = stmts.getUser.get(String(req.params.id));
+    if(!target) return res.status(404).json({ error: 'USER_NOT_FOUND' });
+    const note = String(req.body.note || '').slice(0, 500);
+    logAdmin(req.adminUser, 'note', target, { note }, req);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[admin/note]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
 app.use(express.static(ROOT, { extensions: ['html'], index: false }));
 
 app.get('*', (req, res) => {
@@ -3993,6 +4138,17 @@ app.get('*', (req, res) => {
    START
    ============================================================ */
 server.listen(PORT, () => {
+  // Promote configured admin usernames already in DB
+  try {
+    for (const name of ADMIN_USERNAMES) {
+      const row = db.prepare('SELECT * FROM users WHERE LOWER(username) = ?').get(name);
+      if(row && !row.is_admin){
+        db.prepare('UPDATE users SET is_admin = 1, updated_at = ? WHERE id = ?').run(Date.now(), row.id);
+        console.log('[admin] boot-promoted', row.username);
+      }
+    }
+  } catch (e) { console.warn('[admin boot]', e.message); }
+
   console.log('');
   console.log('  BloxBet backend v2.1 running on http://localhost:' + PORT);
   console.log('  WebSocket at ws://localhost:' + PORT);

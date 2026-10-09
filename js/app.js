@@ -157,6 +157,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+
+  /* ---------- Settings link in account menus ---------- */
+  document.querySelectorAll('.dropdown-menu').forEach(function(menu){
+    var hasProfile = menu.querySelector('a[href="profile.html"]');
+    if(!hasProfile) return;
+    var existing = menu.querySelector('a[href="settings.html"]');
+    if(existing) return;
+    // Replace "Settings" coming-soon items
+    menu.querySelectorAll('.dropdown-item').forEach(function(item){
+      if((item.textContent || '').trim() === 'Settings'){
+        item.setAttribute('href', 'settings.html');
+        item.onclick = null;
+        item.removeAttribute('onclick');
+      }
+    });
+    if(!menu.querySelector('a[href="settings.html"]')){
+      var s = document.createElement('a');
+      s.className = 'dropdown-item';
+      s.href = 'settings.html';
+      s.textContent = 'Settings';
+      hasProfile.parentNode.insertBefore(s, hasProfile.nextSibling);
+    }
+  });
+
   /* ---------- Dropdowns ---------- */
   document.querySelectorAll('.dropdown').forEach(dd => {
     const trigger = dd.querySelector('[data-dropdown]');

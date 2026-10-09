@@ -10,276 +10,62 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
 <style>
-  .ad-stats{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-    gap:.6rem;
-    margin-bottom:1.25rem;
-  }
-  .ad-stat{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--r-md);
-    padding:.85rem 1rem;
-  }
-  .ad-stat-label{
-    font-size:.62rem;
-    text-transform:uppercase;
-    letter-spacing:.07em;
-    font-weight:600;
-    color:var(--text-3);
-    margin-bottom:.35rem;
-  }
-  .ad-stat-value{
-    font-family:'JetBrains Mono',monospace;
-    font-size:1.05rem;
-    font-weight:700;
-    color:var(--text);
-    letter-spacing:-.01em;
-  }
-  .ad-stat-value.accent{color:var(--accent)}
-  .ad-stat-sub{
-    font-size:.6rem;
-    color:var(--text-3);
-    margin-top:.25rem;
-    font-family:'JetBrains Mono',monospace;
-  }
-
-  .ad-tabs{
-    display:flex;
-    gap:.25rem;
-    margin-bottom:1rem;
-    border-bottom:1px solid var(--border);
-  }
-  .ad-tab{
-    padding:.6rem 1rem;
-    background:transparent;
-    border:none;
-    border-bottom:2px solid transparent;
-    color:var(--text-3);
-    font-family:inherit;
-    font-size:.78rem;
-    font-weight:600;
-    cursor:pointer;
-    transition:color 120ms ease, border-color 120ms ease;
-    margin-bottom:-1px;
-  }
-  .ad-tab:hover{color:var(--text-2)}
-  .ad-tab.active{
-    color:var(--text);
-    border-color:var(--accent);
-  }
-
-  .ad-panel{display:none}
-  .ad-panel.active{display:block}
-
-  .ad-search{
-    display:flex;
-    gap:.5rem;
-    margin-bottom:.75rem;
-  }
-  .ad-search input{
-    flex:1;
-    background:var(--bg-2);
-    border:1px solid var(--border-2);
-    border-radius:var(--r-md);
-    padding:.55rem .8rem;
-    color:var(--text);
-    font-family:inherit;
-    font-size:.82rem;
-    outline:none;
-  }
-  .ad-search input:focus{border-color:var(--accent)}
-
-  .ad-user-row{
-    display:grid;
-    grid-template-columns:40px 1fr 100px 90px 70px auto;
-    align-items:center;
-    gap:.75rem;
-    padding:.6rem .9rem;
-    border-bottom:1px solid var(--border);
-    transition:background 120ms ease;
-  }
-  .ad-user-row:last-child{border-bottom:none}
-  .ad-user-row:hover{background:var(--surface-2)}
-
-  .ad-avatar{
-    width:36px;
-    height:36px;
-    border-radius:50%;
-    background:var(--surface-3);
-    display:grid;
-    place-items:center;
-    font-size:.75rem;
-    font-weight:600;
-    overflow:hidden;
-    border:1px solid var(--border-2);
-  }
-  .ad-avatar img{width:100%;height:100%;object-fit:cover}
-
-  .ad-user-info{min-width:0}
-  .ad-user-name{
-    font-size:.82rem;
-    font-weight:600;
-    color:var(--text);
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .ad-user-meta{
-    font-size:.65rem;
-    color:var(--text-3);
-    font-family:'JetBrains Mono',monospace;
-  }
-
-  .ad-cell{
-    font-family:'JetBrains Mono',monospace;
-    font-size:.72rem;
-    color:var(--text-2);
-    text-align:right;
-  }
-  .ad-cell.emphasis{color:var(--accent);font-weight:600}
-
-  .ad-badge{
-    font-size:.58rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    padding:.15rem .4rem;
-    border-radius:4px;
-    background:var(--surface-3);
-    color:var(--text-3);
-    border:1px solid var(--border);
-    display:inline-block;
-  }
-  .ad-badge.admin{
-    background:rgba(251,191,36,.14);
-    color:#fbbf24;
-    border-color:rgba(251,191,36,.4);
-  }
-
-  .ad-actions{
-    display:flex;
-    gap:.3rem;
-    justify-content:flex-end;
-  }
-  .ad-actions .btn-sm{
-    padding:.28rem .55rem;
-    font-size:.65rem;
-  }
-
-  .ad-tx-row{
-    display:grid;
-    grid-template-columns:1fr 140px 110px 100px;
-    align-items:center;
-    gap:.75rem;
-    padding:.5rem .9rem;
-    border-bottom:1px solid var(--border);
-    font-size:.72rem;
-  }
-  .ad-tx-row:last-child{border-bottom:none}
-  .ad-tx-row:hover{background:var(--surface-2)}
-  .ad-tx-type{color:var(--text-2);font-weight:500;text-transform:capitalize}
-  .ad-tx-user{color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.7rem}
-  .ad-tx-amt{
-    font-family:'JetBrains Mono',monospace;
-    font-weight:600;
-    text-align:right;
-  }
-  .ad-tx-amt.pos{color:#4ade80}
-  .ad-tx-amt.neg{color:#f87171}
-  .ad-tx-time{
-    font-size:.65rem;
-    color:var(--text-3);
-    font-family:'JetBrains Mono',monospace;
-    text-align:right;
-  }
-
-  .ad-chat-row{
-    display:grid;
-    grid-template-columns:140px 1fr auto auto;
-    align-items:center;
-    gap:.75rem;
-    padding:.5rem .9rem;
-    border-bottom:1px solid var(--border);
-    font-size:.72rem;
-  }
-  .ad-chat-row:last-child{border-bottom:none}
-  .ad-chat-row:hover{background:var(--surface-2)}
-  .ad-chat-user{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-2)}
-  .ad-chat-msg{color:var(--text);word-break:break-word}
-  .ad-chat-row.deleted{opacity:.4}
-  .ad-chat-row.deleted .ad-chat-msg{text-decoration:line-through}
-
-  .ad-empty{
-    padding:2rem 1rem;
-    text-align:center;
-    font-size:.75rem;
-    color:var(--text-3);
-  }
-
-  .ad-modal-inner{
-    display:flex;
-    flex-direction:column;
-    gap:.75rem;
-  }
-  .ad-modal-actions{
-    display:flex;
-    gap:.4rem;
-  }
-  .ad-modal-actions .btn{flex:1}
-
-  @media (max-width:900px){
-    .ad-user-row{
-      grid-template-columns:36px 1fr auto;
-      gap:.6rem;
-    }
-    .ad-user-row .ad-cell.wide{display:none}
-    .ad-user-row .ad-actions{grid-column:1 / -1;justify-content:flex-end;padding-top:.4rem}
-    .ad-tx-row{grid-template-columns:1fr auto auto;gap:.5rem}
-    .ad-tx-user{display:none}
-    .ad-chat-row{grid-template-columns:1fr auto auto;gap:.5rem}
-    .ad-chat-user{display:none}
-  }
+.ad-wrap{max-width:1100px;margin:0 auto}
+.ad-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.6rem;margin-bottom:1.1rem}
+.ad-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.85rem 1rem}
+.ad-stat-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--text-3);margin-bottom:.3rem}
+.ad-stat-value{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;letter-spacing:-.01em}
+.ad-stat-value.accent{color:var(--accent)}
+.ad-stat-sub{font-size:.6rem;color:var(--text-3);margin-top:.2rem;font-family:'JetBrains Mono',monospace}
+.ad-tabs{display:flex;gap:.2rem;margin-bottom:1rem;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.ad-tab{padding:.55rem .9rem;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--text-3);font-family:inherit;font-size:.76rem;font-weight:600;cursor:pointer;margin-bottom:-1px}
+.ad-tab:hover{color:var(--text-2)}
+.ad-tab.active{color:var(--text);border-color:var(--accent)}
+.ad-panel{display:none}
+.ad-panel.active{display:block}
+.ad-toolbar{display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap;align-items:center}
+.ad-toolbar input,.ad-toolbar select{
+  background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-sm);
+  color:var(--text);font-family:inherit;font-size:.78rem;padding:.45rem .65rem;outline:none;
+}
+.ad-toolbar input:focus{border-color:var(--accent)}
+.ad-table{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden}
+.ad-row{display:grid;gap:.75rem;align-items:center;padding:.55rem .9rem;border-bottom:1px solid var(--border);font-size:.74rem}
+.ad-row:last-child{border-bottom:none}
+.ad-row:hover{background:var(--surface-2)}
+.ad-row.head{background:var(--surface-2);color:var(--text-3);font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.ad-users .ad-row{grid-template-columns:36px 1.2fr .8fr .7fr .7fr auto}
+.ad-tx .ad-row{grid-template-columns:1fr 1fr .8fr .8fr .9fr}
+.ad-logs .ad-row{grid-template-columns:1.1fr .9fr 1fr 1.4fr .7fr}
+.ad-chat .ad-row{grid-template-columns:1fr 2fr auto auto}
+.ad-live-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+@media(max-width:800px){.ad-live-grid{grid-template-columns:1fr}.ad-users .ad-row{grid-template-columns:36px 1fr auto}}
+.ad-avatar{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--surface-3);display:grid;place-items:center;font-weight:600;font-size:.75rem}
+.ad-avatar img{width:100%;height:100%;object-fit:cover}
+.ad-mono{font-family:'JetBrains Mono',monospace;font-size:.7rem}
+.ad-badge{display:inline-flex;padding:.15rem .4rem;border-radius:4px;font-size:.62rem;font-weight:600;background:var(--surface-3);color:var(--text-2)}
+.ad-badge.admin{background:rgba(255,149,0,.15);color:var(--accent-2)}
+.ad-badge.win{background:rgba(34,197,94,.12);color:#4ade80}
+.ad-badge.lose{background:rgba(239,68,68,.12);color:#fca5a5}
+.ad-actions{display:flex;gap:.3rem;flex-wrap:wrap}
+.ad-empty{padding:2rem;text-align:center;color:var(--text-3);font-size:.78rem}
+.ad-note{font-size:.72rem;color:var(--text-3);margin-bottom:.75rem;line-height:1.45}
 </style>
 </head>
 <body>
-
-<div id="bbLoader" class="bb-loader">
-  <div class="bb-loader-bg"></div>
-  <div class="bb-loader-veil"></div>
-  <div class="bb-loader-vignette"></div>
-  <div class="bb-loader-glow"></div>
-  <div class="bb-loader-inner">
-    <div class="bb-loader-lockup">
-      <div class="bb-loader-mark">
-        <img src="icons/bloxbet.png" alt="BloxBet" draggable="false">
-      </div>
-      <div class="bb-loader-text">
-        <span class="bb-blox">Blox</span><span class="bb-bet">Bet</span>
-      </div>
-    </div>
-    <div class="bb-loader-bar">
-      <div class="bb-loader-fill"></div>
-    </div>
-  </div>
-</div>
-
 <nav class="nav">
   <div class="nav-left">
     <button class="menu-btn" data-tip="Menu"><img src="icons/menu.png" alt="" class="ico" draggable="false"></button>
     <a href="index.html" class="nav-logo">
       <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
       <span class="nav-logo-text">BloxBet</span>
+      <span class="chip" style="margin-left:.4rem">Admin</span>
     </a>
   </div>
   <div class="nav-center">
     <a class="nav-link" href="index.html">Home</a>
     <a class="nav-link" href="games.html">Games</a>
-    <a class="nav-link" href="rewards.html">Rewards</a>
     <a class="nav-link" href="community.html">Community</a>
-    <a class="nav-link" href="leaderboard.html">Leaderboard</a>
-    <a class="nav-link" href="profile.html">Profile</a>
     <a class="nav-link active" href="admin.html">Admin</a>
   </div>
   <div class="nav-right">
@@ -288,16 +74,12 @@
         <div class="label">Balance</div>
         <div class="value"><span data-balance data-balance="0">0</span><span class="unit">RC</span></div>
       </div>
-      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')"><img src="icons/plus.png" alt="" class="ico" draggable="false"></button>
     </div>
     <div class="dropdown">
-      <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications"><img src="icons/bell.png" alt="" class="ico" draggable="false"></button>
-      <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
-    </div>
-    <div class="dropdown">
-      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">N</button>
+      <button class="nav-avatar" data-dropdown id="navAvatar">?</button>
       <div class="dropdown-menu">
         <a class="dropdown-item" href="profile.html">Profile</a>
+        <a class="dropdown-item" href="settings.html">Settings</a>
         <a class="dropdown-item" href="admin.html">Admin</a>
         <div class="dropdown-divider"></div>
         <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
@@ -307,448 +89,284 @@
 </nav>
 
 <main class="main" style="margin-left:0">
-  <div class="container page">
-
+  <div class="container page ad-wrap">
     <div class="page-head">
       <div>
-        <h1>Admin Console</h1>
-        <div class="sub">Server control panel.</div>
+        <h1>Control panel</h1>
+        <div class="sub">Operators only · actions are logged</div>
+      </div>
+      <div class="page-head-actions">
+        <button class="btn btn-ghost btn-sm" id="btnRefresh">Refresh</button>
       </div>
     </div>
 
     <div class="ad-stats" id="adStats">
-      <div class="ad-stat">
-        <div class="ad-stat-label">Total Users</div>
-        <div class="ad-stat-value" id="adTotalUsers">—</div>
-        <div class="ad-stat-sub" id="adNewUsers">—</div>
-      </div>
-      <div class="ad-stat">
-        <div class="ad-stat-label">Active 24h</div>
-        <div class="ad-stat-value" id="adActive24">—</div>
-        <div class="ad-stat-sub" id="adActive7">—</div>
-      </div>
-      <div class="ad-stat">
-        <div class="ad-stat-label">Total Balance</div>
-        <div class="ad-stat-value accent" id="adTotalBalance">—</div>
-        <div class="ad-stat-sub">all users combined</div>
-      </div>
-      <div class="ad-stat">
-        <div class="ad-stat-label">Flips · 24h</div>
-        <div class="ad-stat-value" id="adFlips24">—</div>
-        <div class="ad-stat-sub" id="adFlipsWagered">—</div>
-      </div>
-      <div class="ad-stat">
-        <div class="ad-stat-label">Other Games · 24h</div>
-        <div class="ad-stat-value" id="adOther24">—</div>
-        <div class="ad-stat-sub" id="adOtherBreakdown">mines · crash · cases</div>
-      </div>
-      <div class="ad-stat">
-        <div class="ad-stat-label">Chat · 24h</div>
-        <div class="ad-stat-value" id="adChat24">—</div>
-        <div class="ad-stat-sub">global messages</div>
-      </div>
+      <div class="ad-stat"><div class="ad-stat-label">Users</div><div class="ad-stat-value" id="stUsers">—</div></div>
+      <div class="ad-stat"><div class="ad-stat-label">Balance pool</div><div class="ad-stat-value accent" id="stPool">—</div></div>
+      <div class="ad-stat"><div class="ad-stat-label">Flips 24h</div><div class="ad-stat-value" id="stFlips">—</div></div>
+      <div class="ad-stat"><div class="ad-stat-label">Wagered 24h</div><div class="ad-stat-value" id="stWager">—</div></div>
+      <div class="ad-stat"><div class="ad-stat-label">Online ~5m</div><div class="ad-stat-value" id="stOnline">—</div></div>
     </div>
 
-    <div class="ad-tabs">
-      <button class="ad-tab active" data-tab="users">Users</button>
-      <button class="ad-tab" data-tab="transactions">Transactions</button>
+    <div class="ad-tabs" id="adTabs">
+      <button class="ad-tab active" data-tab="live">Live</button>
+      <button class="ad-tab" data-tab="users">Users</button>
+      <button class="ad-tab" data-tab="tx">Transactions</button>
       <button class="ad-tab" data-tab="chat">Chat</button>
+      <button class="ad-tab" data-tab="logs">Audit log</button>
     </div>
 
-    <div class="ad-panel active" id="adPanelUsers">
-      <div class="ad-search">
-        <input type="text" id="adUserSearch" placeholder="Search by username or ID…">
-        <button class="btn btn-ghost btn-sm" id="adUserSearchBtn">Search</button>
-      </div>
-      <div class="panel">
-        <div class="panel-body" id="adUserList">
-          <div class="ad-empty">Loading…</div>
-        </div>
+    <div class="ad-panel active" id="panel-live">
+      <p class="ad-note">Recent activity and players seen in the last 5 minutes.</p>
+      <div class="ad-live-grid">
+        <div class="ad-table" id="liveOnline"><div class="ad-empty">Loading…</div></div>
+        <div class="ad-table" id="liveFlips"><div class="ad-empty">Loading…</div></div>
       </div>
     </div>
 
-    <div class="ad-panel" id="adPanelTransactions">
-      <div class="panel">
-        <div class="panel-body" id="adTxList">
-          <div class="ad-empty">Loading…</div>
-        </div>
+    <div class="ad-panel" id="panel-users">
+      <div class="ad-toolbar">
+        <input type="search" id="userSearch" placeholder="Search username…" style="min-width:200px">
+        <button class="btn btn-ghost btn-sm" id="userSearchBtn">Search</button>
       </div>
+      <div class="ad-table ad-users" id="userTable"></div>
     </div>
 
-    <div class="ad-panel" id="adPanelChat">
-      <div class="panel">
-        <div class="panel-body" id="adChatList">
-          <div class="ad-empty">Loading…</div>
-        </div>
+    <div class="ad-panel" id="panel-tx">
+      <div class="ad-toolbar">
+        <button class="btn btn-ghost btn-sm" id="txReload">Reload</button>
       </div>
+      <div class="ad-table ad-tx" id="txTable"></div>
     </div>
 
+    <div class="ad-panel" id="panel-chat">
+      <div class="ad-toolbar">
+        <button class="btn btn-ghost btn-sm" id="chatReload">Reload</button>
+      </div>
+      <div class="ad-table ad-chat" id="chatTable"></div>
+    </div>
+
+    <div class="ad-panel" id="panel-logs">
+      <p class="ad-note">Every balance change, admin grant, chat delete, and operator note.</p>
+      <div class="ad-toolbar">
+        <button class="btn btn-ghost btn-sm" id="logsReload">Reload</button>
+      </div>
+      <div class="ad-table ad-logs" id="logsTable"></div>
+    </div>
   </div>
 </main>
 
-<div class="modal-overlay" id="m-balance">
-  <div class="modal">
-    <div class="modal-head">
-      <div>
-        <h3>Adjust Balance</h3>
-        <p id="mBalUser">—</p>
-      </div>
-      <button class="modal-close" onclick="Modal.close('m-balance')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
-    </div>
-    <div class="modal-body">
-      <div class="ad-modal-inner">
-        <div class="field">
-          <label>Action</label>
-          <select id="mBalAction">
-            <option value="add">Add</option>
-            <option value="subtract">Subtract</option>
-            <option value="set">Set to</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Amount (RC)</label>
-          <input type="number" id="mBalAmount" value="1000" min="0" step="1">
-        </div>
-        <div class="ad-modal-actions">
-          <button class="btn btn-ghost" onclick="Modal.close('m-balance')">Cancel</button>
-          <button class="btn btn-primary" id="mBalConfirm">Apply</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  (function(){
-    var loader = document.getElementById('bbLoader');
-    if(!loader) return;
-    setTimeout(function(){
-      loader.classList.add('hide');
-      setTimeout(function(){ loader.remove(); }, 320);
-    }, 900);
-  })();
-</script>
-
-<script src="js/data.js"></script>
-<script src="js/icons.js"></script>
 <script src="js/toasts.js"></script>
-<script src="js/modals.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/app.js"></script>
 <script>
-  (function(){
-    if(typeof Auth === 'undefined'){ console.error('[admin] Auth missing'); return; }
-    if(!Auth.isLoggedIn()){ Auth.safeRedirect('login'); return; }
+(function(){
+  if(typeof Auth === 'undefined') return;
+  if(!Auth.isLoggedIn()){ Auth.safeRedirect('login'); return; }
+  var me = Auth.getUser();
+  if(!me || !me.isAdmin){
+    Toast && Toast.error ? Toast.error('Forbidden', 'Admin only') : alert('Admin only');
+    Auth.safeRedirect('index');
+    return;
+  }
+  if(typeof renderAvatar === 'function') renderAvatar(document.getElementById('navAvatar'), me);
 
-    var me = Auth.getUser() || {};
-    if(!me.isAdmin){
-      document.querySelector('.container').innerHTML =
-        '<div class="ad-empty" style="padding:4rem 2rem;font-size:1rem">403 — you do not have admin access.</div>';
-      return;
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
+  function fmt(n){ return Number(n||0).toLocaleString(); }
+  function ago(ts){
+    var s = Math.floor((Date.now()-ts)/1000);
+    if(s<60) return s+'s';
+    if(s<3600) return Math.floor(s/60)+'m';
+    if(s<86400) return Math.floor(s/3600)+'h';
+    return Math.floor(s/86400)+'d';
+  }
+  function av(u){
+    var id = u.id || u.userId;
+    var letter = (u.username||'U')[0].toUpperCase();
+    if(!id) return '<div class="ad-avatar">'+letter+'</div>';
+    return '<div class="ad-avatar"><img src="/api/avatar/'+id+'" alt="" referrerpolicy="no-referrer" onerror="this.remove()"><span style="position:absolute">'+letter+'</span></div>';
+  }
+
+  document.querySelectorAll('.ad-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.ad-tab').forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.ad-panel').forEach(function(p){ p.classList.remove('active'); });
+      tab.classList.add('active');
+      document.getElementById('panel-'+tab.dataset.tab).classList.add('active');
+      loadTab(tab.dataset.tab);
+    });
+  });
+
+  async function loadStats(){
+    try{
+      var res = await Auth.api('/admin/stats');
+      if(!res.ok) return;
+      var d = await res.json();
+      var users = d.users || {};
+      var eco = d.economy || {};
+      var act = d.activity || {};
+      document.getElementById('stUsers').textContent = fmt(users.total || d.userCount || 0);
+      document.getElementById('stPool').textContent = fmt(eco.totalBalance || 0);
+      document.getElementById('stFlips').textContent = fmt(act.flips24h || 0);
+      document.getElementById('stWager').textContent = fmt(act.flipsWagered24h || 0);
+    }catch(e){}
+    try{
+      var live = await Auth.api('/admin/live');
+      if(live.ok){
+        var L = await live.json();
+        document.getElementById('stOnline').textContent = fmt((L.online||[]).length);
+      }
+    }catch(e){}
+  }
+
+  async function loadLive(){
+    var res = await Auth.api('/admin/live');
+    if(!res.ok) return;
+    var d = await res.json();
+    var on = d.online || [];
+    var onlineEl = document.getElementById('liveOnline');
+    if(!on.length){ onlineEl.innerHTML = '<div class="ad-empty">No recent players</div>'; }
+    else {
+      onlineEl.innerHTML = '<div class="ad-row head"><span>Player</span><span>Balance</span><span>Rank</span><span>Seen</span></div>' +
+        on.map(function(u){
+          return '<div class="ad-row"><span>'+esc(u.username)+'</span><span class="ad-mono">'+fmt(u.balance)+'</span><span>'+esc(u.rank||'—')+'</span><span class="ad-mono">'+ago(u.lastSeen)+'</span></div>';
+        }).join('');
     }
-
-    var navAvatar = document.getElementById('navAvatar');
-    if(navAvatar && typeof renderAvatar === 'function') renderAvatar(navAvatar, me);
-
-    var currentBalanceTarget = null;
-
-    function fmt(n){
-      n = Number(n) || 0;
-      if(Math.abs(n) >= 1e6) return (n/1e6).toFixed(2) + 'M';
-      if(Math.abs(n) >= 1e3) return (n/1e3).toFixed(1) + 'K';
-      return n.toLocaleString();
+    var flips = d.recentFlips || [];
+    var fl = document.getElementById('liveFlips');
+    if(!flips.length){ fl.innerHTML = '<div class="ad-empty">No flips yet</div>'; }
+    else {
+      fl.innerHTML = '<div class="ad-row head"><span>Player</span><span>Bet</span><span>Net</span><span>When</span></div>' +
+        flips.map(function(f){
+          return '<div class="ad-row"><span>'+esc(f.username||'?')+'</span><span class="ad-mono">'+fmt(f.bet)+'</span><span class="ad-badge '+(f.win?'win':'lose')+'">'+(f.net>=0?'+':'')+fmt(f.net)+'</span><span class="ad-mono">'+ago(f.at)+'</span></div>';
+        }).join('');
     }
-    function fmtFull(n){ return Number(n || 0).toLocaleString(); }
-    function esc(s){
-      return String(s).replace(/[&<>"']/g, function(c){
-        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-      });
-    }
-    function timeAgo(ts){
-      var s = Math.floor((Date.now() - ts) / 1000);
-      if(s < 60) return s + 's ago';
-      var m = Math.floor(s / 60);
-      if(m < 60) return m + 'm ago';
-      var h = Math.floor(m / 60);
-      if(h < 24) return h + 'h ago';
-      return Math.floor(h / 24) + 'd ago';
-    }
+  }
 
-    /* ---------- STATS ---------- */
-    async function loadStats(){
-      try {
-        var res = await Auth.api('/admin/stats');
-        if(!res.ok) throw new Error();
-        var d = await res.json();
+  async function loadUsers(q){
+    var url = '/admin/users' + (q ? ('?q='+encodeURIComponent(q)) : '');
+    var res = await Auth.api(url);
+    if(!res.ok) return;
+    var d = await res.json();
+    var users = d.users || [];
+    var el = document.getElementById('userTable');
+    if(!users.length){ el.innerHTML = '<div class="ad-empty">No users</div>'; return; }
+    el.innerHTML = '<div class="ad-row head"><span></span><span>User</span><span>Balance</span><span>Wagered</span><span>Role</span><span></span></div>' +
+      users.map(function(u){
+        return '<div class="ad-row">' +
+          av(u) +
+          '<div><div style="font-weight:600">'+esc(u.displayName||u.username)+'</div><div class="ad-mono" style="color:var(--text-3)">@'+esc(u.username)+'</div></div>' +
+          '<span class="ad-mono">'+fmt(u.balance)+'</span>' +
+          '<span class="ad-mono">'+fmt(u.totalWagered||0)+'</span>' +
+          (u.isAdmin?'<span class="ad-badge admin">Admin</span>':'<span class="ad-badge">User</span>') +
+          '<div class="ad-actions">' +
+            '<button class="btn btn-ghost btn-sm" data-act="add" data-id="'+esc(u.id)+'">+RC</button>' +
+            '<button class="btn btn-ghost btn-sm" data-act="set" data-id="'+esc(u.id)+'">Set</button>' +
+            '<button class="btn btn-ghost btn-sm" data-act="admin" data-id="'+esc(u.id)+'" data-admin="'+(u.isAdmin?1:0)+'">'+(u.isAdmin?'Revoke':'Make admin')+'</button>' +
+          '</div></div>';
+      }).join('');
 
-        document.getElementById('adTotalUsers').textContent = fmt(d.users.total);
-        document.getElementById('adNewUsers').textContent = '+' + d.users.new24h + ' new in 24h';
-        document.getElementById('adActive24').textContent = fmt(d.users.active24h);
-        document.getElementById('adActive7').textContent = fmt(d.users.active7d) + ' in 7d';
-        document.getElementById('adTotalBalance').textContent = fmt(d.economy.totalBalance) + ' RC';
-        document.getElementById('adFlips24').textContent = fmt(d.activity.flips24h);
-        document.getElementById('adFlipsWagered').textContent = fmt(d.activity.flipsWagered24h) + ' RC wagered';
-
-        var other = d.activity.mines24h + d.activity.crash24h + d.activity.cases24h;
-        document.getElementById('adOther24').textContent = fmt(other);
-        document.getElementById('adOtherBreakdown').textContent =
-          d.activity.mines24h + ' mines · ' + d.activity.crash24h + ' crash · ' + d.activity.cases24h + ' cases';
-
-        document.getElementById('adChat24').textContent = fmt(d.activity.chat24h);
-      } catch(e){}
-    }
-
-    /* ---------- USERS ---------- */
-    async function loadUsers(q){
-      var el = document.getElementById('adUserList');
-      try {
-        var url = '/admin/users?limit=50' + (q ? '&q=' + encodeURIComponent(q) : '');
-        var res = await Auth.api(url);
-        if(!res.ok) throw new Error();
-        var data = await res.json();
-        var users = data.users || [];
-
-        if(users.length === 0){
-          el.innerHTML = '<div class="ad-empty">No users found.</div>';
+    el.querySelectorAll('[data-act]').forEach(function(btn){
+      btn.addEventListener('click', async function(){
+        var id = btn.getAttribute('data-id');
+        var act = btn.getAttribute('data-act');
+        if(act === 'admin'){
+          var make = btn.getAttribute('data-admin') !== '1';
+          if(!confirm(make ? 'Grant admin?' : 'Revoke admin?')) return;
+          var r = await Auth.api('/admin/users/'+id+'/admin', { method:'POST', body: JSON.stringify({ isAdmin: make }) });
+          if(r.ok){ Toast.success('Updated','Admin flag saved'); loadUsers(document.getElementById('userSearch').value.trim()); }
+          else Toast.error('Failed','Could not update admin');
           return;
         }
-
-        el.innerHTML = '';
-        users.forEach(function(u){
-          var row = document.createElement('div');
-          row.className = 'ad-user-row';
-
-          var initial = (u.displayName || 'U')[0].toUpperCase();
-          var avatarHtml;
-          var avUrl = (typeof resolveAvatarUrl === 'function') ? resolveAvatarUrl(u) : u.avatar;
-          if(avUrl && (String(avUrl).indexOf('/api/avatar/') === 0 || /^https?:/i.test(avUrl))){
-            avatarHtml = '<img src="' + avUrl + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + initial + '\'">';
-          } else {
-            avatarHtml = initial;
-          }
-
-          var adminBadge = u.isAdmin ? ' <span class="ad-badge admin">admin</span>' : '';
-
-          row.innerHTML =
-            '<div class="ad-avatar">' + avatarHtml + '</div>' +
-            '<div class="ad-user-info">' +
-              '<div class="ad-user-name">' + esc(u.displayName) + adminBadge + '</div>' +
-              '<div class="ad-user-meta">@' + esc(u.username) + ' · id ' + esc(u.id).slice(0, 8) + '</div>' +
-            '</div>' +
-            '<div class="ad-cell emphasis wide">' + fmtFull(u.balance) + ' RC</div>' +
-            '<div class="ad-cell wide">Lv ' + u.level + ' · ' + esc(u.rank) + '</div>' +
-            '<div class="ad-cell wide">' + fmtFull(u.gamesPlayed) + ' games</div>' +
-            '<div class="ad-actions">' +
-              '<button class="btn btn-ghost btn-sm ad-bal-btn">Balance</button>' +
-              '<button class="btn btn-ghost btn-sm ad-adm-btn">' + (u.isAdmin ? 'Demote' : 'Promote') + '</button>' +
-            '</div>';
-
-          var balBtn = row.querySelector('.ad-bal-btn');
-          balBtn.addEventListener('click', function(){
-            currentBalanceTarget = u;
-            document.getElementById('mBalUser').textContent =
-              u.displayName + ' · current ' + fmtFull(u.balance) + ' RC';
-            document.getElementById('mBalAmount').value = 1000;
-            document.getElementById('mBalAction').value = 'add';
-            Modal.open('m-balance');
-          });
-
-          var admBtn = row.querySelector('.ad-adm-btn');
-          admBtn.addEventListener('click', async function(){
-            admBtn.disabled = true;
-            try {
-              var r = await Auth.api('/admin/users/' + u.id + '/admin', {
-                method: 'POST',
-                body: JSON.stringify({ enable: !u.isAdmin })
-              });
-              if(!r.ok){
-                var err = 'FAILED';
-                try { var j = await r.json(); err = j.error || err; } catch(e){}
-                throw new Error(err);
-              }
-              Toast.success(u.isAdmin ? 'Demoted' : 'Promoted', u.displayName);
-              loadUsers(document.getElementById('adUserSearch').value.trim());
-            } catch(e){
-              Toast.error('Failed', e.message || 'Try again.');
-              admBtn.disabled = false;
-            }
-          });
-
-          el.appendChild(row);
+        var amount = prompt(act === 'add' ? 'Amount to add' : 'Set balance to');
+        if(amount == null) return;
+        amount = parseInt(amount, 10);
+        if(!Number.isFinite(amount) || amount < 0){ Toast.error('Invalid','Need a non-negative integer'); return; }
+        var r = await Auth.api('/admin/users/'+id+'/balance', {
+          method:'POST',
+          body: JSON.stringify({ action: act === 'add' ? 'add' : 'set', amount: amount })
         });
-      } catch(e){
-        el.innerHTML = '<div class="ad-empty">Could not load users.</div>';
-      }
-    }
-
-    /* ---------- TRANSACTIONS ---------- */
-    var TX_LABEL = {
-      deposit: 'Deposit',
-      referral_welcome: 'Referral welcome',
-      referral_bonus: 'Referral earned',
-      case_battle_win: 'Case battle win',
-      unlock_reward: '7-day reward',
-      shop_purchase: 'Shop purchase',
-      admin_adjust: 'Admin adjust'
-    };
-
-    async function loadTransactions(){
-      var el = document.getElementById('adTxList');
-      try {
-        var res = await Auth.api('/admin/transactions?limit=100');
-        if(!res.ok) throw new Error();
-        var data = await res.json();
-        var rows = data.transactions || [];
-
-        if(rows.length === 0){
-          el.innerHTML = '<div class="ad-empty">No transactions.</div>';
-          return;
-        }
-
-        el.innerHTML = '';
-        rows.forEach(function(t){
-          var row = document.createElement('div');
-          row.className = 'ad-tx-row';
-
-          var label = TX_LABEL[t.type] || t.type.replace(/_/g, ' ');
-          var pos = t.amount >= 0;
-          var amtClass = 'ad-tx-amt ' + (pos ? 'pos' : 'neg');
-          var amtStr = (pos ? '+' : '') + fmtFull(t.amount);
-
-          row.innerHTML =
-            '<div class="ad-tx-type">' + esc(label) + '</div>' +
-            '<div class="ad-tx-user">@' + esc(t.username) + '</div>' +
-            '<div class="' + amtClass + '">' + amtStr + '</div>' +
-            '<div class="ad-tx-time">' + timeAgo(t.timestamp) + '</div>';
-
-          el.appendChild(row);
-        });
-      } catch(e){
-        el.innerHTML = '<div class="ad-empty">Could not load transactions.</div>';
-      }
-    }
-
-    /* ---------- CHAT ---------- */
-    async function loadChat(){
-      var el = document.getElementById('adChatList');
-      try {
-        var res = await Auth.api('/admin/chat/recent');
-        if(!res.ok) throw new Error();
-        var data = await res.json();
-        var rows = data.messages || [];
-
-        if(rows.length === 0){
-          el.innerHTML = '<div class="ad-empty">No chat messages.</div>';
-          return;
-        }
-
-        el.innerHTML = '';
-        rows.forEach(function(m){
-          var row = document.createElement('div');
-          row.className = 'ad-chat-row' + (m.deleted ? ' deleted' : '');
-
-          var delBtn = m.deleted
-            ? ''
-            : '<button class="btn btn-ghost btn-sm ad-del-btn" style="padding:.2rem .5rem;font-size:.62rem">Delete</button>';
-
-          row.innerHTML =
-            '<div class="ad-chat-user">@' + esc(m.username) + '</div>' +
-            '<div class="ad-chat-msg">' + esc(m.message) + '</div>' +
-            '<div class="ad-chat-time" style="font-size:.65rem;color:var(--text-3);font-family:\'JetBrains Mono\',monospace">' + timeAgo(m.timestamp) + '</div>' +
-            '<div>' + delBtn + '</div>';
-
-          var btn = row.querySelector('.ad-del-btn');
-          if(btn){
-            btn.addEventListener('click', async function(){
-              btn.disabled = true;
-              try {
-                var r = await Auth.api('/admin/chat/' + m.id, { method: 'DELETE' });
-                if(!r.ok) throw new Error();
-                row.classList.add('deleted');
-                btn.remove();
-                Toast.success('Deleted', 'Message hidden.');
-              } catch(e){
-                Toast.error('Failed', 'Try again.');
-                btn.disabled = false;
-              }
-            });
-          }
-
-          el.appendChild(row);
-        });
-      } catch(e){
-        el.innerHTML = '<div class="ad-empty">Could not load chat.</div>';
-      }
-    }
-
-    /* ---------- TAB SWITCHING ---------- */
-    document.querySelectorAll('.ad-tab').forEach(function(tab){
-      tab.addEventListener('click', function(){
-        document.querySelectorAll('.ad-tab').forEach(function(t){ t.classList.remove('active'); });
-        document.querySelectorAll('.ad-panel').forEach(function(p){ p.classList.remove('active'); });
-        tab.classList.add('active');
-        var name = tab.dataset.tab;
-        document.getElementById('adPanel' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
-
-        if(name === 'transactions') loadTransactions();
-        if(name === 'chat') loadChat();
+        if(r.ok){ Toast.success('Balance updated','Saved'); loadUsers(document.getElementById('userSearch').value.trim()); loadStats(); }
+        else Toast.error('Failed','Balance change rejected');
       });
     });
+  }
 
-    /* ---------- SEARCH ---------- */
-    document.getElementById('adUserSearchBtn').addEventListener('click', function(){
-      loadUsers(document.getElementById('adUserSearch').value.trim());
+  async function loadTx(){
+    var res = await Auth.api('/admin/transactions');
+    if(!res.ok) return;
+    var d = await res.json();
+    var rows = d.transactions || d.rows || [];
+    var el = document.getElementById('txTable');
+    if(!rows.length){ el.innerHTML = '<div class="ad-empty">No transactions</div>'; return; }
+    el.innerHTML = '<div class="ad-row head"><span>User</span><span>Type</span><span>Amount</span><span>Balance</span><span>When</span></div>' +
+      rows.map(function(t){
+        return '<div class="ad-row"><span>'+esc(t.username||t.userId||'—')+'</span><span class="ad-badge">'+esc(t.type)+'</span><span class="ad-mono">'+fmt(t.amount)+'</span><span class="ad-mono">'+fmt(t.balanceAfter||t.balance_after||0)+'</span><span class="ad-mono">'+ago(t.createdAt||t.created_at)+'</span></div>';
+      }).join('');
+  }
+
+  async function loadChat(){
+    var res = await Auth.api('/admin/chat/recent');
+    if(!res.ok) return;
+    var d = await res.json();
+    var rows = d.messages || [];
+    var el = document.getElementById('chatTable');
+    if(!rows.length){ el.innerHTML = '<div class="ad-empty">No chat messages</div>'; return; }
+    el.innerHTML = '<div class="ad-row head"><span>User</span><span>Message</span><span>When</span><span></span></div>' +
+      rows.map(function(m){
+        return '<div class="ad-row'+(m.deleted?' deleted':'')+'"><span class="ad-mono">'+esc(m.username)+'</span><span>'+esc(m.message||m.text)+'</span><span class="ad-mono">'+ago(m.createdAt||m.created_at)+'</span><span><button class="btn btn-ghost btn-sm" data-del="'+esc(m.id)+'">Delete</button></span></div>';
+      }).join('');
+    el.querySelectorAll('[data-del]').forEach(function(btn){
+      btn.addEventListener('click', async function(){
+        if(!confirm('Delete message?')) return;
+        var r = await Auth.api('/admin/chat/'+btn.getAttribute('data-del'), { method:'DELETE' });
+        if(r.ok){ Toast.success('Deleted','Message removed'); loadChat(); }
+      });
     });
-    document.getElementById('adUserSearch').addEventListener('keydown', function(e){
-      if(e.key === 'Enter'){
-        e.preventDefault();
-        loadUsers(this.value.trim());
-      }
-    });
+  }
 
-    /* ---------- BALANCE MODAL ---------- */
-    document.getElementById('mBalConfirm').addEventListener('click', async function(){
-      if(!currentBalanceTarget) return;
-      var action = document.getElementById('mBalAction').value;
-      var amount = parseInt(document.getElementById('mBalAmount').value, 10);
-      if(!Number.isInteger(amount) || amount < 0){
-        Toast.error('Invalid amount', 'Enter a positive number.');
-        return;
-      }
+  async function loadLogs(){
+    var res = await Auth.api('/admin/logs');
+    if(!res.ok) return;
+    var d = await res.json();
+    var rows = d.logs || [];
+    var el = document.getElementById('logsTable');
+    if(!rows.length){ el.innerHTML = '<div class="ad-empty">No audit events yet</div>'; return; }
+    el.innerHTML = '<div class="ad-row head"><span>When</span><span>Admin</span><span>Action</span><span>Target / detail</span><span>IP</span></div>' +
+      rows.map(function(l){
+        var detail = l.detail || '';
+        try { var j = JSON.parse(detail); detail = JSON.stringify(j); } catch(e){}
+        return '<div class="ad-row"><span class="ad-mono">'+ago(l.createdAt)+'</span><span>'+esc(l.adminUsername||'—')+'</span><span class="ad-badge">'+esc(l.action)+'</span><span class="ad-mono">'+esc(l.targetUsername||l.targetId||'')+' '+esc(detail).slice(0,80)+'</span><span class="ad-mono">'+esc(l.ip||'')+'</span></div>';
+      }).join('');
+  }
 
-      var btn = this;
-      btn.disabled = true;
-      btn.textContent = 'Applying…';
+  function loadTab(name){
+    if(name==='live') loadLive();
+    if(name==='users') loadUsers(document.getElementById('userSearch').value.trim());
+    if(name==='tx') loadTx();
+    if(name==='chat') loadChat();
+    if(name==='logs') loadLogs();
+  }
 
-      try {
-        var res = await Auth.api('/admin/users/' + currentBalanceTarget.id + '/balance', {
-          method: 'POST',
-          body: JSON.stringify({ action, amount })
-        });
-        if(!res.ok){
-          var err = 'FAILED';
-          try { var j = await res.json(); err = j.error || err; } catch(e){}
-          throw new Error(err);
-        }
-        var data = await res.json();
-        Toast.success('Applied', 'New balance: ' + fmtFull(data.balance) + ' RC');
-        Modal.close('m-balance');
-        loadUsers(document.getElementById('adUserSearch').value.trim());
-      } catch(e){
-        Toast.error('Failed', e.message || 'Try again.');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Apply';
-      }
-    });
-
-    /* ---------- INIT ---------- */
+  document.getElementById('btnRefresh').addEventListener('click', function(){
     loadStats();
-    loadUsers('');
+    var active = document.querySelector('.ad-tab.active');
+    if(active) loadTab(active.dataset.tab);
+  });
+  document.getElementById('userSearchBtn').addEventListener('click', function(){
+    loadUsers(document.getElementById('userSearch').value.trim());
+  });
+  document.getElementById('userSearch').addEventListener('keydown', function(e){
+    if(e.key==='Enter') loadUsers(e.target.value.trim());
+  });
+  document.getElementById('txReload').addEventListener('click', loadTx);
+  document.getElementById('chatReload').addEventListener('click', loadChat);
+  document.getElementById('logsReload').addEventListener('click', loadLogs);
 
-    setInterval(loadStats, 20000);
-
-  })();
+  loadStats();
+  loadLive();
+  setInterval(function(){ loadStats(); if(document.querySelector('.ad-tab.active').dataset.tab==='live') loadLive(); }, 20000);
+})();
 </script>
 </body>
 </html>

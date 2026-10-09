@@ -728,9 +728,18 @@
 
       var initial = (f.username || 'U')[0].toUpperCase();
       var avatarHtml;
-      var avUrl = (typeof resolveAvatarUrl === 'function') ? resolveAvatarUrl(f) : f.avatar;
-      if(avUrl && (String(avUrl).indexOf('/api/avatar/') === 0 || /^https?:/i.test(avUrl))){
-        avatarHtml = '<img src="' + avUrl + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.onerror=null;this.style.display=\'none\';this.parentNode.textContent=\'' + initial + '\'">';
+      var uid = f.userId || f.id || f.user_id || null;
+      var avUrl = null;
+      if(uid && String(uid) !== 'demo'){
+        avUrl = '/api/avatar/' + uid;
+      } else if(typeof resolveAvatarUrl === 'function'){
+        avUrl = resolveAvatarUrl(f);
+      } else if(f.avatar){
+        avUrl = f.avatar;
+      }
+      if(avUrl){
+        avatarHtml = '<img src="' + avUrl + '" alt="" draggable="false" referrerpolicy="no-referrer" loading="lazy" onerror="this.onerror=null;this.remove();">'
+          + '<span class="cm-av-fallback">' + initial + '</span>';
       } else {
         avatarHtml = initial;
       }
