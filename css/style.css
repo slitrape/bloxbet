@@ -1554,19 +1554,19 @@ html.bb-logged-in #navBalanceChip{display:flex}
 .sidebar.collapsed .sidebar-collapse-btn{justify-content:center;padding:.7rem}
 .sidebar-toggle{margin-top:auto;border:none;background:transparent;padding:0}
 
-/* Full-bleed game art (coinflip etc.) */
+/* Full-bleed game art (coinflip etc.) — image is the whole card */
 .card.card-cover{
   padding:0;
   overflow:hidden;
-  display:flex;
-  flex-direction:column;
+  position:relative;
+  min-height:200px;
+  aspect-ratio: 4 / 3;
+  border:1px solid var(--border);
 }
 .card.card-cover .card-art-fill{
-  position:relative;
-  flex:1;
-  min-height:160px;
+  position:absolute;
+  inset:0;
   background:var(--surface-2);
-  overflow:hidden;
 }
 .card.card-cover .card-art-fill img{
   position:absolute;
@@ -1581,7 +1581,8 @@ html.bb-logged-in #navBalanceChip{display:flex}
   content:'';
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg, transparent 40%, rgba(8,5,3,.75) 100%);
+  background:
+    linear-gradient(180deg, rgba(8,5,3,.35) 0%, transparent 35%, transparent 55%, rgba(8,5,3,.55) 100%);
   pointer-events:none;
 }
 .card.card-cover .card-play{
@@ -1591,7 +1592,24 @@ html.bb-logged-in #navBalanceChip{display:flex}
   z-index:2;
   pointer-events:none;
 }
-.card.card-cover .card-body{
-  padding:.85rem 1rem 1rem;
+.card.card-cover .card-live{
+  position:absolute;
+  left:.75rem;
+  top:.75rem;
+  z-index:2;
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  padding:.35rem .6rem;
+  border-radius:999px;
+  background:rgba(8,5,3,.55);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.08);
+  font-size:.7rem;
+  font-weight:600;
+  color:var(--text);
+  pointer-events:none;
 }
+.card.card-cover .card-body{display:none}
 .card.card-cover .card-art{display:none}

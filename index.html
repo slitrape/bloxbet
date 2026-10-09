@@ -427,14 +427,11 @@
             card.innerHTML =
               '<div class="card-art-fill">' +
                 '<img src="icons/coin.png" alt="Coinflip" draggable="false">' +
+                '<div class="card-live">' +
+                  (g.players > 0 ? '<span class="live-dot"></span>' : '') +
+                  playersLabel +
+                '</div>' +
                 '<button type="button" class="btn btn-primary btn-sm card-play">Play</button>' +
-              '</div>' +
-              '<div class="card-body">' +
-                '<div class="card-head"><div class="card-title">' + g.name + '</div>' + badgeHtml + '</div>' +
-                '<div class="card-desc">' + g.desc + '</div>' +
-                '<div class="card-foot"><div class="card-meta">' +
-                  (g.players > 0 ? '<span class="live-dot"></span>' : '') + playersLabel +
-                '</div></div>' +
               '</div>';
           } else {
           card.innerHTML =
