@@ -60,8 +60,9 @@
 
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
+html{background:#06080b}
 body{
-  background:var(--bg);
+  background:transparent;
   color:var(--text);
   font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif;
   font-size:13.5px;
@@ -70,13 +71,33 @@ body{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
   overflow-x:hidden;
-
-  background-image:radial-gradient(
-    ellipse 90% 70% at 50% 0%,
-    rgba(255,149,0,.05) 0%,
-    transparent 60%
-  );
-  background-attachment:fixed;
+  position:relative;
+  min-height:100%;
+}
+/* Same loading-screen backdrop on every page */
+body::before{
+  content:'';
+  position:fixed;
+  inset:-40px;
+  z-index:-2;
+  background-image:url('../icons/loading-bg.jpg');
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  filter:blur(14px) saturate(1.15) brightness(.6);
+  transform:scale(1.08);
+  pointer-events:none;
+}
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(6,8,11,.35) 0%, rgba(6,8,11,.5) 45%, rgba(6,8,11,.62) 100%),
+    radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,.22) 75%, rgba(0,0,0,.5) 100%),
+    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255,149,0,.08) 0%, transparent 55%);
 }
 
 .mono, .num, [data-balance]{
@@ -197,10 +218,10 @@ a{color:inherit;text-decoration:none}
   display:flex;
   align-items:center;
   padding:0 1.75rem;
-  background:rgba(13,8,5,.85);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
+  background:rgba(13,8,5,.55);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.05);
 }
 .nav-left{display:flex;align-items:center;gap:1rem;flex-shrink:0;z-index:2}
 .nav-logo{
@@ -242,9 +263,13 @@ a{color:inherit;text-decoration:none}
   transform:translateX(-50%);
   display:flex;
   align-items:center;
+  justify-content:center;
   gap:.25rem;
   z-index:1;
+  pointer-events:auto;
 }
+.nav-center .balance-chip{pointer-events:auto}
+.nav-center .nav-link{display:none}
 .nav-link{
   padding:.55rem 1rem;
   border-radius:var(--r-sm);
@@ -270,15 +295,21 @@ a{color:inherit;text-decoration:none}
 .balance-chip{
   display:flex;
   align-items:center;
-  gap:.6rem;
-  padding:.45rem .5rem .45rem 1rem;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--r-md);
-  transition:border-color var(--dur-fast) var(--ease);
-  height:48px;
+  gap:.55rem;
+  padding:.35rem .4rem .35rem .95rem;
+  background:rgba(26,15,8,.45);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:999px;
+  transition:border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+  height:42px;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  box-shadow:none;
 }
-.balance-chip:hover{border-color:var(--border-2)}
+.balance-chip:hover{
+  border-color:rgba(255,149,0,.22);
+  background:rgba(26,15,8,.62);
+}
 .balance-chip .label{
   font-size:.68rem;
   color:var(--text-3);
@@ -1243,8 +1274,8 @@ a{color:inherit;text-decoration:none}
   .nav-logo-mark{width:40px;height:40px}
   .nav-logo-text{font-size:1.15rem}
   .balance-chip .label{display:none}
-  .balance-chip{padding:.35rem;height:40px}
-  .balance-chip .value{font-size:.85rem}
+  .balance-chip{padding:.3rem .35rem .3rem .75rem;height:38px}
+  .balance-chip .value{font-size:.82rem}
   .nav-avatar{width:40px;height:40px;font-size:.82rem}
   .menu-btn{width:40px;height:40px}
   .grid{grid-template-columns:1fr}
@@ -1414,3 +1445,19 @@ html:not(.bb-logged-in) #navAuthUser { display: none !important; }
   font-weight:700;
   letter-spacing:-.025em;
 }
+
+
+/* page surfaces over photo bg */
+.card, .panel, .stat-card, .ad-card, .ad-stat, .set-card, .auth-card{
+  background:rgba(26,15,8,.72);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.sidebar{
+  background:rgba(13,8,5,.72);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+
+html:not(.bb-logged-in) #navBalanceChip{display:none}
+html.bb-logged-in #navBalanceChip{display:flex}

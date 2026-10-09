@@ -4,13 +4,7 @@
 
 .auth-body{
   min-height:100vh;
-  background:var(--bg);
-  background-image:radial-gradient(
-    ellipse 90% 70% at 50% 0%,
-    rgba(255,149,0,.05) 0%,
-    transparent 60%
-  );
-  background-attachment:fixed;
+  background:transparent;
   display:flex;
   align-items:center;
   justify-content:center;

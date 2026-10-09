@@ -90,28 +90,22 @@
       <span class="nav-logo-text">BloxBet</span>
     </a>
   </div>
-  <div class="nav-center">
-    <a class="nav-link" href="index.html">Home</a>
-    <a class="nav-link" href="games.html">Games</a>
-    <a class="nav-link" href="rewards.html">Rewards</a>
-    <a class="nav-link" href="community.html">Community</a>
-    <a class="nav-link" href="leaderboard.html">Leaderboard</a>
-    <a class="nav-link" href="profile.html">Profile</a>
+  <div class="nav-center" id="navCenter">
+    <div class="balance-chip" id="navBalanceChip">
+      <div>
+        <div class="label">Balance</div>
+        <div class="value"><span data-balance data-balance="0">0</span><span class="unit">RC</span></div>
+      </div>
+      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')">
+        <img src="icons/plus.png" alt="" class="ico" draggable="false">
+      </button>
+    </div>
   </div>
   <div class="nav-right">
     <div class="nav-auth-guest" id="navAuthGuest">
       <a href="login.html" class="btn btn-primary btn-sm nav-auth-login">Log in</a>
     </div>
     <div class="nav-auth-user" id="navAuthUser" hidden>
-      <div class="balance-chip">
-        <div>
-          <div class="label">Balance</div>
-          <div class="value"><span data-balance data-balance="0">0</span><span class="unit">RC</span></div>
-        </div>
-        <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')">
-          <img src="icons/plus.png" alt="" class="ico" draggable="false">
-        </button>
-      </div>
       <div class="dropdown">
         <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications">
           <img src="icons/bell.png" alt="" class="ico" draggable="false">
@@ -213,26 +207,6 @@
           </button>
         </div>
       </div>
-
-      <div class="stats">
-        <div class="stat-card">
-          <div class="stat-label">Balance</div>
-          <div class="stat-value" data-stat="balance">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Wagered</div>
-          <div class="stat-value" data-stat="wagered">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Games Played</div>
-          <div class="stat-value" data-stat="games">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Win Rate</div>
-          <div class="stat-value" data-stat="winrate">—</div>
-        </div>
-      </div>
-    </div>
 
     <div class="section-head">
       <h2>Games</h2>
