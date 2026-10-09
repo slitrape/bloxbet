@@ -26,8 +26,8 @@
 /* ---------- Case grid ---------- */
 .cb-case-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:.85rem;
+  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:.7rem;
 }
 
 .cb-case-card{
@@ -299,7 +299,7 @@
   border-radius:var(--r-lg);
   flex-wrap:wrap;
 }
-.cb-room-head-left{display:flex;align-items:center;gap:.85rem}
+.cb-room-head-left{display:flex;align-items:center;gap:.7rem}
 .cb-room-case-img{
   width:56px;
   height:56px;

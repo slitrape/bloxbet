@@ -2009,8 +2009,10 @@ app.get('/api/users/online', requireAuth, (req, res) => {
    CASE BATTLES
    ============================================================ */
 app.get('/api/cases', requireAuth, (req, res) => {
-  res.json({
-    cases: cases.CASES.map(c => ({
+  const list = cases.CASES
+    .slice()
+    .sort((a, b) => a.price - b.price)
+    .map(c => ({
       id: c.id,
       name: c.name,
       price: c.price,
@@ -2019,8 +2021,8 @@ app.get('/api/cases', requireAuth, (req, res) => {
       minValue: c.minValue,
       maxValue: c.maxValue,
       itemCount: cases.itemsForCase(c.id).length
-    }))
-  });
+    }));
+  res.json({ cases: list });
 });
 
 app.get('/api/cases/:id/items', requireAuth, (req, res) => {
