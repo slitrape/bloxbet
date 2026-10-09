@@ -21,11 +21,15 @@
     }[c]));
   }
 
-  function renderAvatar(username, avatar, hasVerifiedBadge){
+  function renderAvatar(username, avatar, hasVerifiedBadge, userId){
     const letter = (username || 'U')[0].toUpperCase();
     const initial = '<div class="avatar avatar-sm" style="background:linear-gradient(135deg,var(--accent),var(--accent-2))">' + letter + '</div>';
-    if(avatar && /^https?:\/\//i.test(avatar)){
-      return '<div class="avatar avatar-sm"><img src="' + avatar + '" alt="" draggable="false" onerror="this.parentNode.textContent=\'' + letter + '\'"></div>';
+    var url = avatar;
+    if((!url || !/^https?:\/\//i.test(url)) && userId && userId !== 'demo'){
+      url = 'https://www.roblox.com/headshot-thumbnail/image?userId=' + userId + '&width=150&height=150&format=png';
+    }
+    if(url && /^https?:\/\//i.test(url)){
+      return '<div class="avatar avatar-sm"><img src="' + url + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + letter + '\'"></div>';
     }
     return initial;
   }
@@ -58,7 +62,7 @@
         '<div class="lb-row" style="background:rgba(79,140,255,.05)">' +
           '<div class="lb-rank" style="color:var(--accent)">#' + data.rank + '</div>' +
           '<div class="lb-user">' +
-            renderAvatar(data.user.displayName || data.user.username, data.user.avatar, data.user.hasVerifiedBadge) +
+            renderAvatar(data.user.displayName || data.user.username, data.user.avatar, data.user.hasVerifiedBadge, data.user.id) +
             '<span class="name">' + escapeHtml(data.user.displayName || data.user.username) + '</span>' +
           '</div>' +
           '<div class="lb-score">' + fmt(data.user.balance) + '</div>' +
@@ -93,7 +97,7 @@
       el.innerHTML =
         '<div class="lb-rank ' + cls + '">#' + u.rank + '</div>' +
         '<div class="lb-user">' +
-          renderAvatar(u.username, u.avatar, u.hasVerifiedBadge) +
+          renderAvatar(u.username, u.avatar, u.hasVerifiedBadge, u.id) +
           '<span class="name">' + escapeHtml(u.username) + '</span>' +
           '<span class="chip" style="margin-left:.4rem;font-size:.65rem">' + u.rankName + '</span>' +
         '</div>' +

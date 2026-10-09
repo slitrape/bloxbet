@@ -4,16 +4,24 @@
    ============================================================ */
 
 /* ---------- Global avatar helper ---------- */
+function resolveAvatarUrl(user){
+  if(!user) return null;
+  var url = user.avatar || null;
+  if(url && /^https?:\/\//i.test(url)) return url;
+  var id = user.id || user.userId || user.robloxId || null;
+  if(id && id !== 'demo'){
+    return 'https://www.roblox.com/headshot-thumbnail/image?userId=' + id + '&width=150&height=150&format=png';
+  }
+  return null;
+}
+
 function renderAvatar(el, user, opts){
   if(!el) return;
   opts = opts || {};
-  var size = opts.size || 'md';
   var fallbackLetter = (user && (user.avatarLetter || user.displayName || user.username)) || 'U';
   fallbackLetter = String(fallbackLetter).charAt(0).toUpperCase();
 
-  var url = user && user.avatar ? user.avatar : null;
-  // Only accept http(s) URLs
-  if(url && !/^https?:\/\//i.test(url)) url = null;
+  var url = resolveAvatarUrl(user);
 
   if(url){
     el.innerHTML = '';
@@ -21,7 +29,15 @@ function renderAvatar(el, user, opts){
     img.src = url;
     img.alt = (user && (user.displayName || user.username)) || 'Avatar';
     img.draggable = false;
+    img.referrerPolicy = 'no-referrer';
     img.onerror = function(){
+      // try alternate roblox endpoint once
+      if(!img.dataset.triedAlt && user && (user.id || user.userId)){
+        img.dataset.triedAlt = '1';
+        var id = user.id || user.userId;
+        img.src = 'https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=' + id + '&size=150x150&format=Png&isCircular=false';
+        return;
+      }
       el.innerHTML = '';
       el.textContent = fallbackLetter;
     };

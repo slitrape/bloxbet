@@ -464,7 +464,7 @@
             '<div class="lb-rank ' + cls + '">#' + u.rank + '</div>' +
             '<div class="lb-user">' +
               (u.avatar && /^https?:/i.test(u.avatar)
-                ? '<div class="avatar avatar-sm"><img src="' + u.avatar + '" alt="" draggable="false"></div>'
+                ? '<div class="avatar avatar-sm"><img src="' + u.avatar + '" alt="" draggable="false" referrerpolicy="no-referrer"></div>'
                 : '<div class="avatar avatar-sm">' + (u.username || 'U')[0].toUpperCase() + '</div>') +
               '<span class="name">' + u.username + '</span>' +
             '</div>' +

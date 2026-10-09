@@ -45,13 +45,8 @@
       <button type="button" class="auth-tab" data-mode="signup" role="tab" aria-selected="false">Sign up</button>
     </div>
 
-    <div class="auth-provider">
-      <img src="icons/roblox.png" alt="" class="auth-provider-icon" draggable="false">
-      <span>Continue with Roblox</span>
-    </div>
-
     <h1 class="auth-title" id="authTitle">Welcome back</h1>
-    <p class="auth-sub" id="authSub">Enter your Roblox username. You’ll place a short phrase in your bio to prove ownership.</p>
+    <p class="auth-sub" id="authSub">Enter your Roblox username to continue.</p>
 
     <form id="loginForm" autocomplete="username">
       <div class="auth-field">
@@ -69,14 +64,6 @@
         <img src="icons/chevron-right.png" alt="" class="ico" draggable="false">
       </button>
     </form>
-
-    <div class="auth-divider"><span>Secure verification</span></div>
-
-    <ul class="auth-trust">
-      <li>No password stored on BloxBet</li>
-      <li>One-time phrase in your Roblox bio</li>
-      <li>Session expires when you sign out</li>
-    </ul>
   </div>
 
   <p class="auth-foot">
@@ -121,12 +108,12 @@
       });
       if(mode === 'signup'){
         titleEl.textContent = 'Create your account';
-        subEl.textContent = 'Link your Roblox account to get started. A short phrase in your bio proves you own it.';
+        subEl.textContent = 'Enter your Roblox username to get started.';
         btnLabel.textContent = 'Create account';
         document.title = 'Sign up — BloxBet';
       } else {
         titleEl.textContent = 'Welcome back';
-        subEl.textContent = 'Enter your Roblox username. You’ll place a short phrase in your bio to prove ownership.';
+        subEl.textContent = 'Enter your Roblox username to continue.';
         btnLabel.textContent = 'Continue';
         document.title = 'Sign in — BloxBet';
       }

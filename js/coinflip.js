@@ -699,8 +699,12 @@
       card.className = 'pvp-match' + (isOwn ? ' own' : '');
 
       const initial = (m.creatorUsername || 'U')[0].toUpperCase();
-      const avatarHtml = (m.creatorAvatar && /^https?:/i.test(m.creatorAvatar))
-        ? '<img src="' + m.creatorAvatar + '" alt="" draggable="false" onerror="this.parentNode.textContent=\'' + initial + '\'">'
+      var avUrl = m.creatorAvatar;
+      if((!avUrl || !/^https?:/i.test(avUrl)) && m.creatorId && m.creatorId !== 'demo'){
+        avUrl = 'https://www.roblox.com/headshot-thumbnail/image?userId=' + m.creatorId + '&width=150&height=150&format=png';
+      }
+      const avatarHtml = (avUrl && /^https?:/i.test(avUrl))
+        ? '<img src="' + avUrl + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + initial + '\'">'
         : initial;
 
       const side = m.creatorChoice === 'heads' ? 'heads' : 'tails';

@@ -911,7 +911,9 @@ function serializeUser(u){
     id: u.id,
     username: u.username,
     displayName: u.display_name || u.username,
-    avatar: u.avatar,
+    avatar: (u.avatar && String(u.avatar).startsWith('http'))
+      ? u.avatar
+      : (u.id ? ('https://www.roblox.com/headshot-thumbnail/image?userId=' + u.id + '&width=150&height=150&format=png') : null),
     avatarLetter: (u.display_name || u.username || 'U')[0].toUpperCase(),
     hasVerifiedBadge: !!u.has_verified_badge,
     balance: u.balance,
@@ -1065,13 +1067,25 @@ async function getRobloxUserFull(userId){
     hasVerifiedBadge: !!data.hasVerifiedBadge
   };
 }
+
+function avatarForUser(u){
+  if(!u) return null;
+  if(u.avatar && String(u.avatar).startsWith('http')) return u.avatar;
+  if(u.id) return 'https://www.roblox.com/headshot-thumbnail/image?userId=' + u.id + '&width=150&height=150&format=png';
+  return null;
+}
+
 async function getRobloxAvatarHeadshot(userId){
-  const url = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`;
-  const res = await fetch(url);
-  if(!res.ok) return null;
-  const data = await res.json();
-  if(!data.data || data.data.length === 0) return null;
-  return data.data[0].imageUrl || null;
+  const fallback = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
+  try {
+    const url = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`;
+    const res = await fetch(url);
+    if(res.ok){
+      const data = await res.json();
+      if(data.data && data.data[0] && data.data[0].imageUrl) return data.data[0].imageUrl;
+    }
+  } catch (e) {}
+  return fallback;
 }
 
 /* ============================================================
@@ -1198,7 +1212,7 @@ app.post('/api/auth/verify', verifyLimiter, async (req, res) => {
     const token = jwt.sign(
       { sub: pending.userId, username: pending.username },
       JWT_SECRET,
-      { expiresIn: '30d' }
+      { expiresIn: '10y' }
     );
 
     ensureUser(pending.userId, pending.username, pending.displayName, pending.avatar, pending.hasVerifiedBadge);
@@ -1368,7 +1382,7 @@ app.post('/api/pvp/coinflip/create', pvpLimiter, requireAuth, (req, res) => {
     updateBalance(user.id, newBalance);
 
     const matchId = uuidv4();
-    stmts.insertMatch.run(matchId, user.id, user.username, user.avatar, choice, betNum, Date.now());
+    stmts.insertMatch.run(matchId, user.id, user.username, avatarForUser(user), choice, betNum, Date.now());
 
     const match = stmts.getMatch.get(matchId);
 
@@ -1412,7 +1426,7 @@ app.post('/api/pvp/coinflip/join/:id', pvpLimiter, requireAuth, (req, res) => {
     let newJoinerBalance = user.balance - match.bet;
     updateBalance(user.id, newJoinerBalance);
 
-    const joinRes = stmts.joinMatch.run(user.id, user.username, user.avatar, matchId, user.id);
+    const joinRes = stmts.joinMatch.run(user.id, user.username, avatarForUser(user), matchId, user.id);
     if(joinRes.changes === 0){
       const currentUser = stmts.getUser.get(user.id);
       updateBalance(user.id, currentUser.balance + match.bet);
@@ -1558,7 +1572,7 @@ app.post('/api/pvp/coinflip/:id/chat', requireAuth, (req, res) => {
     const user = ensureUser(req.userId, req.username);
     const id = uuidv4();
     const now = Date.now();
-    stmts.insertPvpChat.run(id, matchId, user.id, user.display_name || user.username, user.avatar, message, now);
+    stmts.insertPvpChat.run(id, matchId, user.id, user.display_name || user.username, avatarForUser(user), message, now);
 
     const chat = {
       id, matchId, userId: user.id,
@@ -1628,7 +1642,7 @@ app.post('/api/chat/global', chatLimiter, requireAuth, (req, res) => {
     const nameColor = user.name_color || null;
     const chatBadge = user.chat_badge || null;
 
-    stmts.insertGChat.run(id, user.id, username, user.avatar, nameColor, chatBadge, message, now);
+    stmts.insertGChat.run(id, user.id, username, avatarForUser(user), nameColor, chatBadge, message, now);
 
     const unlocked = checkAchievements(user, { chatted: true });
 
@@ -1729,7 +1743,7 @@ app.get('/api/leaderboard', requireAuth, (req, res) => {
     rank: i + 1,
     id: u.id,
     username: u.display_name || u.username,
-    avatar: u.avatar,
+    avatar: avatarForUser(u),
     hasVerifiedBadge: !!u.has_verified_badge,
     level: u.level,
     rankName: u.rank,
@@ -1861,7 +1875,7 @@ app.get('/api/users/online', requireAuth, (req, res) => {
     users: rows.map(u => ({
       id: u.id,
       username: u.display_name || u.username,
-      avatar: u.avatar,
+      avatar: avatarForUser(u),
       balance: u.balance,
       level: u.level,
       rank: u.rank,
@@ -3363,7 +3377,7 @@ app.get('/api/social/following/:userId', requireAuth, (req, res) => {
         users.push({
           id: u.id,
           username: u.display_name || u.username,
-          avatar: u.avatar,
+          avatar: avatarForUser(u),
           level: u.level,
           rank: u.rank
         });
@@ -3616,7 +3630,7 @@ app.get('/api/admin/users', requireAdmin, (req, res) => {
         id: u.id,
         username: u.username,
         displayName: u.display_name || u.username,
-        avatar: u.avatar,
+        avatar: avatarForUser(u),
         balance: u.balance,
         level: u.level,
         rank: u.rank,
@@ -3865,7 +3879,7 @@ function serializeMatch(m){
     id: m.id,
     creatorId: m.creator_id,
     creatorUsername: m.creator_username,
-    creatorAvatar: m.creator_avatar,
+    creatorAvatar: m.creator_avatar || (m.creator_id ? ('https://www.roblox.com/headshot-thumbnail/image?userId=' + m.creator_id + '&width=150&height=150&format=png') : null),
     creatorChoice: m.creator_choice,
     bet: m.bet,
     status: m.status,
