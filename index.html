@@ -89,28 +89,34 @@
     <a class="nav-link" href="profile.html">Profile</a>
   </div>
   <div class="nav-right">
-    <div class="balance-chip">
-      <div>
-        <div class="label">Balance</div>
-        <div class="value"><span data-balance data-balance="12480">12,480</span><span class="unit">RC</span></div>
+    <div class="nav-auth-guest" id="navAuthGuest">
+      <a href="login.html" class="btn btn-ghost btn-sm nav-auth-login">Log in</a>
+      <a href="login.html?mode=signup" class="btn btn-primary btn-sm nav-auth-signup">Sign up</a>
+    </div>
+    <div class="nav-auth-user" id="navAuthUser" hidden>
+      <div class="balance-chip">
+        <div>
+          <div class="label">Balance</div>
+          <div class="value"><span data-balance data-balance="0">0</span><span class="unit">RC</span></div>
+        </div>
+        <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')">
+          <img src="icons/plus.png" alt="" class="ico" draggable="false">
+        </button>
       </div>
-      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')">
-        <img src="icons/plus.png" alt="" class="ico" draggable="false">
-      </button>
-    </div>
-    <div class="dropdown">
-      <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications">
-        <img src="icons/bell.png" alt="" class="ico" draggable="false">
-      </button>
-      <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
-    </div>
-    <div class="dropdown">
-      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">N</button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="profile.html">Profile</a>
-        <a class="dropdown-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;">Settings</a>
-        <div class="dropdown-divider"></div>
-        <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
+      <div class="dropdown">
+        <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications">
+          <img src="icons/bell.png" alt="" class="ico" draggable="false">
+        </button>
+        <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
+      </div>
+      <div class="dropdown">
+        <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">?</button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="profile.html">Profile</a>
+          <a class="dropdown-item" href="#" onclick="Toast.info('Settings','Coming soon.');return false;">Settings</a>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
+        </div>
       </div>
     </div>
   </div>
@@ -165,39 +171,58 @@
 <main class="main">
   <div class="container page">
 
-    <div class="page-head">
-      <div>
-        <h1>Dashboard</h1>
-        <div class="sub" id="welcomeSub">—</div>
-      </div>
-      <div class="page-head-actions">
-        <button class="btn btn-ghost" onclick="location.href='coinflip.html'">
-          <img src="icons/coin.png" alt="" class="ico" draggable="false">
-          <span>Coin Flip</span>
-        </button>
-        <button class="btn btn-primary" onclick="Modal.open('m-deposit')">
-          <img src="icons/plus.png" alt="" class="ico" draggable="false">
-          <span>Add Funds</span>
-        </button>
+    <div class="guest-hero" id="guestHero" hidden>
+      <div class="guest-hero-inner">
+        <div class="guest-badge">Roblox-linked gaming</div>
+        <h1 class="guest-title">Play fair. Cash out clean.</h1>
+        <p class="guest-sub">Coin flips, crash, mines, and case battles — powered by your Roblox identity. No password stored on BloxBet.</p>
+        <div class="guest-actions">
+          <a href="login.html?mode=signup" class="btn btn-primary">Sign up free</a>
+          <a href="login.html" class="btn btn-secondary">Log in</a>
+        </div>
+        <ul class="guest-points">
+          <li>Verify once with a bio phrase</li>
+          <li>Instant balance after deposit</li>
+          <li>Live leaderboards & rewards</li>
+        </ul>
       </div>
     </div>
 
-    <div class="stats">
-      <div class="stat-card">
-        <div class="stat-label">Balance</div>
-        <div class="stat-value" data-stat="balance">—</div>
+    <div id="dashboardHead">
+      <div class="page-head">
+        <div>
+          <h1>Dashboard</h1>
+          <div class="sub" id="welcomeSub">—</div>
+        </div>
+        <div class="page-head-actions">
+          <button class="btn btn-ghost" onclick="location.href='coinflip.html'">
+            <img src="icons/coin.png" alt="" class="ico" draggable="false">
+            <span>Coin Flip</span>
+          </button>
+          <button class="btn btn-primary" onclick="Modal.open('m-deposit')">
+            <img src="icons/plus.png" alt="" class="ico" draggable="false">
+            <span>Add Funds</span>
+          </button>
+        </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Total Wagered</div>
-        <div class="stat-value" data-stat="wagered">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Games Played</div>
-        <div class="stat-value" data-stat="games">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Win Rate</div>
-        <div class="stat-value" data-stat="winrate">—</div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">Balance</div>
+          <div class="stat-value" data-stat="balance">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Wagered</div>
+          <div class="stat-value" data-stat="wagered">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Games Played</div>
+          <div class="stat-value" data-stat="games">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Win Rate</div>
+          <div class="stat-value" data-stat="winrate">—</div>
+        </div>
       </div>
     </div>
 
@@ -302,7 +327,19 @@
 <script>
   (function(){
     if(typeof Auth === 'undefined'){ console.error('[index] Auth missing'); return; }
-    if(!Auth.isLoggedIn()){ Auth.safeRedirect('login'); return; }
+
+    var loggedIn = Auth.isLoggedIn();
+    var guestEl = document.getElementById('navAuthGuest');
+    var userEl = document.getElementById('navAuthUser');
+    var guestHero = document.getElementById('guestHero');
+    var dashHead = document.getElementById('dashboardHead');
+
+    if(guestEl) guestEl.hidden = !!loggedIn;
+    if(userEl) userEl.hidden = !loggedIn;
+    if(guestHero) guestHero.hidden = !!loggedIn;
+    if(dashHead) dashHead.hidden = !loggedIn;
+
+    if(!loggedIn) return;
 
     var me = Auth.getUser();
 

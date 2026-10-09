@@ -34,37 +34,54 @@
 </div>
 
 <div class="auth-wrap">
-  <div class="auth-brand">
+  <a href="index.html" class="auth-brand" aria-label="BloxBet home">
     <img src="icons/bloxbet.png" alt="" class="auth-brand-mark" draggable="false">
     <span class="auth-brand-text">BloxBet</span>
-  </div>
+  </a>
 
   <div class="auth-card">
-    <div class="auth-steps">
-      <span class="auth-step-dot active"></span>
-      <span class="auth-step-dot"></span>
+    <div class="auth-tabs" role="tablist">
+      <button type="button" class="auth-tab active" data-mode="login" role="tab" aria-selected="true">Log in</button>
+      <button type="button" class="auth-tab" data-mode="signup" role="tab" aria-selected="false">Sign up</button>
     </div>
 
-    <h1 class="auth-title">Sign in with Roblox</h1>
-    <p class="auth-sub">Enter your Roblox username. You’ll place a short phrase in your bio to prove ownership.</p>
+    <div class="auth-provider">
+      <img src="icons/roblox.png" alt="" class="auth-provider-icon" draggable="false">
+      <span>Continue with Roblox</span>
+    </div>
+
+    <h1 class="auth-title" id="authTitle">Welcome back</h1>
+    <p class="auth-sub" id="authSub">Enter your Roblox username. You’ll place a short phrase in your bio to prove ownership.</p>
 
     <form id="loginForm" autocomplete="username">
       <div class="auth-field">
         <label for="username">Roblox username</label>
         <div class="auth-input-wrap">
           <img src="icons/profile.png" alt="" class="ico" draggable="false">
-          <input class="auth-input" id="username" name="username" type="text" maxlength="20" placeholder="Your username" required autofocus>
+          <input class="auth-input" id="username" name="username" type="text" maxlength="20" placeholder="e.g. Builderman" required autofocus>
         </div>
       </div>
 
       <div id="status" class="auth-status"></div>
 
       <button type="submit" class="auth-btn" id="loginBtn">
-        <span>Continue</span>
+        <span id="loginBtnLabel">Continue</span>
         <img src="icons/chevron-right.png" alt="" class="ico" draggable="false">
       </button>
     </form>
+
+    <div class="auth-divider"><span>Secure verification</span></div>
+
+    <ul class="auth-trust">
+      <li>No password stored on BloxBet</li>
+      <li>One-time phrase in your Roblox bio</li>
+      <li>Session expires when you sign out</li>
+    </ul>
   </div>
+
+  <p class="auth-foot">
+    By continuing you agree to our <a href="#" onclick="return false;">Terms</a> and <a href="#" onclick="return false;">Privacy Policy</a>.
+  </p>
 </div>
 
 <script>
@@ -87,6 +104,48 @@
     var form = document.getElementById('loginForm');
     var btn  = document.getElementById('loginBtn');
     var statusEl = document.getElementById('status');
+    var titleEl = document.getElementById('authTitle');
+    var subEl = document.getElementById('authSub');
+    var btnLabel = document.getElementById('loginBtnLabel');
+    var mode = 'login';
+
+    var params = new URLSearchParams(location.search);
+    if(params.get('mode') === 'signup') mode = 'signup';
+
+    function applyMode(m){
+      mode = m;
+      document.querySelectorAll('.auth-tab').forEach(function(tab){
+        var on = tab.getAttribute('data-mode') === mode;
+        tab.classList.toggle('active', on);
+        tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      if(mode === 'signup'){
+        titleEl.textContent = 'Create your account';
+        subEl.textContent = 'Link your Roblox account to get started. A short phrase in your bio proves you own it.';
+        btnLabel.textContent = 'Create account';
+        document.title = 'Sign up — BloxBet';
+      } else {
+        titleEl.textContent = 'Welcome back';
+        subEl.textContent = 'Enter your Roblox username. You’ll place a short phrase in your bio to prove ownership.';
+        btnLabel.textContent = 'Continue';
+        document.title = 'Sign in — BloxBet';
+      }
+      try {
+        var url = new URL(location.href);
+        if(mode === 'signup') url.searchParams.set('mode', 'signup');
+        else url.searchParams.delete('mode');
+        history.replaceState(null, '', url.pathname + url.search);
+      } catch(e){}
+    }
+
+    document.querySelectorAll('.auth-tab').forEach(function(tab){
+      tab.addEventListener('click', function(){
+        applyMode(tab.getAttribute('data-mode'));
+        hideStatus();
+        document.getElementById('username').focus();
+      });
+    });
+    applyMode(mode);
 
     function showStatus(type, msg){
       var icons = { error:'alert', success:'check', info:'info' };
@@ -121,7 +180,8 @@
       } catch (err) {
         showStatus('error', err.message || 'Something went wrong.');
         btn.disabled = false;
-        btn.innerHTML = '<span>Continue</span><img src="icons/chevron-right.png" alt="" class="ico" draggable="false">';
+        btn.innerHTML = '<span id="loginBtnLabel">' + (mode === 'signup' ? 'Create account' : 'Continue') + '</span><img src="icons/chevron-right.png" alt="" class="ico" draggable="false">';
+        btnLabel = document.getElementById('loginBtnLabel');
       }
     });
   })();
