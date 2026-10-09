@@ -1373,3 +1373,44 @@ html.bb-logged-in #guestHero { display: none !important; }
 html.bb-logged-in #navAuthUser { display: flex !important; }
 html.bb-logged-in #dashboardHead { display: block !important; }
 html:not(.bb-logged-in) #navAuthUser { display: none !important; }
+
+
+/* professional polish */
+.nav{
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.nav-avatar,
+.avatar,
+.pf-avatar,
+.cm-avatar,
+.pvp-match-avatar,
+.ad-avatar{
+  overflow:hidden;
+  background:var(--surface-3);
+}
+.nav-avatar img,
+.avatar img,
+.pf-avatar img,
+.cm-avatar img,
+.pvp-match-avatar img,
+.ad-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.balance-chip .value{
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.01em;
+}
+.card, .panel, .stat-card, .auth-card{
+  box-shadow:0 1px 0 rgba(255,255,255,.03) inset;
+}
+.btn-primary{
+  box-shadow:0 1px 0 rgba(255,255,255,.12) inset, 0 8px 20px rgba(255,149,0,.12);
+}
+.page-head h1{
+  font-weight:700;
+  letter-spacing:-.025em;
+}

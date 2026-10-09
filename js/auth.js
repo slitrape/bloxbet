@@ -34,6 +34,11 @@ const Auth = (() => {
     const current = getUser() || {};
     const merged = Object.assign({}, current, partial);
     localStorage.setItem(USER_KEY, JSON.stringify(merged));
+    if(partial && partial.balance !== undefined && typeof window.paintBalance === 'function'){
+      try { window.paintBalance(partial.balance); } catch(e){}
+    } else if(merged.balance !== undefined && typeof window.paintBalance === 'function'){
+      try { window.paintBalance(merged.balance); } catch(e){}
+    }
     return merged;
   }
 
@@ -220,6 +225,9 @@ const Auth = (() => {
       const data = await res.json();
       if(data && data.user){
         updateUser(data.user);
+        if(typeof window.paintBalance === 'function' && data.user.balance !== undefined){
+          try { window.paintBalance(data.user.balance); } catch(e){}
+        }
         return data.user;
       }
     } catch {}

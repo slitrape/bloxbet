@@ -30,8 +30,8 @@
     if((!url || !/^https?:\/\//i.test(url)) && userId && userId !== 'demo'){
       url = '/api/avatar/' + userId;
     }
-    if(url && /^https?:\/\//i.test(url)){
-      return '<div class="avatar avatar-sm"><img src="' + url + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + letter + '\'"></div>';
+    if(url && (url.indexOf('/api/avatar/') === 0 || /^https?:\/\//i.test(url))){
+      return '<div class="avatar avatar-sm"><img src="' + url + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.onerror=null;this.style.display=\'none\';this.parentNode.textContent=\'' + letter + '\'"></div>';
     }
     return initial;
   }

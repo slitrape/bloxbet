@@ -697,7 +697,7 @@
     <div class="balance-chip">
       <div>
         <div class="label">Balance</div>
-        <div class="value"><span data-balance data-balance="12480">12,480</span><span class="unit">RC</span></div>
+        <div class="value"><span data-balance data-balance="0">0</span><span class="unit">RC</span></div>
       </div>
       <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')"><img src="icons/plus.png" alt="" class="ico" draggable="false"></button>
     </div>
@@ -1036,11 +1036,15 @@
       banner.className = 'pf-banner ' + bannerClassFromBanner(u.profileBanner);
 
       var av = document.getElementById('pfAvatar');
-      var avUrl = (typeof resolveAvatarUrl === 'function') ? resolveAvatarUrl(u) : u.avatar;
-      if(avUrl && /^https?:/i.test(avUrl)){
-        av.innerHTML = '<img src="' + avUrl + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + (displayName[0] || 'U').toUpperCase() + '\'">';
+      if(typeof renderAvatar === 'function'){
+        renderAvatar(av, u);
       } else {
-        av.textContent = (displayName[0] || 'U').toUpperCase();
+        var avUrl = (typeof resolveAvatarUrl === 'function') ? resolveAvatarUrl(u) : u.avatar;
+        if(avUrl && (String(avUrl).indexOf('/api/avatar/') === 0 || /^https?:/i.test(avUrl))){
+          av.innerHTML = '<img src="' + avUrl + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.onerror=null;this.style.display=\'none\';this.parentNode.textContent=\'' + (displayName[0] || 'U').toUpperCase() + '\'">';
+        } else {
+          av.textContent = (displayName[0] || 'U').toUpperCase();
+        }
       }
 
       var ring = document.getElementById('pfAvatarRing');

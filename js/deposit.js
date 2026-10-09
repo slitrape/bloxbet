@@ -43,6 +43,7 @@
 
         const data = await res.json();
         Auth.updateUser({ balance: data.balance });
+        if(typeof window.paintBalance === 'function') window.paintBalance(data.balance);
         document.querySelectorAll('[data-balance]').forEach(el => {
           el.textContent = Number(data.balance).toLocaleString();
           el.dataset.balance = data.balance;

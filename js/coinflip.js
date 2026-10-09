@@ -702,7 +702,7 @@
       var avUrl = (typeof resolveAvatarUrl === 'function')
         ? resolveAvatarUrl({ avatar: m.creatorAvatar, id: m.creatorId })
         : m.creatorAvatar;
-      const avatarHtml = (avUrl && /^https?:/i.test(avUrl))
+      const avatarHtml = (avUrl && (String(avUrl).indexOf('/api/avatar/') === 0 || /^https?:/i.test(avUrl)))
         ? '<img src="' + avUrl + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + initial + '\'">'
         : initial;
 

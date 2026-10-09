@@ -27,6 +27,14 @@ function resolveAvatarUrl(user){
   return null;
 }
 
+function isAvatarSrc(url){
+  if(!url) return false;
+  url = String(url);
+  if(url.indexOf('/api/avatar/') === 0) return true;
+  if(/^https?:\/\//i.test(url) && url.indexOf('www.roblox.com/headshot') === -1) return true;
+  return false;
+}
+
 function avatarLetter(user){
   var n = (user && (user.avatarLetter || user.displayName || user.username || user.creatorUsername || user.name)) || 'U';
   return String(n).charAt(0).toUpperCase();
@@ -70,16 +78,42 @@ function renderAvatar(el, user, opts){
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* ---------- User greeting + avatar ---------- */
+  /* ---------- Balance + avatar (every page, survives refresh) ---------- */
+  function paintBalance(bal){
+    var n = Number(bal);
+    if(!Number.isFinite(n)) n = 0;
+    var formatted = n.toLocaleString();
+    document.querySelectorAll('[data-balance]').forEach(function(el){
+      el.textContent = formatted;
+      el.setAttribute('data-balance', String(n));
+      if(el.dataset) el.dataset.balance = String(n);
+    });
+  }
+
+  window.paintBalance = paintBalance;
+
   const me = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
   if(me){
+    // Immediate paint from localStorage so refresh keeps balance
+    if(me.balance !== undefined && me.balance !== null){
+      paintBalance(me.balance);
+    }
+
     const welcomeH1 = document.querySelector('.welcome h1');
     if(welcomeH1) welcomeH1.textContent = 'Welcome back, ' + (me.displayName || me.username);
 
-    // Nav avatar
     const navAvatar = document.getElementById('navAvatar');
     if(navAvatar){
       renderAvatar(navAvatar, me);
+    }
+
+    // Re-sync from server so every page has current balance + profile
+    if(typeof Auth.refreshUser === 'function'){
+      Auth.refreshUser().then(function(fresh){
+        if(!fresh) return;
+        if(fresh.balance !== undefined) paintBalance(fresh.balance);
+        if(navAvatar) renderAvatar(navAvatar, fresh);
+      }).catch(function(){});
     }
   }
 
