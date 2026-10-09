@@ -1066,29 +1066,46 @@ async function getRobloxUserFull(userId){
   };
 }
 
+// In-memory headshot cache: userId -> { url, at }
+const avatarCache = new Map();
+const AVATAR_CACHE_MS = 6 * 60 * 60 * 1000;
+
 function avatarForUser(u){
   if(!u) return null;
-  const id = u.id || u.user_id || u.creator_id || null;
-  // Prefer stable Roblox headshot from id so every user gets a real image
+  const id = u.id || u.user_id || u.creator_id || u.userId || null;
   if(id && String(id) !== 'demo'){
-    return 'https://www.roblox.com/headshot-thumbnail/image?userId=' + id + '&width=150&height=150&format=png';
+    // Same-origin proxy — browser always loads this
+    return '/api/avatar/' + id;
   }
-  if(u.avatar && String(u.avatar).startsWith('http')) return u.avatar;
+  if(u.avatar && String(u.avatar).startsWith('http') && !String(u.avatar).includes('www.roblox.com/headshot')){
+    return u.avatar;
+  }
   return null;
 }
 
 async function getRobloxAvatarHeadshot(userId){
-  const fallback = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
+  const id = String(userId);
+  const cached = avatarCache.get(id);
+  if(cached && (Date.now() - cached.at) < AVATAR_CACHE_MS && cached.url){
+    return cached.url;
+  }
   try {
-    const url = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`;
+    const url = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${id}&size=150x150&format=Png&isCircular=false`;
     const res = await fetch(url);
     if(res.ok){
       const data = await res.json();
-      if(data.data && data.data[0] && data.data[0].imageUrl) return data.data[0].imageUrl;
+      if(data.data && data.data[0] && data.data[0].imageUrl){
+        const imageUrl = data.data[0].imageUrl;
+        avatarCache.set(id, { url: imageUrl, at: Date.now() });
+        return imageUrl;
+      }
     }
-  } catch (e) {}
-  return fallback;
+  } catch (e) {
+    console.error('[avatar]', id, e.message);
+  }
+  return null;
 }
+
 
 /* ============================================================
    AUTH MIDDLEWARE
@@ -3881,7 +3898,7 @@ function serializeMatch(m){
     id: m.id,
     creatorId: m.creator_id,
     creatorUsername: m.creator_username,
-    creatorAvatar: m.creator_avatar || (m.creator_id ? ('https://www.roblox.com/headshot-thumbnail/image?userId=' + m.creator_id + '&width=150&height=150&format=png') : null),
+    creatorAvatar: avatarForUser({ id: m.creator_id, avatar: m.creator_avatar }),
     creatorChoice: m.creator_choice,
     bet: m.bet,
     status: m.status,
@@ -3938,6 +3955,28 @@ app.post('/api/limiteds/join/:id', pvpLimiter, requireAuth, async (req, res) => 
 /* ============================================================
    STATIC + CATCH-ALL
    ============================================================ */
+
+/* ============================================================
+   AVATAR PROXY — resolves real rbxcdn headshot URLs
+   ============================================================ */
+app.get('/api/avatar/:userId', async (req, res) => {
+  try {
+    const userId = String(req.params.userId || '').replace(/[^0-9]/g, '');
+    if(!userId) return res.status(400).send('bad id');
+    const imageUrl = await getRobloxAvatarHeadshot(userId);
+    if(!imageUrl){
+      res.set('Cache-Control', 'public, max-age=60');
+      return res.status(404).send('no avatar');
+    }
+    // Redirect to CDN (works in <img src>)
+    res.set('Cache-Control', 'public, max-age=3600');
+    return res.redirect(302, imageUrl);
+  } catch (err) {
+    console.error('[api/avatar]', err);
+    res.status(500).send('error');
+  }
+});
+
 app.use(express.static(ROOT, { extensions: ['html'], index: false }));
 
 app.get('*', (req, res) => {

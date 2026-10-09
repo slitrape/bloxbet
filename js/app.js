@@ -6,7 +6,8 @@
 /* ---------- Global avatar helper ---------- */
 function headshotUrlFromId(id){
   if(!id || id === 'demo') return null;
-  return 'https://www.roblox.com/headshot-thumbnail/image?userId=' + id + '&width=150&height=150&format=png';
+  // Same-origin proxy → real rbxcdn headshot
+  return '/api/avatar/' + id;
 }
 
 function resolveAvatarUrl(user){
@@ -14,10 +15,16 @@ function resolveAvatarUrl(user){
   if(typeof user === 'string' || typeof user === 'number'){
     return headshotUrlFromId(user);
   }
-  var url = user.avatar || user.creatorAvatar || user.joinerAvatar || user.uavatar || null;
-  if(url && /^https?:\/\//i.test(String(url))) return String(url);
+  // Prefer id-based proxy (always works). Skip broken www.roblox.com headshot links.
   var id = user.id || user.userId || user.creatorId || user.joinerId || user.robloxId || user.uid || null;
-  return headshotUrlFromId(id);
+  if(id && String(id) !== 'demo'){
+    return headshotUrlFromId(id);
+  }
+  var url = user.avatar || user.creatorAvatar || user.joinerAvatar || user.uavatar || null;
+  if(url && /^https?:\/\//i.test(String(url)) && String(url).indexOf('www.roblox.com/headshot') === -1){
+    return String(url);
+  }
+  return null;
 }
 
 function avatarLetter(user){
@@ -25,7 +32,6 @@ function avatarLetter(user){
   return String(n).charAt(0).toUpperCase();
 }
 
-/** HTML snippet for any user object — headshot for everyone when an id exists */
 function avatarHtml(user, sizeClass){
   sizeClass = sizeClass || 'avatar-sm';
   var letter = avatarLetter(user);
@@ -53,14 +59,6 @@ function renderAvatar(el, user, opts){
     img.draggable = false;
     img.referrerPolicy = 'no-referrer';
     img.onerror = function(){
-      if(!img.dataset.triedAlt){
-        img.dataset.triedAlt = '1';
-        var id = user && (user.id || user.userId || user.creatorId);
-        if(id && id !== 'demo'){
-          img.src = 'https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=' + id + '&size=150x150&format=Png&isCircular=false';
-          return;
-        }
-      }
       el.innerHTML = '';
       el.textContent = letter;
     };

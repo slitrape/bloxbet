@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sign in — BloxBet</title>
+<title>Log in — BloxBet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -40,13 +40,8 @@
   </a>
 
   <div class="auth-card">
-    <div class="auth-tabs" role="tablist">
-      <button type="button" class="auth-tab active" data-mode="login" role="tab" aria-selected="true">Log in</button>
-      <button type="button" class="auth-tab" data-mode="signup" role="tab" aria-selected="false">Sign up</button>
-    </div>
-
-    <h1 class="auth-title" id="authTitle">Welcome back</h1>
-    <p class="auth-sub" id="authSub">Enter your Roblox username to continue.</p>
+    <h1 class="auth-title">Log in</h1>
+    <p class="auth-sub">Enter your Roblox username to continue.</p>
 
     <form id="loginForm" autocomplete="username">
       <div class="auth-field">
@@ -60,7 +55,7 @@
       <div id="status" class="auth-status"></div>
 
       <button type="submit" class="auth-btn" id="loginBtn">
-        <span id="loginBtnLabel">Continue</span>
+        <span>Continue</span>
         <img src="icons/chevron-right.png" alt="" class="ico" draggable="false">
       </button>
     </form>
@@ -91,48 +86,6 @@
     var form = document.getElementById('loginForm');
     var btn  = document.getElementById('loginBtn');
     var statusEl = document.getElementById('status');
-    var titleEl = document.getElementById('authTitle');
-    var subEl = document.getElementById('authSub');
-    var btnLabel = document.getElementById('loginBtnLabel');
-    var mode = 'login';
-
-    var params = new URLSearchParams(location.search);
-    if(params.get('mode') === 'signup') mode = 'signup';
-
-    function applyMode(m){
-      mode = m;
-      document.querySelectorAll('.auth-tab').forEach(function(tab){
-        var on = tab.getAttribute('data-mode') === mode;
-        tab.classList.toggle('active', on);
-        tab.setAttribute('aria-selected', on ? 'true' : 'false');
-      });
-      if(mode === 'signup'){
-        titleEl.textContent = 'Create your account';
-        subEl.textContent = 'Enter your Roblox username to get started.';
-        btnLabel.textContent = 'Create account';
-        document.title = 'Sign up — BloxBet';
-      } else {
-        titleEl.textContent = 'Welcome back';
-        subEl.textContent = 'Enter your Roblox username to continue.';
-        btnLabel.textContent = 'Continue';
-        document.title = 'Sign in — BloxBet';
-      }
-      try {
-        var url = new URL(location.href);
-        if(mode === 'signup') url.searchParams.set('mode', 'signup');
-        else url.searchParams.delete('mode');
-        history.replaceState(null, '', url.pathname + url.search);
-      } catch(e){}
-    }
-
-    document.querySelectorAll('.auth-tab').forEach(function(tab){
-      tab.addEventListener('click', function(){
-        applyMode(tab.getAttribute('data-mode'));
-        hideStatus();
-        document.getElementById('username').focus();
-      });
-    });
-    applyMode(mode);
 
     function showStatus(type, msg){
       var icons = { error:'alert', success:'check', info:'info' };
@@ -167,8 +120,7 @@
       } catch (err) {
         showStatus('error', err.message || 'Something went wrong.');
         btn.disabled = false;
-        btn.innerHTML = '<span id="loginBtnLabel">' + (mode === 'signup' ? 'Create account' : 'Continue') + '</span><img src="icons/chevron-right.png" alt="" class="ico" draggable="false">';
-        btnLabel = document.getElementById('loginBtnLabel');
+        btn.innerHTML = '<span>Continue</span><img src="icons/chevron-right.png" alt="" class="ico" draggable="false">';
       }
     });
   })();
