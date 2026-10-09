@@ -1461,3 +1461,72 @@ html:not(.bb-logged-in) #navAuthUser { display: none !important; }
 
 html:not(.bb-logged-in) #navBalanceChip{display:none}
 html.bb-logged-in #navBalanceChip{display:flex}
+
+
+/* ========== Foldable sidebar groups ========== */
+.side-group{margin-bottom:.15rem}
+.side-group-toggle{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.5rem;
+  padding:.55rem .75rem;
+  background:transparent;
+  border:none;
+  border-radius:var(--r-sm);
+  color:var(--text-3);
+  font-family:inherit;
+  font-size:.68rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  cursor:pointer;
+  transition:color .12s ease, background .12s ease;
+}
+.side-group-toggle:hover{color:var(--text-2);background:rgba(255,255,255,.03)}
+.side-group-toggle .chev{
+  opacity:.55;
+  transition:transform .18s ease;
+  flex-shrink:0;
+}
+.side-group.open .side-group-toggle .chev{transform:rotate(0deg)}
+.side-group:not(.open) .side-group-toggle .chev{transform:rotate(-90deg)}
+.side-group-body{
+  display:flex;
+  flex-direction:column;
+  gap:.15rem;
+  overflow:hidden;
+  max-height:480px;
+  transition:max-height .22s ease, opacity .18s ease;
+  opacity:1;
+}
+.side-group:not(.open) .side-group-body{
+  max-height:0;
+  opacity:0;
+  pointer-events:none;
+}
+.sidebar.collapsed .side-group-toggle span,
+.sidebar.collapsed .side-group-toggle .chev{display:none}
+.sidebar.collapsed .side-group-body{max-height:none!important;opacity:1!important;pointer-events:auto}
+
+/* Custom banner image support */
+.pf-banner.has-image{
+  background-size:cover!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}
+.pf-banner.has-image::before{opacity:.35}
+.pf-banner-edit{
+  position:absolute;right:.75rem;bottom:.75rem;z-index:3;
+}
+.ps-banner{
+  height:88px;border-radius:var(--r-md) var(--r-md) 0 0;margin:-1.35rem -1.35rem 1rem;
+  background:linear-gradient(135deg,#1a0f08,#0d0805);
+  background-size:cover;background-position:center;
+  position:relative;overflow:hidden;
+}
+.ps-banner::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 30%,rgba(13,8,5,.85) 100%);
+}

@@ -213,6 +213,61 @@ document.addEventListener('DOMContentLoaded', () => {
     else sidebar.appendChild(item);
   })();
 
+
+  /* ---------- Foldable sidebar groups ---------- */
+  (function(){
+    var sidebar = document.getElementById('appSidebar') || document.querySelector('.sidebar');
+    if(!sidebar) return;
+    var key = 'bb_side_groups';
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(key) || '{}') || {}; } catch(e){}
+    sidebar.querySelectorAll('.side-group').forEach(function(g){
+      var id = g.getAttribute('data-group');
+      if(id && saved[id] === false) g.classList.remove('open');
+      if(id && saved[id] === true) g.classList.add('open');
+      var btn = g.querySelector('.side-group-toggle');
+      if(!btn) return;
+      btn.addEventListener('click', function(){
+        g.classList.toggle('open');
+        btn.setAttribute('aria-expanded', g.classList.contains('open') ? 'true' : 'false');
+        if(id){
+          try {
+            var cur = JSON.parse(localStorage.getItem(key) || '{}') || {};
+            cur[id] = g.classList.contains('open');
+            localStorage.setItem(key, JSON.stringify(cur));
+          } catch(e){}
+        }
+      });
+    });
+    var collapseBtn = sidebar.querySelector('.sidebar-collapse-btn');
+    if(collapseBtn){
+      collapseBtn.addEventListener('click', function(){
+        sidebar.classList.toggle('collapsed');
+        var main = document.querySelector('.main');
+        if(main) main.classList.toggle('expanded');
+        localStorage.setItem('bb_sidebar', sidebar.classList.contains('collapsed') ? '1' : '0');
+      });
+    }
+  })();
+
+  /* ---------- Ensure centered balance chip ---------- */
+  (function(){
+    var center = document.getElementById('navCenter');
+    if(!center) return;
+    if(!document.getElementById('navBalanceChip')){
+      center.innerHTML =
+        '<div class="balance-chip" id="navBalanceChip">' +
+          '<div><div class="label">Balance</div>' +
+          '<div class="value"><span data-balance data-balance="0">0</span><span class="unit">RC</span></div></div>' +
+          '<button class="add" data-tip="Add funds" onclick="Modal.open(\'m-deposit\')">' +
+          '<img src="icons/plus.png" alt="" class="ico" draggable="false"></button></div>';
+    }
+    var me = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
+    if(me && me.balance !== undefined && typeof window.paintBalance === 'function'){
+      window.paintBalance(me.balance);
+    }
+  })();
+
   /* ---------- Dropdowns ---------- */
   document.querySelectorAll('.dropdown').forEach(dd => {
     const trigger = dd.querySelector('[data-dropdown]');
@@ -292,6 +347,7 @@ window.PlayerSheet = (function(){
     overlay.innerHTML =
       '<div class="ps-sheet" role="dialog" aria-modal="true">' +
         '<button type="button" class="ps-close" aria-label="Close">&times;</button>' +
+        '<div class="ps-banner" id="psBanner"></div>' +
         '<div class="ps-top">' +
           '<div class="ps-avatar" id="psAvatar">?</div>' +
           '<div class="ps-meta">' +
@@ -338,6 +394,21 @@ window.PlayerSheet = (function(){
       if(!res.ok) throw new Error('not found');
       var data = await res.json();
       var u = data.user;
+      var ban = document.getElementById('psBanner');
+      if(ban){
+        ban.style.backgroundImage = '';
+        ban.className = 'ps-banner';
+        var pb = u.profileBanner || '';
+        if(/^https?:\/\//i.test(pb) || pb.indexOf('data:image/') === 0){
+          ban.style.backgroundImage = 'url(' + JSON.stringify(pb).slice(1,-1) + ')';
+        } else if(pb){
+          // preset tint
+          if(pb.indexOf('ember') !== -1) ban.style.background = 'linear-gradient(135deg,#3b1208,#1a0a05)';
+          else if(pb.indexOf('aurora') !== -1) ban.style.background = 'linear-gradient(135deg,#0a1a2e,#0d0805)';
+          else if(pb.indexOf('void') !== -1) ban.style.background = 'linear-gradient(135deg,#0a0a12,#050508)';
+          else if(pb.indexOf('grid') !== -1) ban.style.background = 'linear-gradient(135deg,#1a1520,#0d0805)';
+        }
+      }
       if(typeof renderAvatar === 'function') renderAvatar(document.getElementById('psAvatar'), u);
       document.getElementById('psName').textContent = u.displayName || u.username;
       document.getElementById('psHandle').textContent = '@' + (u.username || '');

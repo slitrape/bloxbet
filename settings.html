@@ -90,14 +90,94 @@
   </div>
 </nav>
 
-<aside class="sidebar">
-  <div class="sidebar-section">Overview</div>
-  <a class="side-item" data-href="index.html" href="index.html"><span class="icon"><img src="icons/home.png" alt="" class="ico" draggable="false"></span><span class="label">Home</span></a>
-  <a class="side-item" data-href="games.html" href="games.html"><span class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></span><span class="label">Games</span></a>
-  <a class="side-item" data-href="rewards.html" href="rewards.html"><span class="icon"><img src="icons/rewards.png" alt="" class="ico" draggable="false"></span><span class="label">Rewards</span></a>
-  <div class="sidebar-section">Account</div>
-  <a class="side-item" data-href="profile.html" href="profile.html"><span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span><span class="label">Profile</span></a>
-  <a class="side-item active" data-href="settings.html" href="settings.html"><span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span><span class="label">Settings</span></a>
+<aside class="sidebar" id="appSidebar">
+  <div class="side-group open" data-group="overview">
+    <button type="button" class="side-group-toggle" aria-expanded="true">
+      <span>Overview</span>
+      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="side-group-body">
+      <a class="side-item" data-href="index.html" href="index.html">
+        <span class="icon"><img src="icons/home.png" alt="" class="ico" draggable="false"></span>
+        <span class="label">Home</span>
+      </a>
+      <a class="side-item" data-href="rewards.html" href="rewards.html">
+        <span class="icon"><img src="icons/rewards.png" alt="" class="ico" draggable="false"></span>
+        <span class="label">Rewards</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="side-group open" data-group="casino">
+    <button type="button" class="side-group-toggle" aria-expanded="true">
+      <span>Casino</span>
+      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="side-group-body">
+      <a class="side-item" data-href="coinflip.html" href="coinflip.html">
+        <span class="icon"><img src="icons/coin.png" alt="" class="ico" draggable="false"></span>
+        <span class="label">Coinflip</span>
+      </a>
+      <a class="side-item" data-href="mines.html" href="mines.html">
+        <span class="icon"><img src="icons/bomb.png" alt="" class="ico" draggable="false"></span>
+        <span class="label">Mines</span>
+      </a>
+      <a class="side-item" data-href="crash.html" href="crash.html">
+        <span class="icon"><img src="icons/chart.png" alt="" class="ico" draggable="false"></span>
+        <span class="label">Crash</span>
+      </a>
+      <a class="side-item" data-href="casebattles.html" href="casebattles.html">
+        <span class="icon"><img src="icons/gift.png" alt="" class="ico" draggable="false"></span>
+        <span class="label">Case Battles</span>
+      </a>
+      <a class="side-item" data-href="games.html" href="games.html">
+        <span class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></span>
+        <span class="label">All Games</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="side-group open" data-group="social">
+    <button type="button" class="side-group-toggle" aria-expanded="true">
+      <span>Social</span>
+      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="side-group-body">
+      <a class="side-item" data-href="community.html" href="community.html">
+        <span class="icon"><img src="icons/community.png" alt="" class="ico" draggable="false"></span>
+        <span class="label">Community</span>
+      </a>
+      <a class="side-item" data-href="leaderboard.html" href="leaderboard.html">
+        <span class="icon"><img src="icons/leaderboard.png" alt="" class="ico" draggable="false"></span>
+        <span class="label">Leaderboard</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="side-group open" data-group="account">
+    <button type="button" class="side-group-toggle" aria-expanded="true">
+      <span>Account</span>
+      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="side-group-body">
+      <a class="side-item" data-href="profile.html" href="profile.html">
+        <span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span>
+        <span class="label">Profile</span>
+      </a>
+      <a class="side-item" data-href="settings.html" href="settings.html">
+        <span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span>
+        <span class="label">Settings</span>
+      </a>
+    </div>
+  </div>
+
+  <a class="sidebar-discord" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">
+    <img src="icons/discord.png" alt="" class="ico" draggable="false">
+    <span>Discord</span>
+  </a>
+  <div class="sidebar-toggle">
+    <button type="button" class="sidebar-collapse-btn" title="Collapse">«</button>
+  </div>
 </aside>
 
 <main class="main">

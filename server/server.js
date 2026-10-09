@@ -43,7 +43,7 @@ const ROOT = path.join(__dirname, '..');
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'bloxbet.db');
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -597,6 +597,8 @@ const stmts = {
   setReferralCode: db.prepare('UPDATE users SET referral_code = ?, updated_at = ? WHERE id = ?'),
   setReferredBy: db.prepare('UPDATE users SET referred_by = ?, updated_at = ? WHERE id = ? AND referred_by IS NULL'),
   bumpReferralCount: db.prepare('UPDATE users SET referral_count = referral_count + 1, referral_earnings = referral_earnings + ?, updated_at = ? WHERE id = ?'),
+
+  setProfileBanner: db.prepare(`UPDATE users SET profile_banner = ?, updated_at = ? WHERE id = ?`),
 
   setCosmetic: db.prepare(`
     UPDATE users SET
@@ -4161,6 +4163,7 @@ app.get('/api/users/:id/public', requireAuth, (req, res) => {
         caseBattlesPlayed: u.case_battles_played || 0,
         nameColor: u.name_color || null,
         chatBadge: u.chat_badge || null,
+        profileBanner: u.profile_banner || null,
         memberSince: u.created_at,
         flipStats: {
           total: flips.total || 0,
@@ -4171,6 +4174,51 @@ app.get('/api/users/:id/public', requireAuth, (req, res) => {
     });
   } catch (err) {
     console.error('[users/public]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+
+app.post('/api/profile/banner', requireAuth, (req, res) => {
+  try {
+    const user = ensureUser(req.userId, req.username);
+    const type = String(req.body.type || 'preset');
+    let value = req.body.value;
+
+    const presets = new Set(['', 'grid', 'aurora', 'ember', 'void', 'banner-grid', 'banner-aurora', 'banner-ember', 'banner-void']);
+
+    if(type === 'preset'){
+      value = String(value || '').trim().toLowerCase();
+      if(!presets.has(value) && value !== 'none'){
+        return res.status(400).json({ error: 'INVALID_PRESET' });
+      }
+      if(value === 'none') value = null;
+    } else if(type === 'url'){
+      value = String(value || '').trim();
+      if(!/^https?:\/\//i.test(value)){
+        return res.status(400).json({ error: 'INVALID_URL' });
+      }
+      if(value.length > 2048){
+        return res.status(400).json({ error: 'URL_TOO_LONG' });
+      }
+    } else if(type === 'upload'){
+      value = String(value || '');
+      // data:image/...;base64,...
+      if(!/^data:image\/(png|jpeg|jpg|webp|gif);base64,/i.test(value)){
+        return res.status(400).json({ error: 'INVALID_IMAGE' });
+      }
+      if(value.length > 900000){
+        return res.status(400).json({ error: 'IMAGE_TOO_LARGE' });
+      }
+    } else {
+      return res.status(400).json({ error: 'INVALID_TYPE' });
+    }
+
+    stmts.setProfileBanner.run(value, Date.now(), user.id);
+    const fresh = stmts.getUser.get(user.id);
+    res.json({ ok: true, profileBanner: fresh.profile_banner, user: serializeUser(fresh) });
+  } catch (err) {
+    console.error('[profile/banner]', err);
     res.status(500).json({ error: 'SERVER_ERROR' });
   }
 });
