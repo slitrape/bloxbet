@@ -1530,3 +1530,26 @@ html.bb-logged-in #navBalanceChip{display:flex}
   content:'';position:absolute;inset:0;
   background:linear-gradient(180deg,transparent 30%,rgba(13,8,5,.85) 100%);
 }
+
+.sidebar-collapse-btn{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:.7rem;
+  padding:.65rem .85rem;
+  background:transparent;
+  border:none;
+  border-radius:var(--r-sm);
+  color:var(--text-3);
+  font-family:inherit;
+  font-size:.82rem;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:auto;
+}
+.sidebar-collapse-btn:hover{background:var(--surface-2);color:var(--text)}
+.sidebar-collapse-btn .collapse-chev{transition:transform .2s ease}
+.sidebar.collapsed .sidebar-collapse-btn .collapse-chev{transform:rotate(180deg)}
+.sidebar.collapsed .sidebar-collapse-btn .label{display:none}
+.sidebar.collapsed .sidebar-collapse-btn{justify-content:center;padding:.7rem}
+.sidebar-toggle{margin-top:auto;border:none;background:transparent;padding:0}

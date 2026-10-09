@@ -71,7 +71,7 @@
   background:rgba(255,255,255,.02);color:var(--text-3);font-size:.62rem;
   text-transform:uppercase;letter-spacing:.05em;font-weight:600;
 }
-.ad-users .ad-row{grid-template-columns:36px minmax(120px,1.3fr) .8fr .8fr .7fr auto}
+.ad-users .ad-row{grid-template-columns:36px minmax(100px,1.1fr) .7fr minmax(90px,.9fr) minmax(80px,.8fr) .6fr auto}
 .ad-tx .ad-row{grid-template-columns:1.1fr .9fr .8fr .8fr .9fr}
 .ad-logs .ad-row{grid-template-columns:1fr .9fr 1fr 1.5fr .8fr}
 .ad-chat .ad-row{grid-template-columns:1fr 2.2fr auto auto}
@@ -232,6 +232,16 @@
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
   function fmt(n){ return Number(n||0).toLocaleString(); }
+  function shortUa(ua){
+    if(!ua) return '—';
+    ua = String(ua);
+    if(/iPhone|iPad/i.test(ua)) return 'iOS Safari';
+    if(/Android/i.test(ua)) return 'Android';
+    if(/Windows/i.test(ua)) return 'Windows';
+    if(/Mac OS/i.test(ua)) return 'macOS';
+    if(/Linux/i.test(ua)) return 'Linux';
+    return ua.slice(0, 22) + (ua.length>22?'…':'');
+  }
   function ago(ts){
     if(!ts) return '—';
     var s = Math.floor((Date.now()-Number(ts))/1000);
@@ -312,17 +322,29 @@
     var users = d.users || [];
     var el = document.getElementById('userTable');
     if(!users.length){ el.innerHTML = '<div class="ad-empty">No users found</div>'; return; }
-    el.innerHTML = '<div class="ad-row head"><span></span><span>User</span><span class="hide-sm">Balance</span><span class="hide-sm">Wagered</span><span>Role</span><span></span></div>' +
+    el.innerHTML = '<div class="ad-row head"><span></span><span>User</span><span class="hide-sm">Balance</span><span class="hide-sm">IP</span><span class="hide-sm">Device</span><span>Role</span><span></span></div>' +
       users.map(function(u){
+        function shortUa(ua){
+          if(!ua) return '—';
+          ua = String(ua);
+          if(/iPhone|iPad/i.test(ua)) return 'iOS';
+          if(/Android/i.test(ua)) return 'Android';
+          if(/Windows/i.test(ua)) return 'Windows';
+          if(/Mac OS/i.test(ua)) return 'macOS';
+          if(/Linux/i.test(ua)) return 'Linux';
+          return ua.slice(0,18)+'…';
+        }
         return '<div class="ad-row">' +
           av(u) +
           '<div><div style="font-weight:600">'+esc(u.displayName||u.username)+'</div><div class="ad-mono" style="color:var(--text-3)">@'+esc(u.username)+'</div></div>' +
           '<span class="ad-mono hide-sm">'+fmt(u.balance)+'</span>' +
-          '<span class="ad-mono hide-sm">'+fmt(u.totalWagered||0)+'</span>' +
+          '<span class="ad-mono hide-sm" title="'+esc(u.lastIp||'')+'">'+(u.lastIp?esc(u.lastIp):'—')+'</span>' +
+          '<span class="ad-mono hide-sm" title="'+esc(u.lastUserAgent||'')+'">'+esc(shortUa(u.lastUserAgent))+'</span>' +
           (u.isAdmin?'<span class="ad-badge admin">Admin</span>':'<span class="ad-badge">User</span>') +
           '<div class="ad-actions">' +
             '<button class="btn btn-ghost btn-sm" data-act="add" data-id="'+esc(u.id)+'">+RC</button>' +
             '<button class="btn btn-ghost btn-sm" data-act="set" data-id="'+esc(u.id)+'">Set</button>' +
+            '<button class="btn btn-ghost btn-sm" data-act="sessions" data-id="'+esc(u.id)+'">Logs</button>' +
             '<button class="btn btn-ghost btn-sm" data-act="admin" data-id="'+esc(u.id)+'" data-admin="'+(u.isAdmin?1:0)+'">'+(u.isAdmin?'Revoke':'Admin')+'</button>' +
           '</div></div>';
       }).join('');
@@ -331,6 +353,17 @@
       btn.addEventListener('click', async function(){
         var id = btn.getAttribute('data-id');
         var act = btn.getAttribute('data-act');
+        
+        if(act === 'sessions'){
+          var r = await Auth.api('/admin/users/'+id+'/sessions');
+          if(!r.ok){ Toast.error('Failed','Could not load sessions'); return; }
+          var d = await r.json();
+          var lines = (d.sessions||[]).map(function(s){
+            return (s.ip||'?') + ' · ' + shortUa(s.userAgent) + ' · ' + ago(s.createdAt);
+          });
+          alert((lines.length?lines.join('\n'):'No login events yet'));
+          return;
+        }
         if(act === 'admin'){
           var make = btn.getAttribute('data-admin') !== '1';
           if(!confirm(make ? 'Grant admin to this user?' : 'Revoke admin?')) return;

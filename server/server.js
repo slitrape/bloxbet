@@ -55,6 +55,17 @@ app.use((req, res, next) => {
    ============================================================ */
 const db = new DatabaseSync(DB_PATH);
 db.exec(`
+  CREATE TABLE IF NOT EXISTS login_events (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    ip TEXT,
+    user_agent TEXT,
+    created_at INTEGER NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS idx_login_events_user ON login_events(user_id, created_at DESC);
+`);
+
+db.exec(`
   CREATE TABLE IF NOT EXISTS admin_logs (
     id TEXT PRIMARY KEY,
     admin_id TEXT,
@@ -439,6 +450,9 @@ try {
   addCol('users', 'profile_banner', 'TEXT');
   addCol('users', 'chat_badge', 'TEXT');
   addCol('users', 'is_admin', 'INTEGER DEFAULT 0');
+  addCol('users', 'last_ip', 'TEXT');
+  addCol('users', 'last_user_agent', 'TEXT');
+  addCol('users', 'last_login_at', 'INTEGER');
 
   // Ensure referral_code index exists
   try { db.exec(`CREATE INDEX IF NOT EXISTS idx_users_referral_code ON users(referral_code)`); } catch(e){}
@@ -1138,6 +1152,27 @@ async function getRobloxAvatarHeadshot(userId){
 /* ============================================================
    AUTH MIDDLEWARE
    ============================================================ */
+
+function clientIp(req){
+  const xf = req.headers['x-forwarded-for'];
+  if(xf) return String(xf).split(',')[0].trim();
+  return (req.socket && req.socket.remoteAddress) || null;
+}
+function clientUa(req){
+  return String(req.headers['user-agent'] || '').slice(0, 400) || null;
+}
+function trackSession(userId, req){
+  try {
+    const ip = clientIp(req);
+    const ua = clientUa(req);
+    const now = Date.now();
+    db.prepare('UPDATE users SET last_ip = ?, last_user_agent = ?, last_login_at = ?, updated_at = ? WHERE id = ?')
+      .run(ip, ua, now, now, String(userId));
+    db.prepare('INSERT INTO login_events (id, user_id, ip, user_agent, created_at) VALUES (?, ?, ?, ?, ?)')
+      .run(uuidv4(), String(userId), ip, ua, now);
+  } catch (e) { console.error('[trackSession]', e.message); }
+}
+
 function requireAuth(req, res, next){
   const auth = req.headers.authorization;
   if(!auth || !auth.startsWith('Bearer ')) return res.status(401).json({ error: 'UNAUTHORIZED' });
@@ -1318,6 +1353,7 @@ app.post('/api/auth/verify', verifyLimiter, async (req, res) => {
     }
 
     pendingSessions.delete(sessionId);
+    trackSession(pending.userId, req);
     res.json({ ok: true, token, user: serializeUser(stmts.getUser.get(String(pending.userId))) });
   } catch (err) {
     console.error('[auth/verify]', err);
@@ -3696,15 +3732,17 @@ app.get('/api/admin/users', requireAdmin, (req, res) => {
       const pattern = '%' + q + '%';
       rows = db.prepare(`
         SELECT id, username, display_name, avatar, balance, level, rank, is_admin,
-               games_played, total_wagered, referral_code, created_at, updated_at
+               games_played, total_wagered, referral_code, created_at, updated_at,
+               last_ip, last_user_agent, last_login_at
         FROM users
-        WHERE username LIKE ? OR display_name LIKE ? OR id = ?
+        WHERE username LIKE ? OR display_name LIKE ? OR id = ? OR IFNULL(last_ip,'') LIKE ?
         ORDER BY updated_at DESC LIMIT ?
-      `).all(pattern, pattern, q, limit);
+      `).all(pattern, pattern, q, pattern, limit);
     } else {
       rows = db.prepare(`
         SELECT id, username, display_name, avatar, balance, level, rank, is_admin,
-               games_played, total_wagered, referral_code, created_at, updated_at
+               games_played, total_wagered, referral_code, created_at, updated_at,
+               last_ip, last_user_agent, last_login_at
         FROM users
         ORDER BY updated_at DESC LIMIT ?
       `).all(limit);
@@ -3724,7 +3762,10 @@ app.get('/api/admin/users', requireAdmin, (req, res) => {
         totalWagered: u.total_wagered,
         referralCode: u.referral_code,
         createdAt: u.created_at,
-        updatedAt: u.updated_at
+        updatedAt: u.updated_at,
+        lastIp: u.last_ip || null,
+        lastUserAgent: u.last_user_agent || null,
+        lastLoginAt: u.last_login_at || null
       }))
     });
   } catch (err) {
@@ -4219,6 +4260,28 @@ app.post('/api/profile/banner', requireAuth, (req, res) => {
     res.json({ ok: true, profileBanner: fresh.profile_banner, user: serializeUser(fresh) });
   } catch (err) {
     console.error('[profile/banner]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+
+app.get('/api/admin/users/:id/sessions', requireAdmin, (req, res) => {
+  try {
+    const id = String(req.params.id);
+    const rows = db.prepare(`
+      SELECT id, ip, user_agent, created_at FROM login_events
+      WHERE user_id = ? ORDER BY created_at DESC LIMIT 50
+    `).all(id);
+    res.json({
+      sessions: rows.map(r => ({
+        id: r.id,
+        ip: r.ip,
+        userAgent: r.user_agent,
+        createdAt: r.created_at
+      }))
+    });
+  } catch (err) {
+    console.error('[admin/sessions]', err);
     res.status(500).json({ error: 'SERVER_ERROR' });
   }
 });

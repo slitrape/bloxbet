@@ -563,10 +563,30 @@
 
   function renderWaitDetails(m){
     if(!pvpWaitDetails) return;
+    var side = m.creatorChoice || m.side || 'heads';
+    var sideImg = side === 'tails' ? 'icons/coin-tails.png' : 'icons/coin-heads.png';
+    var av = (typeof resolveAvatarUrl === 'function')
+      ? resolveAvatarUrl({ avatar: m.creatorAvatar, id: m.creatorId })
+      : m.creatorAvatar;
+    var initial = ((m.creatorUsername||'U')[0]||'U').toUpperCase();
+    var avHtml = av
+      ? '<img src="'+av+'" alt="" referrerpolicy="no-referrer" onerror="this.remove()">'
+      : initial;
     pvpWaitDetails.innerHTML =
-      '<div class="pvp-wait-row"><span class="lbl">Bet</span><span class="val">' + fmtFull(m.bet) + ' RC</span></div>' +
-      '<div class="pvp-wait-row"><span class="lbl">Your Side</span><span class="val" style="text-transform:capitalize">' + escapeHtml(m.creatorChoice) + '</span></div>' +
-      '<div class="pvp-wait-row"><span class="lbl">Status</span><span class="val accent">Waiting…</span></div>';
+      '<div class="pvp-duel">' +
+        '<div class="pvp-duel-side">' +
+          '<div class="pvp-duel-av">' + avHtml + '</div>' +
+          '<div class="pvp-duel-name">' + escapeHtml(m.creatorUsername||'You') + '</div>' +
+          '<div class="pvp-duel-bet">' + fmtFull(m.bet) + ' RC</div>' +
+          '<div class="pvp-duel-choice">' + escapeHtml(side) + '</div>' +
+        '</div>' +
+        '<div class="pvp-duel-coin"><img src="'+sideImg+'" alt="" draggable="false"></div>' +
+        '<div class="pvp-duel-side">' +
+          '<div class="pvp-duel-av empty" style="border-style:dashed">?</div>' +
+          '<div class="pvp-duel-name" style="color:var(--text-3)">Waiting…</div>' +
+          '<div class="pvp-duel-bet">' + fmtFull(m.bet) + ' RC</div>' +
+        '</div>' +
+      '</div>';
   }
 
   function openMatchSocket(matchId){
@@ -752,7 +772,7 @@
       card.querySelectorAll('[data-view]').forEach(function(b){
         b.addEventListener('click', function(){
           if(typeof window.openMatchView === 'function') window.openMatchView(m);
-          else if(isOwn && typeof showWaitingModal === 'function') showWaitingModal(m);
+          else if(isOwn) showWaitingModal(m);
         });
       });
     });
@@ -823,15 +843,7 @@
         setTimeout(() => Toast.info('Achievement unlocked', a.name + ' — ' + a.desc), 500);
       });
 
-      showPvpResult(data.match, data.won);
-
-      if(data.won){
-        playSound('win');
-        Toast.success('You won!', '+' + data.payout.toLocaleString() + ' RoCoins');
-      } else {
-        playSound('lose');
-        Toast.error('You lost', 'Better luck next flip.');
-      }
+      await playDuelAnimation(data.match, data.won, data.payout);
       refreshPvpData();
     } catch (err) {
       Toast.error('Could not join', err.message || 'Try again.');
@@ -840,26 +852,130 @@
     }
   }
 
-  function showPvpResult(m, won){
-    pvpCreateView.style.display = 'none';
-    pvpWaitView.style.display = 'none';
-    pvpResultView.style.display = '';
-    Modal.open('m-createMatch');
 
-    if(pvpResultTitle){
-      pvpResultTitle.textContent = won ? 'You Won' : 'You Lost';
-      pvpResultTitle.style.color = won ? '#4ade80' : '#f87171';
-    }
-    const pot = Math.floor(m.bet * 1.96);
-    if(pvpResultSub){
-      pvpResultSub.innerHTML =
-        'Coin landed on <strong>' + (m.result || '').toUpperCase() + '</strong>.<br>' +
-        (won ? 'You took the pot: <strong>+' + fmtFull(pot) + ' RC</strong>'
-             : 'You lost your bet of <strong>' + fmtFull(m.bet) + ' RC</strong>');
-    }
+  function avHtml(user){
+    if(!user) return '?';
+    var initial = ((user.username || user.displayName || 'U')[0] || 'U').toUpperCase();
+    var url = (typeof resolveAvatarUrl === 'function') ? resolveAvatarUrl(user) : (user.avatar || null);
+    if(url) return '<img src="' + url + '" alt="" referrerpolicy="no-referrer" onerror="this.remove()">';
+    return initial;
   }
 
-  if(pvpPlayAgain) pvpPlayAgain.addEventListener('click', () => {
+  function showWaitingModal(m){
+    if(!m) return;
+    pvpCreateView.style.display = 'none';
+    pvpResultView.style.display = 'none';
+    pvpWaitView.style.display = '';
+    myOpenMatchId = m.id;
+    renderWaitDetails(m);
+    Modal.open('m-createMatch');
+    openMatchSocket(m.id);
+    loadChat(m.id);
+  }
+  window.showWaitingModal = showWaitingModal;
+
+  function playDuelAnimation(m, won, payout){
+    return new Promise(function(resolve){
+      pvpCreateView.style.display = 'none';
+      pvpWaitView.style.display = 'none';
+      pvpResultView.style.display = '';
+      Modal.open('m-createMatch');
+
+      var me = Auth.getUser() || {};
+      var myId = String(me.id || '');
+      var creatorId = String(m.creatorId || '');
+      var amCreator = myId === creatorId;
+
+      var left = {
+        id: m.creatorId,
+        username: m.creatorUsername || 'Player',
+        avatar: m.creatorAvatar,
+        choice: m.creatorChoice || m.side || 'heads',
+        bet: m.bet
+      };
+      var right = {
+        id: m.joinerId,
+        username: m.joinerUsername || me.username || 'You',
+        avatar: m.joinerAvatar || me.avatar,
+        choice: m.joinerChoice || ((left.choice === 'heads') ? 'tails' : 'heads'),
+        bet: m.bet
+      };
+
+      var result = (m.result || 'heads').toLowerCase();
+      var pot = payout != null ? payout : Math.floor(Number(m.bet) * 1.96);
+
+      if(pvpResultTitle){
+        pvpResultTitle.textContent = 'Flipping…';
+        pvpResultTitle.style.color = 'var(--text)';
+      }
+      if(pvpResultSub){
+        pvpResultSub.innerHTML =
+          '<div class="pvp-duel">' +
+            '<div class="pvp-duel-side">' +
+              '<div class="pvp-duel-av" data-user-id="' + (left.id||'') + '">' + avHtml(left) + '</div>' +
+              '<div class="pvp-duel-name">' + escapeHtml(left.username) + '</div>' +
+              '<div class="pvp-duel-bet">' + fmtFull(left.bet) + ' RC</div>' +
+              '<div class="pvp-duel-choice">' + escapeHtml(left.choice) + '</div>' +
+            '</div>' +
+            '<div class="pvp-duel-coin">' +
+              '<img id="pvpDuelCoin" src="icons/coin-heads.png" alt="" class="spinning" draggable="false">' +
+            '</div>' +
+            '<div class="pvp-duel-side">' +
+              '<div class="pvp-duel-av" data-user-id="' + (right.id||'') + '">' + avHtml(right) + '</div>' +
+              '<div class="pvp-duel-name">' + escapeHtml(right.username) + '</div>' +
+              '<div class="pvp-duel-bet">' + fmtFull(right.bet) + ' RC</div>' +
+              '<div class="pvp-duel-choice">' + escapeHtml(right.choice) + '</div>' +
+            '</div>' +
+          '</div>';
+      }
+
+      var coin = document.getElementById('pvpDuelCoin');
+      var frames = 0;
+      var iv = setInterval(function(){
+        frames++;
+        if(coin) coin.src = (frames % 2 === 0) ? 'icons/coin-heads.png' : 'icons/coin-tails.png';
+      }, 80);
+
+      setTimeout(function(){
+        clearInterval(iv);
+        if(coin){
+          coin.classList.remove('spinning');
+          coin.src = 'icons/coin-' + result + '.png';
+        }
+        if(pvpResultTitle){
+          pvpResultTitle.textContent = won ? 'You Won' : 'You Lost';
+          pvpResultTitle.style.color = won ? '#4ade80' : '#f87171';
+        }
+        if(won){
+          playSound('win');
+          Toast.success('You won!', '+' + Number(pot).toLocaleString() + ' RC');
+        } else {
+          playSound('lose');
+          Toast.error('You lost', 'Better luck next flip.');
+        }
+        resolve();
+      }, 1800);
+    });
+  }
+
+  function showPvpResult(m, won){
+    playDuelAnimation(m, won, Math.floor(Number(m.bet) * 1.96));
+  }
+
+  window.openMatchView = function(m){
+    if(!m) return;
+    var me = Auth.getUser();
+    var myId = me ? String(me.id) : '';
+    if(String(m.creatorId) === myId && (m.status === 'open' || !m.joinerId)){
+      showWaitingModal(m);
+      return;
+    }
+    // Spectator / filled match — show static duel frame
+    playDuelAnimation(m, false, m.bet).then(function(){});
+  };
+
+
+    if(pvpPlayAgain) pvpPlayAgain.addEventListener('click', () => {
     pvpResultView.style.display = 'none';
     pvpWaitView.style.display = 'none';
     pvpCreateView.style.display = '';

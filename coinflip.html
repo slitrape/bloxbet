@@ -382,7 +382,45 @@
   .chat-time{color:var(--text-3);font-size:.58rem}
   .chat-body{font-size:.72rem;color:var(--text);line-height:1.4;word-break:break-word}
 
-  .pvp-result-box{
+  
+  .pvp-duel{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    gap:1rem;
+    align-items:center;
+    margin-top:.75rem;
+  }
+  .pvp-duel-side{text-align:center}
+  .pvp-duel-av{
+    width:72px;height:72px;border-radius:50%;overflow:hidden;margin:0 auto .5rem;
+    background:var(--surface-3);border:2px solid var(--border-2);
+    display:grid;place-items:center;font-weight:700;font-size:1.2rem;
+  }
+  .pvp-duel-av img{width:100%;height:100%;object-fit:cover}
+  .pvp-duel-name{font-weight:600;font-size:.85rem;margin-bottom:.25rem}
+  .pvp-duel-bet{
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;
+    color:var(--accent-2);
+  }
+  .pvp-duel-choice{
+    font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--text-3);margin-top:.2rem;font-weight:600;
+  }
+  .pvp-duel-coin{display:flex;align-items:center;justify-content:center}
+  .pvp-duel-coin img{
+    width:88px;height:88px;object-fit:contain;
+    filter:drop-shadow(0 6px 18px rgba(255,149,0,.35));
+  }
+  .pvp-duel-coin img.spinning{
+    animation:pvpCoinSpin .35s linear infinite;
+  }
+  @keyframes pvpCoinSpin{
+    0%{transform:rotateY(0deg) scale(1)}
+    50%{transform:rotateY(180deg) scale(1.06)}
+    100%{transform:rotateY(360deg) scale(1)}
+  }
+
+.pvp-result-box{
     padding:1.5rem;
     text-align:center;
     background:var(--surface-2);
@@ -570,7 +608,10 @@
     <span>Discord</span>
   </a>
   <div class="sidebar-toggle">
-    <button type="button" class="sidebar-collapse-btn" title="Collapse">«</button>
+    <button type="button" class="sidebar-collapse-btn side-item" title="Collapse sidebar" aria-label="Collapse">
+      <span class="icon"><svg class="collapse-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+      <span class="label">Collapse</span>
+    </button>
   </div>
 </aside>
 

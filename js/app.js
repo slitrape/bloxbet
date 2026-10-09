@@ -266,6 +266,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if(me && me.balance !== undefined && typeof window.paintBalance === 'function'){
       window.paintBalance(me.balance);
     }
+    if(typeof Auth !== 'undefined' && Auth.refreshUser){
+      Auth.refreshUser().then(function(u){
+        if(u && typeof window.paintBalance === 'function') window.paintBalance(u.balance);
+      }).catch(function(){});
+    }
   })();
 
   /* ---------- Dropdowns ---------- */
