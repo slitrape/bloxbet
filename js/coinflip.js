@@ -257,7 +257,7 @@
         const msg = {
           INSUFFICIENT_BALANCE: 'Not enough RoCoins.',
           INVALID_BET: 'Invalid bet.',
-          BET_OUT_OF_RANGE: 'Bet must be between 10 and 100,000.',
+          BET_OUT_OF_RANGE: 'Minimum bet is 10 RoCoins.',
           RATE_LIMITED: 'Slow down a little.'
         }[err] || err;
         throw new Error(msg);

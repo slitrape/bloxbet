@@ -1254,8 +1254,8 @@ app.post('/api/game/coinflip', flipLimiter, requireAuth, (req, res) => {
     const betNum = Number(bet);
     if(!Number.isFinite(betNum) || betNum <= 0 || !Number.isInteger(betNum))
       return res.status(400).json({ error: 'INVALID_BET' });
-    if(betNum < 10 || betNum > 100000)
-      return res.status(400).json({ error: 'BET_OUT_OF_RANGE', min: 10, max: 100000 });
+    if(betNum < 10)
+      return res.status(400).json({ error: 'BET_OUT_OF_RANGE', min: 10 });
     if(choice !== 'heads' && choice !== 'tails')
       return res.status(400).json({ error: 'INVALID_CHOICE' });
 
@@ -1355,8 +1355,8 @@ app.post('/api/pvp/coinflip/create', pvpLimiter, requireAuth, (req, res) => {
     const betNum = Number(bet);
     if(!Number.isFinite(betNum) || betNum <= 0 || !Number.isInteger(betNum))
       return res.status(400).json({ error: 'INVALID_BET' });
-    if(betNum < 10 || betNum > 100000)
-      return res.status(400).json({ error: 'BET_OUT_OF_RANGE', min: 10, max: 100000 });
+    if(betNum < 10)
+      return res.status(400).json({ error: 'BET_OUT_OF_RANGE', min: 10 });
     if(choice !== 'heads' && choice !== 'tails')
       return res.status(400).json({ error: 'INVALID_CHOICE' });
 
@@ -1695,8 +1695,8 @@ app.post('/api/wallet/deposit', requireAuth, (req, res) => {
     const amount = parseInt(req.body.amount, 10);
     if(!Number.isFinite(amount) || amount <= 0 || !Number.isInteger(amount))
       return res.status(400).json({ error: 'INVALID_AMOUNT' });
-    if(amount < 100 || amount > 500000)
-      return res.status(400).json({ error: 'AMOUNT_OUT_OF_RANGE', min: 100, max: 500000 });
+    if(amount < 100)
+      return res.status(400).json({ error: 'AMOUNT_OUT_OF_RANGE', min: 100 });
 
     const user = ensureUser(req.userId, req.username);
     const newBalance = user.balance + amount;
@@ -2166,8 +2166,8 @@ app.post('/api/mines/start', minesLimiter, requireAuth, (req, res) => {
     const betNum = Number(bet);
     const mineCount = Number(mines);
 
-    if(!Number.isInteger(betNum) || betNum < 10 || betNum > 100000)
-      return res.status(400).json({ error: 'INVALID_BET', min: 10, max: 100000 });
+    if(!Number.isInteger(betNum) || betNum < 10)
+      return res.status(400).json({ error: 'INVALID_BET', min: 10 });
     if(!Number.isInteger(mineCount) || mineCount < 1 || mineCount > 24)
       return res.status(400).json({ error: 'INVALID_MINES', min: 1, max: 24 });
 
@@ -2820,8 +2820,8 @@ app.post('/api/crash/bet', crashLimiter, requireAuth, (req, res) => {
       ? null
       : Number(autoCashoutRaw);
 
-    if(!Number.isInteger(betNum) || betNum < crashEngine.CONFIG.minBet || betNum > crashEngine.CONFIG.maxBet)
-      return res.status(400).json({ error: 'INVALID_BET', min: crashEngine.CONFIG.minBet, max: crashEngine.CONFIG.maxBet });
+    if(!Number.isInteger(betNum) || betNum < crashEngine.CONFIG.minBet)
+      return res.status(400).json({ error: 'INVALID_BET', min: crashEngine.CONFIG.minBet });
 
     if(autoCashout !== null && (!Number.isFinite(autoCashout) || autoCashout < 1.01 || autoCashout > 10000))
       return res.status(400).json({ error: 'INVALID_AUTO' });
@@ -3947,6 +3947,6 @@ server.listen(PORT, () => {
   console.log('  Reward: 100 RC one-time unlock. Play 3 games/day for 7 days.');
   console.log('  Features: games · chat · referrals · shop · social · admin · limiteds');
   console.log('  DISCORD_WEBHOOK:', DISCORD_WEBHOOK ? 'set' : 'NOT SET — limiteds logs go to console');
-  console.log('  Open http://localhost:' + PORT + '/login.html');
+  console.log('  Open http://localhost:' + PORT + '/');
   console.log('');
 });

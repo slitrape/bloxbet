@@ -21,8 +21,8 @@
 
     confirmBtn.addEventListener('click', async () => {
       const amount = parseInt(amountInput.value, 10);
-      if(!Number.isFinite(amount) || amount < 100 || amount > 500000){
-        Toast.error('Invalid amount', 'Enter between 100 and 500,000 RoCoins.');
+      if(!Number.isFinite(amount) || amount < 100){
+        Toast.error('Invalid amount', 'Minimum is 100 RoCoins.');
         return;
       }
 

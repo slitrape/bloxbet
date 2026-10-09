@@ -35,7 +35,7 @@ const CONFIG = {
   tickMs: 100,
 
   minBet: 10,
-  maxBet: 100000,
+  maxBet: Number.MAX_SAFE_INTEGER,
 
   seedRotationRounds: 100
 };
