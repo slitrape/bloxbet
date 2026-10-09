@@ -421,6 +421,22 @@
           var playersLabel = g.players > 0
             ? g.players.toLocaleString() + ' playing'
             : 'No players';
+          var isCoin = (g.id === 'coinflip' || g.icon === 'coin' || /coinflip/i.test(g.route||'') || /coinflip/i.test(g.name||''));
+          if(isCoin){
+            card.className = 'card card-cover';
+            card.innerHTML =
+              '<div class="card-art-fill">' +
+                '<img src="icons/coin.png" alt="Coinflip" draggable="false">' +
+                '<button type="button" class="btn btn-primary btn-sm card-play">Play</button>' +
+              '</div>' +
+              '<div class="card-body">' +
+                '<div class="card-head"><div class="card-title">' + g.name + '</div>' + badgeHtml + '</div>' +
+                '<div class="card-desc">' + g.desc + '</div>' +
+                '<div class="card-foot"><div class="card-meta">' +
+                  (g.players > 0 ? '<span class="live-dot"></span>' : '') + playersLabel +
+                '</div></div>' +
+              '</div>';
+          } else {
           card.innerHTML =
             '<div class="card-art">' + Icon(g.icon, 'ico-2xl') + '</div>' +
             '<div class="card-head">' +
@@ -435,6 +451,7 @@
               '</div>' +
               '<button class="btn btn-primary btn-sm">Play</button>' +
             '</div>';
+          }
           card.addEventListener('click', function(){
             if(g.route) location.href = g.route;
           });
