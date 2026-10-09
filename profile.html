@@ -54,6 +54,77 @@
     background:linear-gradient(135deg,#050510 0%,#1a0a2e 50%,#050510 100%);
   }
 
+  
+  .pf-banner-actions{
+    position:absolute;
+    top:.65rem;
+    left:.65rem;
+    z-index:5;
+    display:flex;
+    gap:.35rem;
+  }
+  .pf-banner-btn{
+    appearance:none;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(8,5,3,.55);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    color:var(--text);
+    font-family:inherit;
+    font-size:.72rem;
+    font-weight:600;
+    padding:.4rem .65rem;
+    border-radius:999px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:.35rem;
+    transition:background .12s ease, border-color .12s ease;
+  }
+  .pf-banner-btn:hover{
+    background:rgba(8,5,3,.78);
+    border-color:rgba(255,149,0,.35);
+  }
+  .pf-banner-btn .ico{width:12px;height:12px;opacity:.9}
+  .pf-banner-menu{
+    position:absolute;
+    top:calc(100% + 6px);
+    left:0;
+    min-width:240px;
+    background:var(--surface);
+    border:1px solid var(--border-2);
+    border-radius:var(--r-md);
+    box-shadow:var(--shadow-lg);
+    padding:.65rem;
+    display:none;
+    z-index:6;
+  }
+  .pf-banner-menu.open{display:block}
+  .pf-banner-menu label{
+    display:block;
+    font-size:.65rem;
+    font-weight:600;
+    color:var(--text-3);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin-bottom:.3rem;
+  }
+  .pf-banner-menu input[type="url"]{
+    width:100%;
+    margin-bottom:.5rem;
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    border-radius:var(--r-sm);
+    color:var(--text);
+    font-family:inherit;
+    font-size:.78rem;
+    padding:.45rem .55rem;
+    outline:none;
+  }
+  .pf-banner-menu input[type="url"]:focus{border-color:var(--accent)}
+  .pf-banner-menu .row{display:flex;gap:.35rem;flex-wrap:wrap}
+  .pf-banner-menu .hint{font-size:.68rem;color:var(--text-3);margin-top:.4rem;min-height:1em}
+
   .pf-banner-grid-lines{
     position:absolute;
     inset:0;
@@ -809,6 +880,27 @@
     <div class="pf-hero">
       <div class="pf-banner" id="pfBanner">
         <div class="pf-banner-grid-lines"></div>
+        <div class="pf-banner-actions">
+          <div style="position:relative">
+            <button type="button" class="pf-banner-btn" id="pfBannerEditBtn" title="Change banner">
+              <img src="icons/plus.png" alt="" class="ico" draggable="false">
+              <span>Banner</span>
+            </button>
+            <div class="pf-banner-menu" id="pfBannerMenu">
+              <label>Image URL</label>
+              <input type="url" id="pfBannerUrl" placeholder="https://…">
+              <div class="row">
+                <button type="button" class="btn btn-primary btn-sm" id="pfBannerUrlBtn">Use URL</button>
+                <label class="btn btn-ghost btn-sm" style="cursor:pointer;margin:0">
+                  Upload
+                  <input type="file" id="pfBannerFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+                </label>
+                <button type="button" class="btn btn-ghost btn-sm" id="pfBannerClearBtn">Clear</button>
+              </div>
+              <div class="hint" id="pfBannerStatus"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="pf-hero-body">
@@ -885,38 +977,7 @@
     <div class="pf-grid">
 
       <div class="pf-col">
-
-      <div class="pf-card" id="pfCustomizeCard">
-        <div class="pf-card-head">
-          <h3>Customize</h3>
-          <span class="hint">banner</span>
-        </div>
-        <div class="pf-card-body">
-          <div style="font-size:.72rem;color:var(--text-3);margin-bottom:.65rem">Choose a preset or upload your own image.</div>
-          <div class="pf-banner-presets" id="pfBannerPresets" style="display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:.75rem">
-            <button type="button" class="btn btn-ghost btn-sm" data-banner-preset="none">None</button>
-            <button type="button" class="btn btn-ghost btn-sm" data-banner-preset="grid">Grid</button>
-            <button type="button" class="btn btn-ghost btn-sm" data-banner-preset="aurora">Aurora</button>
-            <button type="button" class="btn btn-ghost btn-sm" data-banner-preset="ember">Ember</button>
-            <button type="button" class="btn btn-ghost btn-sm" data-banner-preset="void">Void</button>
-          </div>
-          <div class="field" style="margin-bottom:.55rem">
-            <label style="font-size:.7rem;color:var(--text-3)">Image URL</label>
-            <input type="url" id="pfBannerUrl" placeholder="https://…" style="width:100%;margin-top:.3rem">
-          </div>
-          <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.55rem">
-            <button type="button" class="btn btn-secondary btn-sm" id="pfBannerUrlBtn">Use URL</button>
-            <label class="btn btn-ghost btn-sm" style="cursor:pointer">
-              Upload
-              <input type="file" id="pfBannerFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
-            </label>
-          </div>
-          <div id="pfBannerStatus" style="font-size:.72rem;color:var(--text-3)"></div>
-        </div>
-      </div>
-
-
-        <div class="pf-card">
+<div class="pf-card">
           <div class="pf-card-head">
             <h3>Recent Activity</h3>
             <span class="hint" id="pfActivityCount">—</span>
@@ -1494,8 +1555,11 @@ function bannerClassFromBanner(banner){
     }, 30000);
 
   
-    // Banner customize
+    
+    // Banner edit (hero button)
     (function(){
+      var btn = document.getElementById('pfBannerEditBtn');
+      var menu = document.getElementById('pfBannerMenu');
       var status = document.getElementById('pfBannerStatus');
       function setStatus(msg){ if(status) status.textContent = msg || ''; }
       async function saveBanner(type, value){
@@ -1513,21 +1577,29 @@ function bannerClassFromBanner(banner){
           var data = await res.json();
           if(data.user) Auth.updateUser(data.user);
           applyProfileBanner(document.getElementById('pfBanner'), data.profileBanner);
-          setStatus('Banner updated');
+          setStatus('');
+          if(menu) menu.classList.remove('open');
+          if(window.Toast) Toast.success('Banner updated', 'Profile banner saved');
         } catch(e){
           setStatus(e.message || 'Could not save');
         }
       }
-      document.querySelectorAll('[data-banner-preset]').forEach(function(btn){
-        btn.addEventListener('click', function(){
-          saveBanner('preset', btn.getAttribute('data-banner-preset'));
+      if(btn && menu){
+        btn.addEventListener('click', function(e){
+          e.stopPropagation();
+          menu.classList.toggle('open');
         });
-      });
+        document.addEventListener('click', function(e){
+          if(!menu.classList.contains('open')) return;
+          if(menu.contains(e.target) || btn.contains(e.target)) return;
+          menu.classList.remove('open');
+        });
+      }
       var urlBtn = document.getElementById('pfBannerUrlBtn');
       if(urlBtn){
         urlBtn.addEventListener('click', function(){
           var v = (document.getElementById('pfBannerUrl').value || '').trim();
-          if(!v){ setStatus('Paste an image URL first'); return; }
+          if(!v){ setStatus('Paste an image URL'); return; }
           saveBanner('url', v);
         });
       }
@@ -1536,13 +1608,18 @@ function bannerClassFromBanner(banner){
         file.addEventListener('change', function(){
           var f = file.files && file.files[0];
           if(!f) return;
-          if(f.size > 600000){ setStatus('Image too large (max ~600KB)'); return; }
+          if(f.size > 600000){ setStatus('Max ~600KB'); return; }
           var reader = new FileReader();
           reader.onload = function(){ saveBanner('upload', reader.result); };
           reader.readAsDataURL(f);
         });
       }
+      var clearBtn = document.getElementById('pfBannerClearBtn');
+      if(clearBtn){
+        clearBtn.addEventListener('click', function(){ saveBanner('preset', 'none'); });
+      }
     })();
+
 
 })();
 </script>
