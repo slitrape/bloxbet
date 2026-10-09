@@ -715,7 +715,7 @@
 
       card.innerHTML =
         '<div class="pvp-match-top">' +
-          '<div class="pvp-match-avatar">' + avatarHtml + '</div>' +
+          '<div class="pvp-match-avatar"' + (m.creatorId ? ' data-user-id="' + m.creatorId + '"' : '') + '>' + avatarHtml + '</div>' +
           '<div class="pvp-match-who">' +
             '<div class="pvp-match-name">' + escapeHtml(m.creatorUsername) + '</div>' +
             '<div class="pvp-match-time">' + timeAgo(m.createdAt) + ' ago</div>' +

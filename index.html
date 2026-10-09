@@ -468,6 +468,7 @@
           var cls = u.rank === 1 ? 'top1' : u.rank === 2 ? 'top2' : u.rank === 3 ? 'top3' : '';
           var row = document.createElement('div');
           row.className = 'lb-row';
+          if(u.id) row.setAttribute('data-user-id', u.id);
           row.innerHTML =
             '<div class="lb-rank ' + cls + '">#' + u.rank + '</div>' +
             '<div class="lb-user">' +

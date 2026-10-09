@@ -517,3 +517,103 @@
   .bb-loader-bg{filter:blur(12px) saturate(1.15) brightness(.58)}
   .bb-leaf{transform:scale(.75)}
 }
+
+/* ========== Player sheet ========== */
+.ps-overlay{
+  position:fixed;inset:0;z-index:9990;display:flex;align-items:center;justify-content:center;
+  padding:1.25rem;background:rgba(8,5,3,.72);backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .18s ease;
+}
+.ps-overlay.open{opacity:1;pointer-events:auto}
+.ps-sheet{
+  width:100%;max-width:400px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-xl);padding:1.35rem 1.35rem 1.15rem;position:relative;
+  box-shadow:0 24px 64px rgba(0,0,0,.45);animation:psIn .22s ease;
+}
+@keyframes psIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.ps-close{
+  position:absolute;top:.65rem;right:.75rem;width:32px;height:32px;border:none;
+  background:var(--surface-2);border-radius:8px;color:var(--text-2);font-size:1.2rem;
+  cursor:pointer;line-height:1;
+}
+.ps-close:hover{background:var(--surface-3);color:var(--text)}
+.ps-top{display:flex;gap:.9rem;align-items:center;margin-bottom:1.15rem}
+.ps-avatar{
+  width:64px;height:64px;border-radius:50%;overflow:hidden;background:var(--surface-3);
+  border:1px solid var(--border-2);display:grid;place-items:center;font-weight:700;font-size:1.25rem;flex-shrink:0;
+}
+.ps-avatar img{width:100%;height:100%;object-fit:cover}
+.ps-name{font-size:1.05rem;font-weight:700;letter-spacing:-.02em}
+.ps-handle{font-size:.75rem;color:var(--text-3);font-family:'JetBrains Mono',monospace;margin-top:.1rem}
+.ps-badges{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem}
+.ps-badge{
+  font-size:.62rem;font-weight:600;padding:.2rem .45rem;border-radius:999px;
+  background:var(--surface-3);color:var(--text-2);
+}
+.ps-badge.verified{background:rgba(59,130,246,.15);color:#93c5fd}
+.ps-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem;
+}
+.ps-stat{
+  background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-md);
+  padding:.7rem .55rem;text-align:center;
+}
+.ps-stat-val{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.88rem;letter-spacing:-.02em}
+.ps-stat-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);margin-top:.25rem;font-weight:600}
+.ps-foot{display:flex;justify-content:space-between;gap:.75rem;font-size:.68rem;color:var(--text-3);flex-wrap:wrap}
+.ps-loading{text-align:center;color:var(--text-3);font-size:.78rem;padding:1rem}
+[data-user-id]{cursor:pointer}
+[data-user-id]:hover{filter:brightness(1.08)}
+
+/* ========== Deposit modal ========== */
+#m-deposit .modal{max-width:420px;padding:0;overflow:hidden}
+#m-deposit .dep-hero{
+  padding:1.25rem 1.35rem 1rem;
+  background:radial-gradient(ellipse 80% 100% at 50% 0%, rgba(255,149,0,.16), transparent 65%), var(--surface);
+  border-bottom:1px solid var(--border);
+}
+#m-deposit .dep-hero h3{margin:0 0 .25rem;font-size:1.15rem;font-weight:800;letter-spacing:-.02em}
+#m-deposit .dep-hero p{margin:0;font-size:.78rem;color:var(--text-3);line-height:1.45}
+#m-deposit .dep-body{padding:1.15rem 1.35rem}
+#m-deposit .dep-amount-wrap{
+  position:relative;margin-bottom:.85rem;
+}
+#m-deposit .dep-amount-wrap label{
+  display:block;font-size:.68rem;font-weight:600;color:var(--text-3);
+  text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem;
+}
+#m-deposit #depositAmount{
+  width:100%;font-size:1.35rem;font-weight:700;font-family:'JetBrains Mono',monospace;
+  letter-spacing:-.02em;padding:.85rem 3.2rem .85rem 1rem;
+  background:var(--bg-2);border:1px solid var(--border-2);border-radius:var(--r-md);
+  color:var(--text);outline:none;
+}
+#m-deposit #depositAmount:focus{border-color:var(--accent)}
+#m-deposit .dep-unit{
+  position:absolute;right:1rem;bottom:.95rem;font-size:.75rem;font-weight:600;
+  color:var(--text-3);pointer-events:none;
+}
+#m-deposit .dep-quick{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:1rem;
+}
+#m-deposit .dep-quick button{
+  appearance:none;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text-2);font-family:inherit;font-size:.75rem;font-weight:600;
+  padding:.55rem .35rem;border-radius:var(--r-sm);cursor:pointer;transition:all .12s ease;
+}
+#m-deposit .dep-quick button:hover{border-color:var(--border-hi);color:var(--text)}
+#m-deposit .dep-quick button.active{
+  background:rgba(255,149,0,.12);border-color:rgba(255,149,0,.35);color:var(--accent-2);
+}
+#m-deposit .dep-preview{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.65rem .8rem;background:var(--bg-2);border:1px solid var(--border);
+  border-radius:var(--r-md);margin-bottom:.25rem;font-size:.75rem;
+}
+#m-deposit .dep-preview .lbl{color:var(--text-3)}
+#m-deposit .dep-preview .val{font-family:'JetBrains Mono',monospace;font-weight:600}
+#m-deposit .modal-foot{
+  padding:1rem 1.35rem 1.2rem;border-top:1px solid var(--border);
+  display:flex;gap:.5rem;justify-content:flex-end;
+}
+#m-deposit .modal-foot .btn-primary{min-width:8.5rem}

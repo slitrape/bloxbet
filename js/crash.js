@@ -348,7 +348,7 @@
       }
 
       row.innerHTML =
-        avatarHtml +
+        '<div data-user-id="' + (p.userId||p.id||'') + '">' + avatarHtml + '</div>' +
         '<span class="name">' + name + '</span>' +
         right;
 

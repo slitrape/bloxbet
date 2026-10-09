@@ -646,6 +646,7 @@ const stmts = {
       case_battles_played = case_battles_played + 1,
       case_battles_won = case_battles_won + ?,
       total_wagered = total_wagered + ?,
+      games_played = games_played + 1,
       xp = xp + ?,
       level = MIN(100, 1 + CAST((xp + ?) / 500 AS INTEGER)),
       updated_at = ?
@@ -660,6 +661,7 @@ const stmts = {
       total_won = total_won + ?,
       total_lost = total_lost + ?,
       biggest_win = MAX(biggest_win, ?),
+      games_played = games_played + 1,
       xp = xp + ?,
       level = MIN(100, 1 + CAST((xp + ?) / 500 AS INTEGER)),
       updated_at = ?
@@ -674,6 +676,7 @@ const stmts = {
       total_won = total_won + ?,
       total_lost = total_lost + ?,
       biggest_win = MAX(biggest_win, ?),
+      games_played = games_played + 1,
       xp = xp + ?,
       level = MIN(100, 1 + CAST((xp + ?) / 500 AS INTEGER)),
       updated_at = ?
@@ -721,10 +724,10 @@ const stmts = {
   userAch: db.prepare('SELECT * FROM achievements WHERE user_id = ?'),
   hasAch: db.prepare('SELECT 1 FROM achievements WHERE id = ? AND user_id = ?'),
 
-  topByWagered: db.prepare(`SELECT id, username, display_name, avatar, has_verified_badge, balance, total_wagered, total_won, total_lost, biggest_win, level, rank, games_won FROM users WHERE games_played > 0 ORDER BY total_wagered DESC LIMIT 50`),
-  topByBalance: db.prepare(`SELECT id, username, display_name, avatar, has_verified_badge, balance, total_wagered, total_won, total_lost, biggest_win, level, rank, games_won FROM users WHERE games_played > 0 ORDER BY balance DESC LIMIT 50`),
-  topByWon: db.prepare(`SELECT id, username, display_name, avatar, has_verified_badge, balance, total_wagered, total_won, total_lost, biggest_win, level, rank, games_won FROM users WHERE games_played > 0 ORDER BY total_won DESC LIMIT 50`),
-  topByBigWin: db.prepare(`SELECT id, username, display_name, avatar, has_verified_badge, balance, total_wagered, total_won, total_lost, biggest_win, level, rank, games_won FROM users WHERE games_played > 0 ORDER BY biggest_win DESC LIMIT 50`),
+  topByWagered: db.prepare(`SELECT id, username, display_name, avatar, has_verified_badge, balance, total_wagered, total_won, total_lost, biggest_win, level, rank, games_won, games_played FROM users WHERE total_wagered > 0 OR games_played > 0 ORDER BY total_wagered DESC, games_played DESC LIMIT 100`),
+  topByBalance: db.prepare(`SELECT id, username, display_name, avatar, has_verified_badge, balance, total_wagered, total_won, total_lost, biggest_win, level, rank, games_won, games_played FROM users WHERE total_wagered > 0 OR games_played > 0 OR balance > 0 ORDER BY balance DESC LIMIT 100`),
+  topByWon: db.prepare(`SELECT id, username, display_name, avatar, has_verified_badge, balance, total_wagered, total_won, total_lost, biggest_win, level, rank, games_won, games_played FROM users WHERE total_won > 0 OR total_wagered > 0 ORDER BY total_won DESC LIMIT 100`),
+  topByBigWin: db.prepare(`SELECT id, username, display_name, avatar, has_verified_badge, balance, total_wagered, total_won, total_lost, biggest_win, level, rank, games_won, games_played FROM users WHERE biggest_win > 0 OR total_wagered > 0 ORDER BY biggest_win DESC LIMIT 100`),
 
   insertCaseBattle: db.prepare(`
     INSERT INTO case_battles (id, case_id, case_name, entry_price, slots, status,
@@ -1810,7 +1813,7 @@ app.post('/api/wallet/deposit', requireAuth, (req, res) => {
    ============================================================ */
 app.get('/api/leaderboard', requireAuth, (req, res) => {
   const sort = String(req.query.sort || 'wagered');
-  const limit = Math.min(50, Math.max(10, parseInt(req.query.limit, 10) || 50));
+  const limit = Math.min(100, Math.max(10, parseInt(req.query.limit, 10) || 50));
 
   let rows;
   if(sort === 'balance') rows = stmts.topByBalance.all();
@@ -1831,7 +1834,8 @@ app.get('/api/leaderboard', requireAuth, (req, res) => {
     totalWon: u.total_won,
     totalLost: u.total_lost,
     biggestWin: u.biggest_win,
-    gamesWon: u.games_won
+    gamesWon: u.games_won,
+    gamesPlayed: u.games_played || 0
   }));
 
   res.json({ entries, sort });
@@ -4118,6 +4122,55 @@ app.post('/api/admin/users/:id/note', requireAdmin, (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     console.error('[admin/note]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+
+app.get('/api/users/:id/public', requireAuth, (req, res) => {
+  try {
+    const id = String(req.params.id);
+    const u = stmts.getUser.get(id);
+    if(!u) return res.status(404).json({ error: 'USER_NOT_FOUND' });
+    const flips = db.prepare(`
+      SELECT COUNT(*) AS total,
+             SUM(CASE WHEN win = 1 THEN 1 ELSE 0 END) AS wins,
+             COALESCE(SUM(bet),0) AS wagered
+      FROM flips WHERE user_id = ?
+    `).get(id);
+    res.json({
+      user: {
+        id: u.id,
+        username: u.username,
+        displayName: u.display_name || u.username,
+        avatar: avatarForUser(u),
+        hasVerifiedBadge: !!u.has_verified_badge,
+        level: u.level,
+        rank: u.rank,
+        balance: u.balance,
+        totalWagered: u.total_wagered,
+        totalWon: u.total_won,
+        totalLost: u.total_lost,
+        biggestWin: u.biggest_win,
+        gamesPlayed: u.games_played,
+        gamesWon: u.games_won,
+        pvpWins: u.pvp_wins || 0,
+        pvpLosses: u.pvp_losses || 0,
+        minesPlayed: u.mines_played || 0,
+        crashPlayed: u.crash_played || 0,
+        caseBattlesPlayed: u.case_battles_played || 0,
+        nameColor: u.name_color || null,
+        chatBadge: u.chat_badge || null,
+        memberSince: u.created_at,
+        flipStats: {
+          total: flips.total || 0,
+          wins: flips.wins || 0,
+          wagered: flips.wagered || 0
+        }
+      }
+    });
+  } catch (err) {
+    console.error('[users/public]', err);
     res.status(500).json({ error: 'SERVER_ERROR' });
   }
 });

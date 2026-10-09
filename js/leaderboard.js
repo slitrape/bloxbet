@@ -96,6 +96,7 @@
 
       const el = document.createElement('div');
       el.className = 'lb-row';
+      if(u.id) el.setAttribute('data-user-id', u.id);
       el.innerHTML =
         '<div class="lb-rank ' + cls + '">#' + u.rank + '</div>' +
         '<div class="lb-user">' +

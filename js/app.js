@@ -279,3 +279,106 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4000);
   }
 });
+
+/* ---------- Player profile sheet (click any headshot) ---------- */
+window.PlayerSheet = (function(){
+  var overlay = null;
+
+  function ensure(){
+    if(overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.className = 'ps-overlay';
+    overlay.id = 'playerSheet';
+    overlay.innerHTML =
+      '<div class="ps-sheet" role="dialog" aria-modal="true">' +
+        '<button type="button" class="ps-close" aria-label="Close">&times;</button>' +
+        '<div class="ps-top">' +
+          '<div class="ps-avatar" id="psAvatar">?</div>' +
+          '<div class="ps-meta">' +
+            '<div class="ps-name" id="psName">—</div>' +
+            '<div class="ps-handle" id="psHandle">@—</div>' +
+            '<div class="ps-badges" id="psBadges"></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="ps-stats" id="psStats"></div>' +
+        '<div class="ps-foot" id="psFoot"></div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function(e){
+      if(e.target === overlay) close();
+    });
+    overlay.querySelector('.ps-close').addEventListener('click', close);
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && overlay.classList.contains('open')) close();
+    });
+    return overlay;
+  }
+
+  function fmt(n){ return Number(n||0).toLocaleString(); }
+
+  function close(){
+    if(!overlay) return;
+    overlay.classList.remove('open');
+  }
+
+  async function open(userId){
+    if(!userId || userId === 'demo') return;
+    ensure();
+    overlay.classList.add('open');
+    document.getElementById('psName').textContent = 'Loading…';
+    document.getElementById('psHandle').textContent = '';
+    document.getElementById('psBadges').innerHTML = '';
+    document.getElementById('psStats').innerHTML = '<div class="ps-loading">Fetching stats…</div>';
+    document.getElementById('psFoot').innerHTML = '';
+    document.getElementById('psAvatar').textContent = '?';
+
+    try {
+      if(typeof Auth === 'undefined' || !Auth.api) throw new Error('Auth missing');
+      var res = await Auth.api('/users/' + encodeURIComponent(userId) + '/public');
+      if(!res.ok) throw new Error('not found');
+      var data = await res.json();
+      var u = data.user;
+      if(typeof renderAvatar === 'function') renderAvatar(document.getElementById('psAvatar'), u);
+      document.getElementById('psName').textContent = u.displayName || u.username;
+      document.getElementById('psHandle').textContent = '@' + (u.username || '');
+      var badges = document.getElementById('psBadges');
+      badges.innerHTML = '';
+      if(u.rank) badges.innerHTML += '<span class="ps-badge">'+u.rank+'</span>';
+      badges.innerHTML += '<span class="ps-badge">Lvl '+(u.level||1)+'</span>';
+      if(u.hasVerifiedBadge) badges.innerHTML += '<span class="ps-badge verified">Verified</span>';
+
+      var winRate = u.gamesPlayed > 0 ? Math.round((u.gamesWon / u.gamesPlayed) * 100) : 0;
+      document.getElementById('psStats').innerHTML =
+        '<div class="ps-stat"><div class="ps-stat-val">'+fmt(u.balance)+'</div><div class="ps-stat-lbl">Balance</div></div>' +
+        '<div class="ps-stat"><div class="ps-stat-val">'+fmt(u.totalWagered)+'</div><div class="ps-stat-lbl">Wagered</div></div>' +
+        '<div class="ps-stat"><div class="ps-stat-val">'+fmt(u.totalWon)+'</div><div class="ps-stat-lbl">Won</div></div>' +
+        '<div class="ps-stat"><div class="ps-stat-val">'+fmt(u.biggestWin)+'</div><div class="ps-stat-lbl">Biggest win</div></div>' +
+        '<div class="ps-stat"><div class="ps-stat-val">'+fmt(u.gamesPlayed)+'</div><div class="ps-stat-lbl">Games</div></div>' +
+        '<div class="ps-stat"><div class="ps-stat-val">'+winRate+'%</div><div class="ps-stat-lbl">Win rate</div></div>';
+
+      var since = u.memberSince ? new Date(u.memberSince).toLocaleDateString() : '—';
+      document.getElementById('psFoot').innerHTML =
+        '<span>Member since '+since+'</span>' +
+        '<span>PvP '+fmt(u.pvpWins)+'W / '+fmt(u.pvpLosses)+'L</span>';
+    } catch (err) {
+      document.getElementById('psName').textContent = 'Unavailable';
+      document.getElementById('psStats').innerHTML = '<div class="ps-loading">Could not load this player.</div>';
+    }
+  }
+
+  // Delegate clicks on avatars / lb rows with data-user-id
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-user-id]');
+    if(!t) return;
+    // don't open when clicking real links/buttons inside except pure avatar
+    if(t.closest('a[href]') && t.tagName !== 'A') return;
+    var id = t.getAttribute('data-user-id');
+    if(id) {
+      e.preventDefault();
+      e.stopPropagation();
+      open(id);
+    }
+  });
+
+  return { open: open, close: close };
+})();

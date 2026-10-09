@@ -779,7 +779,7 @@
       }
 
       row.innerHTML =
-        '<div class="cm-avatar-cell">' +
+        '<div class="cm-avatar-cell"' + (uid ? ' data-user-id="' + uid + '"' : '') + '>' +
           '<div class="cm-avatar">' +
             avatarHtml +
             verifiedHtml +
