@@ -307,3 +307,31 @@
 /* Reduce boxy page chrome */
 body.bb-ui .page-head h1 { font-size: 1.5rem; font-weight: 900; }
 body.bb-ui .mines-wrap.mines-stake ~ * { }
+
+.mines-input-wrap .amount-ico { display: none !important; }
+.mines-tile img {
+  width: 52%;
+  height: 52%;
+  object-fit: contain;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity .2s ease, transform .25s cubic-bezier(0.22,1,0.36,1);
+}
+.mines-tile.revealed img {
+  opacity: 1;
+  transform: scale(1);
+}
+.mines-tile.reveal-pop {
+  animation: minePop .28s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes minePop {
+  0% { transform: scale(0.92); }
+  60% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+.mines-tile.revealed.gem {
+  background: linear-gradient(145deg, #1e3a5f, #2563eb) !important;
+}
+.mines-tile.revealed.mine {
+  background: linear-gradient(145deg, #4a1515, #b91c1c) !important;
+}

@@ -484,12 +484,15 @@ try {
    RANKS + ACHIEVEMENTS
    ============================================================ */
 const RANKS = [
-  { name: 'Bronze',   minWagered: 0 },
-  { name: 'Silver',   minWagered: 10000 },
-  { name: 'Gold',     minWagered: 50000 },
-  { name: 'Platinum', minWagered: 250000 },
-  { name: 'Diamond',  minWagered: 1000000 },
-  { name: 'Legend',   minWagered: 5000000 }
+  { name: 'Bronze',    minWagered: 0 },
+  { name: 'Silver',    minWagered: 5000 },
+  { name: 'Gold',      minWagered: 25000 },
+  { name: 'Platinum',  minWagered: 100000 },
+  { name: 'Diamond',   minWagered: 500000 },
+  { name: 'Master',    minWagered: 1500000 },
+  { name: 'Grandmaster', minWagered: 5000000 },
+  { name: 'Legend',    minWagered: 15000000 },
+  { name: 'Mythic',    minWagered: 50000000 }
 ];
 
 const ACHIEVEMENTS = {
@@ -574,6 +577,11 @@ function checkAchievements(user, context){
   return unlocked;
 }
 
+function levelFromWagered(w){
+  w = Number(w) || 0;
+  // ~Robux-scale progression: level 1 at 0, grows with wagered
+  return Math.min(100, 1 + Math.floor(Math.pow(w / 100, 0.55)));
+}
 function rankFor(totalWagered){
   let r = RANKS[0].name;
   for(const rank of RANKS){
@@ -1441,6 +1449,7 @@ app.post('/api/game/coinflip', flipLimiter, requireAuth, (req, res) => {
 
     const updated = stmts.getUser.get(user.id);
     const newRank = rankFor(updated.total_wagered);
+    const newLevel = levelFromWagered(updated.total_wagered);
     if(newRank !== updated.rank) stmts.updateRank.run(newRank, Date.now(), user.id);
 
     const unlocked = checkAchievements(stmts.getUser.get(user.id), { bet: betNum, streak });
@@ -2004,6 +2013,32 @@ app.post('/api/users/heartbeat', requireAuth, (req, res) => {
   }
 });
 
+
+app.get('/api/users/:id', (req, res) => {
+  try {
+    const id = req.params.id;
+    let u = db.prepare('SELECT id, username, display_name, avatar, balance, level, rank, total_wagered, created_at FROM users WHERE id = ?').get(id);
+    if(!u) u = db.prepare('SELECT id, username, display_name, avatar, balance, level, rank, total_wagered, created_at FROM users WHERE username = ? COLLATE NOCASE').get(id);
+    if(!u) return res.status(404).json({ error: 'NOT_FOUND' });
+    res.json({
+      user: {
+        id: u.id,
+        username: u.username,
+        displayName: u.display_name || u.username,
+        avatar: avatarForUser(u),
+        balance: u.balance,
+        level: u.level,
+        rank: rankFor(u.total_wagered || 0),
+        totalWagered: u.total_wagered,
+        createdAt: u.created_at
+      }
+    });
+  } catch (err) {
+    console.error('[users/:id]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
 app.get('/api/users/online', (req, res) => {
   try {
     const cutoff = Date.now() - 2 * 60 * 1000;
@@ -2403,6 +2438,7 @@ app.post('/api/mines/:id/reveal', minesLimiter, requireAuth, (req, res) => {
 
       const updated = stmts.getUser.get(user.id);
       const newRank = rankFor(updated.total_wagered);
+    const newLevel = levelFromWagered(updated.total_wagered);
       if(newRank !== updated.rank) stmts.updateRank.run(newRank, Date.now(), user.id);
 
       const unlocked = checkAchievements(stmts.getUser.get(user.id), null);
@@ -2480,6 +2516,7 @@ app.post('/api/mines/:id/cashout', minesLimiter, requireAuth, (req, res) => {
 
     const updated = stmts.getUser.get(user.id);
     const newRank = rankFor(updated.total_wagered);
+    const newLevel = levelFromWagered(updated.total_wagered);
     if(newRank !== updated.rank) stmts.updateRank.run(newRank, Date.now(), user.id);
 
     const unlocked = checkAchievements(stmts.getUser.get(user.id), {

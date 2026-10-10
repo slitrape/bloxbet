@@ -67,17 +67,14 @@
       <span class="nav-logo-text">BLOXBET</span>
     </a>
   </div>
-  <div class="nav-center-links">
-    <a href="index.html"><img src="icons/home.png" alt="" class="ico"> Home</a>
-    <a href="games.html"><img src="icons/games.png" alt="" class="ico"> Originals</a>
-    <a href="rewards.html"><img src="icons/rewards.png" alt="" class="ico"> Rewards</a>
-    <a href="leaderboard.html"><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
-  </div>
-  <div class="nav-right">
+  <div class="nav-center-links nav-center-funds">
     <div class="balance-chip" id="navBalanceChip">
-      <div class="value">$<span data-balance>0.00</span></div>
+      <div class="value"><span data-balance>0</span> RC</div>
     </div>
     <button class="wallet-btn" type="button" onclick="Modal.open('m-deposit')">Add Funds</button>
+  </div>
+  <div class="nav-right">
+    <a href="leaderboard.html" class="nav-lb-link "><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
     <div class="dropdown">
       <button class="nav-icon-btn" data-dropdown data-tip="Notifications" type="button">
         <img src="icons/bell.png" alt="" class="ico" draggable="false">
@@ -95,6 +92,7 @@
     </div>
   </div>
 </nav>
+
 
 <aside class="sidebar" id="appSidebar">
   <div class="side-nav-block">
@@ -128,6 +126,10 @@
         <a href="casebattles.html"><img src="icons/gift.png" alt="" class="ico"> Case Battles</a>
       </div>
     </div>
+    <a class="side-nav-item" href="rewards.html">
+      <img src="icons/rewards.png" alt="" class="ico" draggable="false">
+      <span>Rewards</span>
+    </a>
   </div>
   <div class="sidebar-collapse-bar">
     <button type="button" id="sidebarCollapseBtn" title="Collapse sidebar">
@@ -137,86 +139,183 @@
   </div>
 </aside>
 
+
 <main class="main">
-  <div class="container page">
+  <div class="container page settings-page">
     <div class="page-head">
       <div>
         <h1>Settings</h1>
-        <div class="sub">Account preferences</div>
+        <div class="sub">Manage your account, preferences, and security.</div>
       </div>
     </div>
 
-    <div class="set-grid">
-      <div class="set-card">
-        <h2>Account</h2>
-        <div class="set-profile">
-          <div class="set-avatar" id="setAvatar">?</div>
-          <div class="set-meta">
-            <div class="name" id="setName">—</div>
-            <div class="handle" id="setHandle">@—</div>
-          </div>
-        </div>
-        <div class="set-row">
-          <div>
-            <div class="set-label">Linked Roblox</div>
-            <div class="set-desc">Identity is verified through your Roblox account.</div>
-          </div>
-          <span class="chip" id="setLinked">Connected</span>
-        </div>
-        <div class="set-row">
-          <div>
-            <div class="set-label">Open profile</div>
-            <div class="set-desc">Public stats, rank, and activity.</div>
-          </div>
-          <a class="btn btn-ghost btn-sm" href="profile.html">View</a>
-        </div>
-      </div>
+    <div class="set-layout">
+      <aside class="set-nav">
+        <button type="button" class="set-nav-item active" data-set="account">Account</button>
+        <button type="button" class="set-nav-item" data-set="preferences">Preferences</button>
+        <button type="button" class="set-nav-item" data-set="privacy">Privacy & Safety</button>
+        <button type="button" class="set-nav-item" data-set="security">Security</button>
+        <button type="button" class="set-nav-item" data-set="notifications">Notifications</button>
+        <button type="button" class="set-nav-item" data-set="cosmetics">Cosmetics</button>
+        <button type="button" class="set-nav-item" data-set="language">Language</button>
+      </aside>
 
-      <div class="set-card">
-        <h2>Preferences</h2>
-        <div class="set-row">
-          <div>
-            <div class="set-label">Sound effects</div>
-            <div class="set-desc">Game and UI audio cues.</div>
+      <div class="set-panels">
+        <section class="set-panel active" id="set-account">
+          <h2>Account</h2>
+          <div class="set-card">
+            <div class="set-row">
+              <div class="set-avatar" id="setAvatar">?</div>
+              <div>
+                <div class="set-name" id="setName">User</div>
+                <div class="set-handle" id="setHandle">@user</div>
+              </div>
+            </div>
+            <div class="set-row between"><span>Linked Roblox</span><span class="muted">Connected</span></div>
+            <div class="set-row between"><span>User ID</span><span class="muted mono" id="setUserId">—</span></div>
           </div>
-          <button type="button" class="set-toggle" id="togSound" aria-label="Sound"></button>
-        </div>
-        <div class="set-row">
-          <div>
-            <div class="set-label">Compact numbers</div>
-            <div class="set-desc">Show 12.4K instead of 12,400 where possible.</div>
-          </div>
-          <button type="button" class="set-toggle" id="togCompact" aria-label="Compact"></button>
-        </div>
-        <div class="set-row">
-          <div>
-            <div class="set-label">Confirm large bets</div>
-            <div class="set-desc">Ask before placing bets over 10% of balance.</div>
-          </div>
-          <button type="button" class="set-toggle on" id="togConfirm" aria-label="Confirm"></button>
-        </div>
-      </div>
+        </section>
 
-      <div class="set-card">
-        <h2>Session</h2>
-        <div class="set-row">
-          <div>
-            <div class="set-label">Stay signed in</div>
-            <div class="set-desc">Session is kept until you sign out.</div>
+        <section class="set-panel" id="set-preferences">
+          <h2>Preferences</h2>
+          <div class="set-card">
+            <div class="set-row between">
+              <div><div class="set-label">Sound effects</div><div class="set-hint">Game SFX and UI sounds</div></div>
+              <button type="button" class="set-toggle on" id="togSound"></button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Compact numbers</div><div class="set-hint">Show 1.2K instead of 1,200</div></div>
+              <button type="button" class="set-toggle" id="togCompact"></button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Confirm large bets</div><div class="set-hint">Ask before high-risk wagers</div></div>
+              <button type="button" class="set-toggle on" id="togConfirm"></button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Reduce motion</div><div class="set-hint">Minimize animations</div></div>
+              <button type="button" class="set-toggle" id="togMotion"></button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Streamer mode</div><div class="set-hint">Hide balance on stream</div></div>
+              <button type="button" class="set-toggle" id="togStreamer"></button>
+            </div>
           </div>
-          <span class="chip">On</span>
-        </div>
-        <div class="set-row">
-          <div>
-            <div class="set-label">Sign out</div>
-            <div class="set-desc">Clear this device session.</div>
+        </section>
+
+        <section class="set-panel" id="set-privacy">
+          <h2>Privacy & Safety</h2>
+          <div class="set-card">
+            <div class="set-row between">
+              <div><div class="set-label">Public profile</div><div class="set-hint">Others can view your stats</div></div>
+              <button type="button" class="set-toggle on" id="togPublicProfile"></button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Show online status</div><div class="set-hint">Visible in chat and admin</div></div>
+              <button type="button" class="set-toggle on" id="togOnline"></button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Allow direct challenges</div><div class="set-hint">Coinflip invites from others</div></div>
+              <button type="button" class="set-toggle on" id="togChallenges"></button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Hide wager history</div><div class="set-hint">Private recent activity</div></div>
+              <button type="button" class="set-toggle" id="togHideHistory"></button>
+            </div>
           </div>
-          <button type="button" class="btn btn-danger btn-sm" onclick="Auth.logout()">Sign out</button>
-        </div>
+        </section>
+
+        <section class="set-panel" id="set-security">
+          <h2>Security</h2>
+          <div class="set-card">
+            <div class="set-row between">
+              <div><div class="set-label">Two-factor authentication</div><div class="set-hint">Coming soon — extra login protection</div></div>
+              <button type="button" class="btn btn-ghost btn-sm" disabled>Coming soon</button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Active sessions</div><div class="set-hint">Manage devices signed in</div></div>
+              <button type="button" class="btn btn-ghost btn-sm" disabled>Coming soon</button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Login alerts</div><div class="set-hint">Notify on new device</div></div>
+              <button type="button" class="set-toggle" id="togLoginAlert"></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="set-panel" id="set-notifications">
+          <h2>Notifications</h2>
+          <div class="set-card">
+            <div class="set-row between">
+              <div><div class="set-label">Big win toasts</div><div class="set-hint">Celebrate large payouts</div></div>
+              <button type="button" class="set-toggle on" id="togWinToast"></button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Chat mentions</div><div class="set-hint">When someone replies to you</div></div>
+              <button type="button" class="set-toggle on" id="togMentions"></button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Race updates</div><div class="set-hint">Weekly leaderboard changes</div></div>
+              <button type="button" class="set-toggle" id="togRace"></button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Promotional emails</div><div class="set-hint">Coming soon</div></div>
+              <button type="button" class="btn btn-ghost btn-sm" disabled>Coming soon</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="set-panel" id="set-cosmetics">
+          <h2>Cosmetics</h2>
+          <div class="set-card">
+            <div class="set-row between">
+              <div><div class="set-label">Name color</div><div class="set-hint">Customize chat name</div></div>
+              <button type="button" class="btn btn-ghost btn-sm" disabled>Coming soon</button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Avatar ring</div><div class="set-hint">Profile border style</div></div>
+              <button type="button" class="btn btn-ghost btn-sm" disabled>Coming soon</button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Chat badge</div><div class="set-hint">Show rank badge in chat</div></div>
+              <button type="button" class="set-toggle on" id="togBadge"></button>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Profile banner</div><div class="set-hint">Manage on your profile page</div></div>
+              <a class="btn btn-ghost btn-sm" href="profile.html">Open profile</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="set-panel" id="set-language">
+          <h2>Language & Region</h2>
+          <div class="set-card">
+            <div class="set-row between">
+              <div><div class="set-label">Language</div><div class="set-hint">Display language for the site</div></div>
+              <select id="setLanguage" class="set-select">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="pt">Português</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="tr">Türkçe</option>
+                <option value="ru">Русский</option>
+                <option value="ja">日本語</option>
+              </select>
+            </div>
+            <div class="set-row between">
+              <div><div class="set-label">Number format</div><div class="set-hint">Compact (1.2K) or full</div></div>
+              <select id="setNumFormat" class="set-select">
+                <option value="compact">Compact</option>
+                <option value="full">Full</option>
+              </select>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </div>
 </main>
+
 
 <div class="modal-overlay" id="m-deposit">
   <div class="modal">
@@ -245,6 +344,7 @@
 <script src="js/app.js"></script>
 <script src="js/deposit.js"></script>
 <script src="js/admin-link.js"></script>
+
 <script>
 (function(){
   if(typeof Auth === 'undefined') return;
@@ -254,8 +354,22 @@
     renderAvatar(document.getElementById('navAvatar'), me);
     renderAvatar(document.getElementById('setAvatar'), me);
   }
-  document.getElementById('setName').textContent = me.displayName || me.username || 'User';
-  document.getElementById('setHandle').textContent = '@' + (me.username || 'user');
+  var setName = document.getElementById('setName');
+  var setHandle = document.getElementById('setHandle');
+  var setUserId = document.getElementById('setUserId');
+  if(setName) setName.textContent = me.displayName || me.username || 'User';
+  if(setHandle) setHandle.textContent = '@' + (me.username || 'user');
+  if(setUserId) setUserId.textContent = me.id || '—';
+
+  document.querySelectorAll('.set-nav-item').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.set-nav-item').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.set-panel').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      var panel = document.getElementById('set-' + btn.dataset.set);
+      if(panel) panel.classList.add('active');
+    });
+  });
 
   function bindToggle(id, key, defOn){
     var el = document.getElementById(id);
@@ -266,23 +380,42 @@
     el.addEventListener('click', function(){
       var next = el.classList.toggle('on');
       localStorage.setItem(key, next ? '1' : '0');
+      if(id === 'togCompact') localStorage.setItem('bb_pref_compact', next ? '1' : '0');
     });
   }
   bindToggle('togSound', 'bb_pref_sound', true);
   bindToggle('togCompact', 'bb_pref_compact', false);
   bindToggle('togConfirm', 'bb_pref_confirm', true);
+  bindToggle('togMotion', 'bb_pref_motion', false);
+  bindToggle('togStreamer', 'bb_pref_streamer', false);
+  bindToggle('togPublicProfile', 'bb_pref_public', true);
+  bindToggle('togOnline', 'bb_pref_online', true);
+  bindToggle('togChallenges', 'bb_pref_challenges', true);
+  bindToggle('togHideHistory', 'bb_pref_hide_history', false);
+  bindToggle('togLoginAlert', 'bb_pref_login_alert', false);
+  bindToggle('togWinToast', 'bb_pref_win_toast', true);
+  bindToggle('togMentions', 'bb_pref_mentions', true);
+  bindToggle('togRace', 'bb_pref_race', false);
+  bindToggle('togBadge', 'bb_pref_badge', true);
 
-  Auth.refreshUser().then(function(u){
-    if(!u) return;
-    if(typeof renderAvatar === 'function'){
-      renderAvatar(document.getElementById('navAvatar'), u);
-      renderAvatar(document.getElementById('setAvatar'), u);
-    }
-    document.getElementById('setName').textContent = u.displayName || u.username || 'User';
-    document.getElementById('setHandle').textContent = '@' + (u.username || 'user');
-  });
+  var lang = document.getElementById('setLanguage');
+  if(lang){
+    lang.value = localStorage.getItem('bb_pref_lang') || 'en';
+    lang.addEventListener('change', function(){ localStorage.setItem('bb_pref_lang', lang.value); });
+  }
+  var num = document.getElementById('setNumFormat');
+  if(num){
+    num.value = localStorage.getItem('bb_pref_compact') === '1' ? 'compact' : 'full';
+    num.addEventListener('change', function(){
+      localStorage.setItem('bb_pref_compact', num.value === 'compact' ? '1' : '0');
+      var t = document.getElementById('togCompact');
+      if(t) t.classList.toggle('on', num.value === 'compact');
+    });
+  }
 })();
 </script>
+
+
 
 
 
@@ -307,17 +440,11 @@
     try { localStorage.setItem('bb_sidebar_collapsed', on ? '1' : '0'); } catch(e){}
   }
   try { if(localStorage.getItem('bb_sidebar_collapsed') === '1') applyCollapsed(true); } catch(e){}
-  if(colBtn){
-    colBtn.addEventListener('click', function(e){
-      e.preventDefault();
-      applyCollapsed(!(side && side.classList.contains('collapsed')));
-    });
-  }
+  if(colBtn) colBtn.addEventListener('click', function(e){ e.preventDefault(); applyCollapsed(!(side && side.classList.contains('collapsed'))); });
   var dd = qs('originalsDropdown');
   var btn = qs('originalsToggle');
   if(btn && dd) btn.addEventListener('click', function(e){ e.preventDefault(); dd.classList.toggle('open'); });
 
-  /* Live chat with avatars */
   var chatBox = qs('sideChatMessages');
   var chatForm = qs('sideChatForm');
   var chatInput = qs('sideChatInput');
@@ -327,14 +454,17 @@
   try { loggedIn = !!(localStorage.getItem('bb_token') && localStorage.getItem('bb_user')); } catch(e){}
   if(typeof Auth !== 'undefined' && Auth.isLoggedIn) loggedIn = !!Auth.isLoggedIn();
   var seenIds = {};
+  var meUser = null;
+  try { meUser = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : JSON.parse(localStorage.getItem('bb_user')||'null'); } catch(e){}
 
   function avNode(msg){
-    var wrap = document.createElement('div');
+    var wrap = document.createElement('a');
     wrap.className = 'side-chat-av';
-    var id = msg.userId || msg.user_id || msg.id || '';
-    var name = msg.user || msg.username || '?';
-    var letter = String(name).replace(/^@/, '').slice(0,1).toUpperCase();
+    var id = msg.userId || msg.user_id || '';
+    var name = String(msg.user || msg.username || '?').replace(/^@/,'');
+    var letter = name.slice(0,1).toUpperCase();
     if(id){
+      wrap.href = 'profile.html?user=' + encodeURIComponent(id);
       var img = document.createElement('img');
       img.src = '/api/avatar/' + encodeURIComponent(id);
       img.alt = '';
@@ -342,6 +472,7 @@
       img.onerror = function(){ wrap.textContent = letter; };
       wrap.appendChild(img);
     } else {
+      wrap.href = 'profile.html?user=' + encodeURIComponent(name);
       wrap.textContent = letter;
     }
     return wrap;
@@ -349,26 +480,34 @@
 
   function appendChat(msg, opts){
     if(!chatBox) return;
-    var id = msg.id || ((msg.user||msg.username||'') + ':' + (msg.text||msg.message||'') + ':' + (msg.at||''));
+    var id = msg.id || ((msg.user||'') + ':' + (msg.text||'') + ':' + (msg.at||''));
     if(seenIds[id]) return;
     seenIds[id] = true;
     var empty = chatBox.querySelector('.side-chat-empty');
     if(empty) empty.remove();
+    var mine = !!(opts && opts.mine);
+    if(!mine && meUser && msg.userId && String(msg.userId) === String(meUser.id)) mine = true;
+    if(!mine && meUser && msg.user && String(msg.user).toLowerCase() === String(meUser.username||'').toLowerCase()) mine = true;
     var row = document.createElement('div');
-    row.className = 'side-chat-msg' + (opts && opts.mine ? ' mine' : '');
-    row.appendChild(avNode(msg));
+    row.className = 'side-chat-msg' + (mine ? ' mine' : ' theirs');
     var body = document.createElement('div');
     body.className = 'side-chat-body';
     var u = document.createElement('span');
     u.className = 'side-chat-user';
-    u.textContent = '@' + String(msg.user || msg.username || 'user').replace(/^@/, '');
+    u.textContent = '@' + String(msg.user || msg.username || 'user').replace(/^@/,'');
     if(msg.nameColor) u.style.color = msg.nameColor;
     var t = document.createElement('span');
     t.className = 'side-chat-text';
     t.textContent = msg.text || msg.message || '';
     body.appendChild(u);
     body.appendChild(t);
-    row.appendChild(body);
+    if(mine){
+      row.appendChild(body);
+      row.appendChild(avNode(msg));
+    } else {
+      row.appendChild(avNode(msg));
+      row.appendChild(body);
+    }
     chatBox.appendChild(row);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
@@ -376,8 +515,7 @@
   async function loadChat(){
     if(!loggedIn) return;
     try {
-      var res = null;
-      if(typeof Auth !== 'undefined' && Auth.api) res = await Auth.api('/chat/global');
+      var res = typeof Auth !== 'undefined' && Auth.api ? await Auth.api('/chat/global') : null;
       if(!res || !res.ok) return;
       var data = await res.json();
       var msgs = data.messages || data.chat || [];
@@ -385,18 +523,10 @@
       chatBox.innerHTML = '';
       seenIds = {};
       msgs.slice().reverse().forEach(function(m){
-        appendChat({
-          id: m.id,
-          user: m.username || m.user,
-          userId: m.user_id || m.userId,
-          text: m.message || m.text,
-          nameColor: m.name_color || m.nameColor,
-          at: m.created_at
-        });
+        appendChat({ id:m.id, user:m.username||m.user, userId:m.user_id||m.userId, text:m.message||m.text, nameColor:m.name_color||m.nameColor, at:m.created_at });
       });
     } catch(e){}
   }
-
   if(loggedIn){
     if(chatInput) chatInput.disabled = false;
     if(chatSend) chatSend.disabled = false;
@@ -405,47 +535,48 @@
     loadChat();
     setInterval(loadChat, 3000);
   }
-
   if(chatForm){
     chatForm.addEventListener('submit', async function(e){
       e.preventDefault();
       if(!loggedIn) return;
       var text = (chatInput && chatInput.value || '').trim();
       if(!text) return;
-      var me = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
-      appendChat({
-        user: (me && me.username) || 'You',
-        userId: me && me.id,
-        text: text,
-        id: 'local-' + Date.now()
-      }, { mine: true });
+      var me = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : meUser;
+      appendChat({ user:(me&&me.username)||'You', userId:me&&me.id, text:text, id:'local-'+Date.now() }, { mine:true });
       if(chatInput) chatInput.value = '';
-      try {
-        if(Auth.api) await Auth.api('/chat/global', { method:'POST', body: JSON.stringify({ message: text }) });
-        setTimeout(loadChat, 400);
-      } catch(err){}
+      try { if(Auth.api) await Auth.api('/chat/global', { method:'POST', body: JSON.stringify({ message: text }) }); setTimeout(loadChat, 400); } catch(err){}
     });
   }
-
-  try {
-    if(typeof Auth !== 'undefined' && Auth.onMessage){
-      Auth.onMessage(function(msg){
-        if(msg && msg.type === 'global_chat' && msg.chat){
-          appendChat({
-            id: msg.chat.id,
-            user: msg.chat.username,
-            userId: msg.chat.user_id || msg.chat.userId,
-            text: msg.chat.message,
-            nameColor: msg.chat.name_color
-          });
-        }
-      });
-    }
-  } catch(e){}
 })();
 </script>
 
 
+
+
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="sf-brand">
+      <a href="index.html" class="sf-logo">
+        <img src="icons/bloxbet.png" alt="" class="sf-logo-mark">
+        <span>BLOXBET</span>
+      </a>
+      <p>BloxBet is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Roblox Corporation, Roblox, or any of its subsidiaries or affiliates. The official Roblox website is https://www.roblox.com. Roblox, Robux and all related names, marks, emblems and images are registered trademarks of Roblox Corporation. All rights reserved.</p>
+      <p class="sf-legal">Legal: <a href="mailto:legal@bloxbet.com">legal@bloxbet.com</a></p>
+    </div>
+    <div class="sf-col">
+      <h4>About</h4>
+    </div>
+    <div class="sf-col">
+      <h4>Help</h4>
+      <a href="https://discord.gg/bloxbet" target="_blank" rel="noopener">Support</a>
+    </div>
+    <div class="sf-col sf-disclaimer">
+      <h4>Disclaimer</h4>
+      <p>BloxBet is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Roblox Corporation, Roblox, or any of its subsidiaries or affiliates. The official Roblox website is https://www.roblox.com. Roblox, Robux and all related names, marks, emblems and images are registered trademarks of Roblox Corporation.</p>
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>

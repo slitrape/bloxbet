@@ -2080,3 +2080,135 @@ body.bb-ui .side-dropdown-menu a img.ico {
   padding: 1rem !important;
   border-radius: 14px !important;
 }
+
+/* Wider sidebar */
+body.bb-ui .sidebar,
+body.bb-ui aside.sidebar {
+  width: 300px !important;
+}
+body.bb-ui .main {
+  margin-left: 300px !important;
+}
+body.bb-ui .sidebar.collapsed {
+  width: 72px !important;
+}
+body.bb-ui .main.expanded {
+  margin-left: 72px !important;
+}
+
+/* Center funds in topbar */
+body.bb-ui .nav-center-funds {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+body.bb-ui .nav-lb-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-weight: 800;
+  font-size: .9rem;
+  color: var(--bb-text-2, #9aa3b5);
+  text-decoration: none;
+  padding: .45rem .75rem;
+  border-radius: 10px;
+}
+body.bb-ui .nav-lb-link:hover,
+body.bb-ui .nav-lb-link.active {
+  color: #fff;
+  background: rgba(255,255,255,0.06);
+}
+body.bb-ui .balance-chip .value {
+  font-weight: 800;
+}
+
+/* Chat message sides */
+.side-chat-msg.theirs {
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.side-chat-msg.mine {
+  flex-direction: row;
+  justify-content: flex-end;
+  background: rgba(59,130,246,0.1);
+  border-color: rgba(59,130,246,0.2);
+}
+.side-chat-msg.mine .side-chat-body { text-align: right; }
+.side-chat-msg.mine .side-chat-user { color: #93c5fd; }
+
+/* Site footer */
+.site-footer {
+  background: #12182a;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 2.5rem 1.5rem 3rem;
+  margin-top: 3rem;
+}
+.site-footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.6fr 0.6fr 0.8fr 1.4fr;
+  gap: 2rem;
+}
+@media(max-width:800px){
+  .site-footer-inner { grid-template-columns: 1fr 1fr; }
+}
+.sf-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.15rem;
+  margin-bottom: .75rem;
+}
+.sf-logo-mark { width: 28px; height: 28px; }
+.sf-brand p, .sf-disclaimer p {
+  font-size: .78rem;
+  line-height: 1.55;
+  color: #8b95a8;
+  font-weight: 500;
+  margin: 0 0 .6rem;
+}
+.sf-legal { font-size: .75rem !important; }
+.sf-legal a { color: #93c5fd; }
+.sf-col h4 {
+  margin: 0 0 .65rem;
+  font-size: .9rem;
+  font-weight: 800;
+  color: #fff;
+}
+.sf-col a {
+  display: block;
+  color: #8b95a8;
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 600;
+  margin-bottom: .4rem;
+}
+.sf-col a:hover { color: #fff; }
+
+/* Neutral professional game accents (less orange) */
+body.bb-ui .wallet-btn {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  color: #fff !important;
+}
+body.bb-ui .btn-primary,
+body.bb-ui .btn-hero-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  color: #fff !important;
+  border: none !important;
+}
+body.bb-ui .side-nav-item.active,
+body.bb-ui .side-dropdown-toggle.active {
+  border-color: rgba(59,130,246,0.35) !important;
+  background: rgba(59,130,246,0.1) !important;
+}
+
+/* Hide home card hover stats */
+.orig-hover { display: none !important; }

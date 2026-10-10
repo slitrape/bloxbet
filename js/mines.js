@@ -102,20 +102,14 @@
 
   /* ---------- Grid build ---------- */
   function buildGrid(){
+    if(!grid) return;
     grid.innerHTML = '';
     for(var i = 0; i < GRID_SIZE; i++){
       var tile = document.createElement('button');
       tile.className = 'mines-tile disabled';
       tile.dataset.index = i;
-      var img = document.createElement('img');
-      img.src = 'icons/diamond.png';
-      img.alt = '';
-      img.draggable = false;
-      img.onerror = function(){
-        this.onerror = null;
-        this.src = 'icons/coin.png';
-      };
-      tile.appendChild(img);
+      tile.type = 'button';
+      // No gem/mine icon until revealed (Shuffle-style)
       tile.addEventListener('click', onTileClick);
       grid.appendChild(tile);
     }
@@ -136,9 +130,15 @@
     // Optimistic local reveal to feel snappy
     var tile = grid.querySelector('.mines-tile[data-index="' + idx + '"]');
     if(tile){
-      tile.classList.add('revealed');
-      tile.classList.add('gem');
+      tile.classList.add('revealed', 'gem', 'reveal-pop');
       tile.classList.remove('disabled');
+      if(!tile.querySelector('img')){
+        var img = document.createElement('img');
+        img.src = 'icons/diamond.png';
+        img.alt = '';
+        img.draggable = false;
+        tile.appendChild(img);
+      }
     }
 
     try {
@@ -481,8 +481,7 @@
       updateBar();
 
       // Seed hash
-      if(seedHashEl) seedHashEl.textContent = data.game.serverSeedHash.slice(0, 16) + '…';
-      seedHashEl.title = data.game.serverSeedHash;
+      if(seedHashEl){ seedHashEl.textContent = data.game.serverSeedHash.slice(0, 16) + '…'; seedHashEl.title = data.game.serverSeedHash; }
 
       // Ladder
       renderLadder(0, data.game.multiplierTable);
@@ -507,6 +506,7 @@
 
   /* ---------- Ladder ---------- */
   function renderLadder(currentPicks, table){
+    if(!ladder) return;
     if(!activeGame) return;
     var t = table || activeGame.multiplierTable;
     if(!t) return;
@@ -624,7 +624,7 @@
   /* ---------- Init ---------- */
   buildGrid();
   markGridDisabled();
-  if(countGrid) buildCountGrid();
+  if(countGrid) if(countGrid) buildCountGrid();
   if(ladder) ladder.innerHTML = '<div class="mines-empty">Start a game to see the ladder.</div>';
 
 })();
