@@ -878,6 +878,23 @@
     });
   }
 
+  var discordLinked = false;
+  function markDiscordLinked(on){
+    discordLinked = !!on;
+    var a = document.getElementById('setDiscordLink');
+    if(!a) return;
+    if(on){
+      a.textContent = 'Linked';
+      a.style.background = 'rgba(34,197,94,.15)';
+      a.style.color = '#4ade80';
+      a.title = 'Click to unlink Discord';
+    } else {
+      a.textContent = 'Connect Discord';
+      a.style.background = '';
+      a.style.color = '';
+      a.title = 'Connect Discord';
+    }
+  }
   async function startDiscord(){
     try {
       if(typeof Auth === 'undefined' || !Auth.api){
@@ -890,40 +907,44 @@
         location.href = data.url;
         return;
       }
-      // Fallback invite if app not configured
       window.open(data.invite || 'https://discord.gg/bloxbet', '_blank');
       localStorage.setItem('bb_discord_linked', '1');
-      markDiscordLinked();
+      markDiscordLinked(true);
       if(window.Toast) Toast.info('Discord', data.message || 'Opened Discord invite');
     } catch(e){
       window.open('https://discord.gg/bloxbet', '_blank');
     }
   }
-  function markDiscordLinked(){
-    var a = document.getElementById('setDiscordLink');
-    if(!a) return;
-    a.textContent = 'Linked';
-    a.style.background = 'rgba(34,197,94,.15)';
-    a.style.color = '#4ade80';
+  async function unlinkDiscord(){
+    if(!confirm('Unlink your Discord account?')) return;
+    try {
+      var res = await Auth.api('/discord/unlink', { method: 'POST', body: '{}' });
+      if(!res.ok){ if(window.Toast) Toast.error('Discord', 'Could not unlink'); return; }
+      localStorage.removeItem('bb_discord_linked');
+      markDiscordLinked(false);
+      if(window.Toast) Toast.success('Discord', 'Unlinked');
+    } catch(e){
+      if(window.Toast) Toast.error('Discord', 'Could not unlink');
+    }
   }
   var discordBtn = document.getElementById('setDiscordLink');
   if(discordBtn){
     discordBtn.addEventListener('click', function(e){
       e.preventDefault();
-      startDiscord();
+      if(discordLinked) unlinkDiscord();
+      else startDiscord();
     });
   }
-  // status from server
   (async function(){
     try {
       if(!Auth.isLoggedIn()) return;
       var res = await Auth.api('/discord/status');
       if(res.ok){
         var d = await res.json();
-        if(d.linked){ localStorage.setItem('bb_discord_linked','1'); markDiscordLinked(); }
+        if(d.linked){ localStorage.setItem('bb_discord_linked','1'); markDiscordLinked(true); return; }
       }
     } catch(e){}
-    if(localStorage.getItem('bb_discord_linked')==='1') markDiscordLinked();
+    markDiscordLinked(localStorage.getItem('bb_discord_linked')==='1');
   })();
 
   try {

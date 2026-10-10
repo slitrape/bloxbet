@@ -137,6 +137,20 @@ app.get('/api/discord/callback', async (req, res) => {
   }
 });
 
+
+app.post('/api/discord/unlink', requireAuth, (req, res) => {
+  try {
+    try { addCol('users', 'discord_id', 'TEXT'); } catch(e){}
+    try { addCol('users', 'discord_username', 'TEXT'); } catch(e){}
+    db.prepare('UPDATE users SET discord_id = NULL, discord_username = NULL, updated_at = ? WHERE id = ?')
+      .run(Date.now(), String(req.userId));
+    res.json({ ok: true, linked: false });
+  } catch (err) {
+    console.error('[discord/unlink]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
 app.get('/api/discord/status', requireAuth, (req, res) => {
   try {
     try { addCol('users', 'discord_id', 'TEXT'); } catch(e){}
