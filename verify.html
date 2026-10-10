@@ -89,10 +89,7 @@
   (function(){
     var loader = document.getElementById('bbLoader');
     if(!loader) return;
-    setTimeout(function(){
-      loader.classList.add('hide');
-      setTimeout(function(){ loader.remove(); }, 320);
-    }, 2000);
+    setTimeout(function(){ loader.classList.add('hide'); setTimeout(function(){ loader.remove(); }, 400);; }, 400);
   })();
 </script>
 

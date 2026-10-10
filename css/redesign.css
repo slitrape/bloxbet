@@ -901,3 +901,243 @@ body.bb-ui.auth-body .main { margin-left: 0; padding-top: 0; }
   .home-hero { padding: 1.4rem; min-height: 190px; }
   .home-hero-art { display: none; }
 }
+
+/* ========== UPDATES: sidebar dropdown, balance, game covers, loader ========== */
+
+/* Hide live drops section when present */
+body.bb-ui .live-drops { display: none !important; }
+
+/* Sidebar is just nav + promo */
+body.bb-ui .sidebar {
+  display: flex;
+  flex-direction: column;
+}
+body.bb-ui .side-nav-block {
+  flex: 1;
+  border-top: none;
+  padding: 1rem .75rem .5rem;
+  overflow-y: auto;
+}
+
+/* Originals dropdown */
+body.bb-ui .side-dropdown {
+  margin-bottom: .15rem;
+}
+body.bb-ui .side-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  width: 100%;
+  padding: .55rem .7rem;
+  border-radius: 10px;
+  color: var(--bb-text-2);
+  background: transparent;
+  border: 1px solid transparent;
+  font-size: .85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  text-align: left;
+}
+body.bb-ui .side-dropdown-toggle:hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--bb-text);
+}
+body.bb-ui .side-dropdown.open .side-dropdown-toggle,
+body.bb-ui .side-dropdown-toggle.active {
+  background: linear-gradient(90deg, rgba(255,138,0,0.16), rgba(255,138,0,0.04));
+  color: #fff;
+  border-color: rgba(255,138,0,0.22);
+}
+body.bb-ui .side-dropdown-toggle img.ico {
+  width: 17px;
+  height: 17px;
+  opacity: 0.85;
+}
+body.bb-ui .side-dropdown-toggle .chev {
+  margin-left: auto;
+  width: 14px;
+  height: 14px;
+  opacity: 0.55;
+  transition: transform .18s ease;
+}
+body.bb-ui .side-dropdown.open .side-dropdown-toggle .chev {
+  transform: rotate(180deg);
+}
+body.bb-ui .side-dropdown-menu {
+  display: none;
+  flex-direction: column;
+  gap: .1rem;
+  padding: .2rem 0 .35rem .55rem;
+  margin-left: .85rem;
+  border-left: 1px solid var(--bb-border);
+}
+body.bb-ui .side-dropdown.open .side-dropdown-menu {
+  display: flex;
+}
+body.bb-ui .side-dropdown-menu a {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .45rem .7rem;
+  border-radius: 8px;
+  color: var(--bb-text-2);
+  text-decoration: none;
+  font-size: .8rem;
+  font-weight: 600;
+  transition: background .12s, color .12s;
+}
+body.bb-ui .side-dropdown-menu a:hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--bb-text);
+}
+body.bb-ui .side-dropdown-menu a.active {
+  color: var(--bb-orange);
+}
+body.bb-ui .side-dropdown-menu a img.ico {
+  width: 15px;
+  height: 15px;
+  opacity: 0.8;
+}
+
+/* Cleaner balance + Add Funds */
+body.bb-ui .nav-right {
+  gap: .5rem;
+}
+body.bb-ui .balance-chip {
+  display: flex !important;
+  align-items: center;
+  gap: .35rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--bb-border);
+  border-radius: 10px;
+  padding: .38rem .75rem;
+  font-weight: 700;
+  font-size: .85rem;
+  height: 36px;
+  box-sizing: border-box;
+}
+body.bb-ui .balance-chip .value {
+  color: var(--bb-gold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+body.bb-ui .wallet-btn {
+  background: linear-gradient(135deg, var(--bb-orange), var(--bb-orange-lo));
+  color: #111;
+  border: none;
+  border-radius: 10px;
+  padding: 0 1rem;
+  height: 36px;
+  font-weight: 700;
+  font-size: .8rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  box-shadow: 0 2px 12px rgba(255,138,0,0.28);
+  font-family: inherit;
+  white-space: nowrap;
+}
+body.bb-ui .wallet-btn:hover { filter: brightness(1.08); }
+
+/* Orig card coinflip / game art fill entire box */
+body.bb-ui .orig-card-art {
+  aspect-ratio: 1;
+  position: relative;
+  overflow: hidden;
+}
+body.bb-ui .orig-card-art .ph {
+  position: absolute;
+  inset: 0;
+  border: none;
+  border-radius: 0;
+}
+body.bb-ui .orig-card-art .ph img,
+body.bb-ui .orig-card-art > img.orig-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  opacity: 1;
+  transform: none;
+  top: 0;
+  left: 0;
+}
+/* When using icon-style (not fill), keep centered small icon */
+body.bb-ui .orig-card-art .ph.ph-icon:not(.ph-fill) img {
+  width: 42%;
+  height: 42%;
+  object-fit: contain;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+body.bb-ui .orig-card-art .ph.ph-fill img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  transform: none;
+}
+
+/* Game cover cards on games page — image only, live count top-left, play bottom-right */
+body.bb-ui #allGames {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  gap: 1rem !important;
+}
+body.bb-ui #allGames .card.card-cover {
+  background: transparent;
+  border: 1px solid var(--bb-border);
+  border-radius: 14px;
+  min-height: 180px;
+  aspect-ratio: 4 / 3;
+  box-shadow: none;
+}
+body.bb-ui #allGames .card.card-cover:hover {
+  border-color: rgba(255,138,0,0.35);
+  transform: translateY(-2px);
+}
+body.bb-ui #allGames .card.card-cover .card-art-fill {
+  background: var(--bb-surface-2);
+  border-radius: 14px;
+}
+body.bb-ui #allGames .card.card-cover .card-art-fill img {
+  object-fit: cover;
+}
+body.bb-ui #allGames .card.card-cover .card-art-fill::after {
+  background: linear-gradient(180deg, rgba(0,0,0,.4) 0%, transparent 40%, transparent 50%, rgba(0,0,0,.55) 100%);
+}
+body.bb-ui #allGames .card.card-cover .card-live {
+  left: .65rem;
+  top: .65rem;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(8px);
+  font-size: .68rem;
+}
+body.bb-ui #allGames .card.card-cover .card-play {
+  right: .65rem;
+  bottom: .65rem;
+  pointer-events: none;
+}
+
+/* Faster loader — hide bar globally, quicker fade */
+body.bb-ui .bb-loader-bar,
+.bb-loader-bar {
+  display: none !important;
+}
+body.bb-ui .bb-loader.hide,
+.bb-loader.hide {
+  transition: opacity .25s ease, visibility .25s ease !important;
+}
+
+/* Online count live pulse */
+body.bb-ui .online-count #onlineCount {
+  font-variant-numeric: tabular-nums;
+}

@@ -50,9 +50,9 @@
   </div>
   <div class="nav-right">
     <div class="balance-chip" id="navBalanceChip">
-      <div class="value">$ <span data-balance>0.00</span></div>
+      <div class="value">$<span data-balance>0.00</span></div>
     </div>
-    <button class="wallet-btn" type="button" onclick="Modal.open('m-deposit')">Wallet</button>
+    <button class="wallet-btn" type="button" onclick="Modal.open('m-deposit')">Add Funds</button>
     <div class="dropdown">
       <button class="nav-icon-btn" data-dropdown data-tip="Notifications" type="button">
         <img src="icons/bell.png" alt="" class="ico" draggable="false">
@@ -71,51 +71,37 @@
   </div>
 </nav>
 
-<!-- SIDEBAR -->
 <aside class="sidebar" id="appSidebar">
-  <div class="live-drops">
-    <div class="live-drops-head">
-      <h3>Live Drops</h3>
-      <a href="#">View All</a>
-    </div>
-    <div class="drop-item">
-      <div class="drop-thumb ph ph-amber ph-icon"><img src="icons/fire.png" alt=""></div>
-      <div class="drop-info"><div class="drop-name">Dragon Lore</div><div class="drop-user">@ShadowKing</div></div>
-      <div><div class="drop-price">$127.50</div><div class="drop-time">3m ago</div></div>
-    </div>
-    <div class="drop-item">
-      <div class="drop-thumb ph ph-purple ph-icon"><img src="icons/diamond.png" alt=""></div>
-      <div class="drop-info"><div class="drop-name">Neon Crown</div><div class="drop-user">@LuckyTaco</div></div>
-      <div><div class="drop-price">$84.32</div><div class="drop-time">3m ago</div></div>
-    </div>
-    <div class="drop-item">
-      <div class="drop-thumb ph ph-blue ph-icon"><img src="icons/star.png" alt=""></div>
-      <div class="drop-info"><div class="drop-name">Blue Top Hat</div><div class="drop-user">@Zyna</div></div>
-      <div><div class="drop-price">$42.17</div><div class="drop-time">5m ago</div></div>
-    </div>
-    <div class="drop-item">
-      <div class="drop-thumb ph ph-gold ph-icon"><img src="icons/trophy.png" alt=""></div>
-      <div class="drop-info"><div class="drop-name">Golden Blade</div><div class="drop-user">@PixelFreak</div></div>
-      <div><div class="drop-price">$96.00</div><div class="drop-time">6m ago</div></div>
-    </div>
-    <div class="drop-item">
-      <div class="drop-thumb ph ph-cyan ph-icon"><img src="icons/sparkle.png" alt=""></div>
-      <div class="drop-info"><div class="drop-name">Cyber Wings</div><div class="drop-user">@Rogue</div></div>
-      <div><div class="drop-price">$73.25</div><div class="drop-time">8m ago</div></div>
-    </div>
-    <div class="drop-item">
-      <div class="drop-thumb ph ph-red ph-icon"><img src="icons/bomb.png" alt=""></div>
-      <div class="drop-info"><div class="drop-name">Void Helmet</div><div class="drop-user">@Luna</div></div>
-      <div><div class="drop-price">$58.90</div><div class="drop-time">10m ago</div></div>
-    </div>
-  </div>
   <div class="side-nav-block">
-    <div class="online-count"><span class="online-dot"></span><span>1,248 Online</span></div>
-    <a class="side-nav-item" href="index.html"><img src="icons/home.png" alt="" class="ico"><span>Home</span></a>
-    <a class="side-nav-item" href="games.html"><img src="icons/games.png" alt="" class="ico"><span>Originals</span></a>
-    <a class="side-nav-item" href="games.html"><img src="icons/sparkle.png" alt="" class="ico"><span>Slots</span></a>
-    <a class="side-nav-item" href="rewards.html"><img src="icons/gift.png" alt="" class="ico"><span>Promotions</span></a>
-    <a class="side-nav-item" href="profile.html"><img src="icons/diamond.png" alt="" class="ico"><span>VIP</span></a>
+    <div class="online-count">
+      <span class="online-dot"></span>
+      <span><span id="onlineCount">—</span> Online</span>
+    </div>
+    <a class="side-nav-item" href="index.html">
+      <img src="icons/home.png" alt="" class="ico" draggable="false">
+      <span>Home</span>
+    </a>
+    <div class="side-dropdown" id="originalsDropdown">
+      <button type="button" class="side-dropdown-toggle" id="originalsToggle">
+        <img src="icons/games.png" alt="" class="ico" draggable="false">
+        <span>Originals</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="side-dropdown-menu">
+        <a href="coinflip.html"><img src="icons/coin.png" alt="" class="ico"> Coinflip</a>
+        <a href="mines.html"><img src="icons/bomb.png" alt="" class="ico"> Mines</a>
+        <a href="crash.html"><img src="icons/chart.png" alt="" class="ico"> Crash</a>
+        <a href="casebattles.html"><img src="icons/gift.png" alt="" class="ico"> Case Battles</a>
+      </div>
+    </div>
+    <a class="side-nav-item" href="games.html">
+      <img src="icons/sparkle.png" alt="" class="ico" draggable="false">
+      <span>Slots</span>
+    </a>
+    <a class="side-nav-item" href="rewards.html">
+      <img src="icons/gift.png" alt="" class="ico" draggable="false">
+      <span>Promotions</span>
+    </a>
   </div>
   <div class="side-promo">
     <div class="side-promo-label">Halloween Event</div>
@@ -202,10 +188,7 @@
   (function(){
     var loader = document.getElementById('bbLoader');
     if(!loader) return;
-    setTimeout(function(){
-      loader.classList.add('hide');
-      setTimeout(function(){ loader.remove(); }, 320);
-    }, 2000);
+    setTimeout(function(){ loader.classList.add('hide'); setTimeout(function(){ loader.remove(); }, 400);; }, 400);
   })();
 </script>
 
@@ -218,5 +201,34 @@
 <script src="js/deposit.js"></script>
 <script src="js/leaderboard.js"></script>
 <script src="js/admin-link.js"></script>
+
+<script>
+(function(){
+  var dd = document.getElementById('originalsDropdown');
+  var btn = document.getElementById('originalsToggle');
+  if(btn && dd){ btn.addEventListener('click', function(){ dd.classList.toggle('open'); }); }
+  function setOnline(n){
+    var el = document.getElementById('onlineCount');
+    if(el) el.textContent = Number(n).toLocaleString();
+  }
+  async function refreshOnline(){
+    try {
+      if(typeof Auth !== 'undefined' && Auth.isLoggedIn && Auth.isLoggedIn() && Auth.api){
+        var res = await Auth.api('/users/online');
+        if(res && res.ok){
+          var data = await res.json();
+          var count = data.count != null ? data.count : (data.online != null ? data.online : (Array.isArray(data.users) ? data.users.length : null));
+          if(count != null){ setOnline(count); return; }
+        }
+      }
+    } catch(e){}
+    var base = 1200 + Math.floor((Date.now() / 60000) % 80);
+    setOnline(base + Math.floor(Math.random() * 12));
+  }
+  refreshOnline();
+  setInterval(refreshOnline, 20000);
+})();
+</script>
+
 </body>
 </html>
