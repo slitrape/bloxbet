@@ -1822,3 +1822,56 @@ body.bb-ui .pvp-recent .pvp-match:hover {
   border-color: rgba(255,138,0,0.35);
   box-shadow: 0 0 24px rgba(255,138,0,0.12);
 }
+
+.pvp-player-av {
+  position: relative;
+  overflow: hidden;
+  background: #1e2633;
+  color: #fff;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+.pvp-player-av img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+.pvp-player-av .pvp-side-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0e1219;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+.pvp-player-av .pvp-side-badge img {
+  width: 14px;
+  height: 14px;
+}
+/* Bigger originals icons/text sitewide */
+body.bb-ui .side-dropdown-menu a {
+  font-size: .95rem !important;
+  font-weight: 800 !important;
+  padding: .55rem .85rem !important;
+}
+body.bb-ui .side-dropdown-menu a img.ico {
+  width: 20px !important;
+  height: 20px !important;
+}
+/* Less boxy game pages */
+body.bb-ui .page-head {
+  border: none !important;
+  background: transparent !important;
+  padding-left: 0 !important;
+}
+body.bb-ui .crash-wrap,
+body.bb-ui .mines-wrap,
+body.bb-ui .pvp-layout {
+  max-width: 1200px;
+}

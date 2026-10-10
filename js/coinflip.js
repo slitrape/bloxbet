@@ -813,17 +813,26 @@
         item.title = 'View match';
         const cSide = m.creatorChoice || 'heads';
         const jSide = m.joinerChoice || (cSide === 'heads' ? 'tails' : 'heads');
+        function avHtml(uid, uname){
+          var letter = String(uname||'?').slice(0,1).toUpperCase();
+          if(uid){
+            return '<img src="/api/avatar/' + encodeURIComponent(uid) + '" alt="" referrerpolicy="no-referrer" onerror="this.remove();this.parentNode.setAttribute(\'data-letter\',\'' + letter + '\');">';
+          }
+          return letter;
+        }
         item.innerHTML =
           '<div class="pvp-row-players">' +
             '<div class="pvp-player">' +
-              '<div class="pvp-player-av">' +
+              '<div class="pvp-player-av" data-letter="' + escapeHtml(String(m.creatorUsername||'?').slice(0,1).toUpperCase()) + '">' +
+                avHtml(m.creatorId, m.creatorUsername) +
                 '<span class="pvp-side-badge ' + cSide + '"><img src="icons/coin-' + cSide + '.png" alt="" draggable="false"></span>' +
               '</div>' +
               '<div class="pvp-player-name">' + escapeHtml(m.creatorUsername || '?') + '</div>' +
             '</div>' +
             '<div class="pvp-vs">VS</div>' +
             '<div class="pvp-player">' +
-              '<div class="pvp-player-av">' +
+              '<div class="pvp-player-av" data-letter="' + escapeHtml(String(m.joinerUsername||'?').slice(0,1).toUpperCase()) + '">' +
+                avHtml(m.joinerId, m.joinerUsername) +
                 '<span class="pvp-side-badge ' + jSide + '"><img src="icons/coin-' + jSide + '.png" alt="" draggable="false"></span>' +
               '</div>' +
               '<div class="pvp-player-name">' + escapeHtml(m.joinerUsername || '?') + '</div>' +

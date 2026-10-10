@@ -320,6 +320,7 @@
 
 
 
+
 <script id="bb-shell-js">
 (function(){
   function qs(id){ return document.getElementById(id); }
@@ -347,23 +348,35 @@
     var el = qs('onlineCount');
     if(el) el.textContent = Number(n).toLocaleString();
   }
-  async function refreshOnline(){
+  async function heartbeat(){
     try {
       if(typeof Auth !== 'undefined' && Auth.isLoggedIn && Auth.isLoggedIn() && Auth.api){
-        var res = await Auth.api('/users/online');
-        if(res && res.ok){
-          var data = await res.json();
-          var count = data.count != null ? data.count : (data.online != null ? data.online : null);
-          if(count != null){ setOnline(count); return; }
-        }
+        await Auth.api('/users/heartbeat', { method: 'POST', body: '{}' });
       }
     } catch(e){}
-    setOnline(1200 + Math.floor((Date.now()/60000)%80) + Math.floor(Math.random()*12));
   }
+  async function refreshOnline(){
+    try {
+      var url = '/api/users/online';
+      var headers = {};
+      try {
+        var t = localStorage.getItem('bb_token');
+        if(t) headers['Authorization'] = 'Bearer ' + t;
+      } catch(e){}
+      var res = await fetch(url, { headers: headers, credentials: 'same-origin' });
+      if(res && res.ok){
+        var data = await res.json();
+        var count = data.count != null ? data.count : data.online;
+        if(count != null){ setOnline(count); return; }
+      }
+    } catch(e){}
+  }
+  heartbeat();
   refreshOnline();
-  setInterval(refreshOnline, 15000);
+  setInterval(heartbeat, 30000);
+  setInterval(refreshOnline, 10000);
 
-  /* ===== Live global chat ===== */
+  /* Live global chat */
   var chatBox = qs('sideChatMessages');
   var chatForm = qs('sideChatForm');
   var chatInput = qs('sideChatInput');
@@ -376,14 +389,13 @@
 
   function appendChat(msg, opts){
     if(!chatBox) return;
-    var id = msg.id || (msg.user + ':' + msg.text + ':' + (msg.at||''));
+    var id = msg.id || ((msg.user||msg.username||'') + ':' + (msg.text||msg.message||'') + ':' + (msg.at||''));
     if(seenIds[id]) return;
     seenIds[id] = true;
     var empty = chatBox.querySelector('.side-chat-empty');
     if(empty) empty.remove();
     var row = document.createElement('div');
-    row.className = 'side-chat-msg';
-    if(opts && opts.mine) row.classList.add('mine');
+    row.className = 'side-chat-msg' + (opts && opts.mine ? ' mine' : '');
     var u = document.createElement('span');
     u.className = 'side-chat-user';
     u.textContent = '@' + (msg.user || msg.username || 'user');
@@ -398,23 +410,22 @@
   }
 
   async function loadChat(){
-    if(!loggedIn || typeof Auth === 'undefined' || !Auth.api) return;
+    if(!loggedIn) return;
     try {
-      var res = await Auth.api('/chat/global');
+      var res = null;
+      if(typeof Auth !== 'undefined' && Auth.api) res = await Auth.api('/chat/global');
+      else {
+        var t = localStorage.getItem('bb_token');
+        res = await fetch('/api/chat/global', { headers: t ? { Authorization: 'Bearer ' + t } : {} });
+      }
       if(!res || !res.ok) return;
       var data = await res.json();
-      var msgs = data.messages || data.chat || data || [];
+      var msgs = data.messages || data.chat || [];
       if(!Array.isArray(msgs)) return;
       chatBox.innerHTML = '';
       seenIds = {};
       msgs.slice().reverse().forEach(function(m){
-        appendChat({
-          id: m.id,
-          user: m.username || m.user,
-          text: m.message || m.text,
-          nameColor: m.name_color || m.nameColor,
-          at: m.created_at || m.createdAt
-        });
+        appendChat({ id: m.id, user: m.username || m.user, text: m.message || m.text, nameColor: m.name_color || m.nameColor, at: m.created_at });
       });
     } catch(e){}
   }
@@ -425,7 +436,7 @@
     if(chatLock){ chatLock.textContent = 'Live'; chatLock.classList.add('live'); }
     if(chatBox) chatBox.innerHTML = '';
     loadChat();
-    setInterval(loadChat, 4000);
+    setInterval(loadChat, 3000);
   }
 
   if(chatForm){
@@ -435,33 +446,21 @@
       var text = (chatInput && chatInput.value || '').trim();
       if(!text) return;
       var me = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
-      var name = (me && me.username) || 'You';
-      appendChat({ user: name, text: text, id: 'local-' + Date.now() }, { mine: true });
+      appendChat({ user: (me && me.username) || 'You', text: text, id: 'local-' + Date.now() }, { mine: true });
       if(chatInput) chatInput.value = '';
       try {
-        if(Auth.api){
-          var res = await Auth.api('/chat/global', { method:'POST', body: JSON.stringify({ message: text }) });
-          if(res && res.ok){
-            var d = await res.json();
-            if(d.chat || d.message) loadChat();
-          }
-        }
+        if(Auth.api) await Auth.api('/chat/global', { method:'POST', body: JSON.stringify({ message: text }) });
+        setTimeout(loadChat, 400);
       } catch(err){}
     });
   }
 
-  /* Websocket live updates if available */
   try {
     if(typeof Auth !== 'undefined' && Auth.onMessage){
       Auth.onMessage(function(msg){
         if(!msg) return;
         if(msg.type === 'global_chat' && msg.chat){
-          appendChat({
-            id: msg.chat.id,
-            user: msg.chat.username,
-            text: msg.chat.message,
-            nameColor: msg.chat.name_color || msg.chat.nameColor
-          });
+          appendChat({ id: msg.chat.id, user: msg.chat.username, text: msg.chat.message, nameColor: msg.chat.name_color });
         }
         if(msg.type === 'users_online' && msg.count != null) setOnline(msg.count);
       });
@@ -469,6 +468,7 @@
   } catch(e){}
 })();
 </script>
+
 
 </body>
 </html>

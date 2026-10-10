@@ -89,10 +89,10 @@
   function drawSky(w, h){
     // Night sky gradient
     var sky = ctx.createLinearGradient(0, 0, 0, h);
-    sky.addColorStop(0, '#0a1628');
-    sky.addColorStop(0.45, '#12243a');
-    sky.addColorStop(0.75, '#1a3050');
-    sky.addColorStop(1, '#0d1a28');
+    sky.addColorStop(0, '#071018');
+    sky.addColorStop(0.4, '#0c1c30');
+    sky.addColorStop(0.75, '#132840');
+    sky.addColorStop(1, '#0a1828');
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, h);
 
@@ -121,6 +121,7 @@
   function drawRocket(x, y, crashed){
     ctx.save();
     ctx.translate(x, y);
+    ctx.scale(1.35, 1.35);
 
     // Exhaust beam
     if(!crashed){
@@ -229,8 +230,8 @@
     var xMax = Math.max(maxElapsed, 3) * 1.12;
     var yMax = Math.max(mult * 1.2, 2.2);
 
-    function px(t){ return (t / xMax) * (w - 50) + 36; }
-    function py(m){ return h - 36 - ((m - 1) / (yMax - 1)) * (h - 72); }
+    function px(t){ return 48 + (t / xMax) * (w - 100); }
+    function py(m){ return (h - 48) - ((m - 1) / (yMax - 1)) * (h - 100); }
 
     // Trail glow under path
     var grad = ctx.createLinearGradient(0, 0, 0, h);

@@ -23,8 +23,15 @@
   var barBet          = document.getElementById('barBet');
   var barMultiplier   = document.getElementById('barMultiplier');
   var barPayout       = document.getElementById('barPayout');
+  function setBarPayout(v){ if(!barPayout) return; if(barPayout.tagName==='INPUT') barPayout.value=v; else setBarPayout(v); }
+
   var banner          = document.getElementById('minesBanner');
   var setupPanel      = document.getElementById('setupPanel');
+  var minesSlider     = document.getElementById('minesSlider');
+  var minesSliderVal  = document.getElementById('minesSliderVal');
+  var gemsCountEl     = document.getElementById('gemsCount');
+  var randomBtn       = document.getElementById('minesRandomBtn');
+
 
   /* ---------- State ---------- */
   var activeGame = null;      // { id, bet, mineCount, picks, multiplier, revealed, multiplierTable }
@@ -80,13 +87,13 @@
     if(!activeGame){
       barBet.textContent = '—';
       barMultiplier.textContent = '1.00x';
-      barPayout.textContent = '—';
+      setBarPayout('—');
       return;
     }
     barBet.textContent = activeGame.bet.toLocaleString() + ' RC';
     barMultiplier.textContent = activeGame.multiplier.toFixed(2) + 'x';
     var potential = Math.floor(activeGame.bet * activeGame.multiplier);
-    barPayout.textContent = potential.toLocaleString() + ' RC';
+    setBarPayout(potential.toLocaleString() + ' RC');
 
     barMultiplier.className = 'value ' + (activeGame.picks > 0 ? 'accent' : '');
   }
@@ -244,8 +251,8 @@
     // Update bar
     barMultiplier.textContent = '0.00x';
     barMultiplier.className = 'value lose';
-    barPayout.textContent = '-' + activeGame.bet.toLocaleString() + ' RC';
-    barPayout.className = 'value lose';
+    setBarPayout('-' + activeGame.bet.toLocaleString() + ' RC');
+    
 
     // Disable cashout
     cashoutBtn.disabled = true;
@@ -285,8 +292,8 @@
     barBet.textContent = '—';
     barMultiplier.textContent = '1.00x';
     barMultiplier.className = 'value';
-    barPayout.textContent = '—';
-    barPayout.className = 'value';
+    setBarPayout('—');
+    
     ladder.innerHTML = '<div class="mines-empty">Start a game to see the ladder.</div>';
     ladderCount.textContent = '—';
     buildGrid();
@@ -337,8 +344,8 @@
       // Update bar
       barMultiplier.textContent = data.multiplier.toFixed(2) + 'x';
       barMultiplier.className = 'value win';
-      barPayout.textContent = '+' + data.net.toLocaleString() + ' RC';
-      barPayout.className = 'value win';
+      setBarPayout('+' + data.net.toLocaleString() + ' RC');
+      
 
       setBanner('Cashed out — ' + data.multiplier.toFixed(2) + 'x · +' + data.payout.toLocaleString() + ' RC', 'win');
 
@@ -365,6 +372,44 @@
   });
 
   /* ---------- Start game ---------- */
+  
+  function syncMinesFromSlider(){
+    if(!minesSlider) return;
+    var n = parseInt(minesSlider.value, 10) || 3;
+    if(n < 1) n = 1;
+    if(n > 24) n = 24;
+    if(minesSliderVal) minesSliderVal.textContent = String(n);
+    if(gemsCountEl) gemsCountEl.textContent = String(25 - n);
+    // keep selectedMines in sync with existing UI state
+    currentMines = n;
+    // click matching count button if present
+    if(countGrid){
+      countGrid.querySelectorAll('button').forEach(function(b){
+        b.classList.toggle('active', parseInt(b.dataset.mines || b.textContent, 10) === n);
+      });
+    }
+  }
+  if(minesSlider){
+    minesSlider.addEventListener('input', syncMinesFromSlider);
+    syncMinesFromSlider();
+  }
+  document.querySelectorAll('[data-bet-mod]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var v = parseInt(betInput.value, 10) || 0;
+      if(btn.getAttribute('data-bet-mod') === 'half') betInput.value = Math.max(10, Math.floor(v / 2));
+      else betInput.value = Math.max(10, v * 2);
+    });
+  });
+  if(randomBtn){
+    randomBtn.addEventListener('click', function(){
+      if(!grid) return;
+      var tiles = Array.from(grid.querySelectorAll('.mines-tile:not(.revealed):not(.disabled)'));
+      if(!tiles.length) return;
+      var t = tiles[Math.floor(Math.random() * tiles.length)];
+      t.click();
+    });
+  }
+
   playBtn.addEventListener('click', async function(){
     if(gameActive) return;
 
@@ -534,7 +579,7 @@
       barMultiplier.textContent = activeGame.multiplier.toFixed(2) + 'x';
       barMultiplier.className = 'value ' + (activeGame.picks > 0 ? 'accent' : '');
       var potential = Math.floor(activeGame.bet * activeGame.multiplier);
-      barPayout.textContent = potential.toLocaleString() + ' RC';
+      setBarPayout(potential.toLocaleString() + ' RC');
 
       // Seed
       seedHashEl.textContent = g.serverSeedHash.slice(0, 16) + '…';

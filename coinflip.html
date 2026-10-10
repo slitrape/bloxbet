@@ -31,7 +31,7 @@
     gap:.55rem;
     padding:.85rem 1.35rem;
     border-radius:var(--r-md);
-    background:linear-gradient(180deg,#ffa524,#ff9500);
+    background:linear-gradient(180deg,#3b82f6,#2563eb);
     color:#1a0f05;
     font-family:inherit;
     font-size:.9rem;
@@ -94,7 +94,7 @@
     border-color:var(--border-2);
     background:rgba(32,18,10,.82);
   }
-  .pvp-match.own{border-color:rgba(255,149,0,.28)}
+  .pvp-match.own{border-color:rgba(255,255,255,0.1)}
   .pvp-match::before{display:none}
 
   .pvp-row-players{display:flex;align-items:center;gap:.75rem;min-width:0}
@@ -141,7 +141,7 @@
   .pvp-row-actions{display:flex;flex-direction:column;gap:.35rem;align-items:stretch;min-width:88px}
   .pvp-join-btn{
     padding:.5rem .85rem;border-radius:var(--r-sm);
-    background:linear-gradient(180deg,#ffa524,#ff9500);color:#1a0c00;
+    background:linear-gradient(180deg,#3b82f6,#2563eb);color:#1a0c00;
     font-family:inherit;font-size:.78rem;font-weight:700;border:none;cursor:pointer;
     transition:filter .12s ease;
   }
@@ -156,7 +156,7 @@
   .pvp-match-own-tag{
     text-align:center;padding:.4rem .5rem;border-radius:var(--r-sm);
     background:rgba(255,149,0,.1);border:1px solid rgba(255,149,0,.25);
-    color:var(--accent-2);font-size:.68rem;font-weight:600;
+    color:#93c5fd;font-size:.68rem;font-weight:600;
     text-transform:uppercase;letter-spacing:.04em;
   }
 
@@ -268,8 +268,8 @@
   }
   .pvp-side-btn.tails.active{
     background:rgba(255,184,77,.1);
-    border-color:#ffb84d;
-    color:#ffb84d;
+    border-color:#93c5fd;
+    color:#93c5fd;
     box-shadow:0 0 16px rgba(255,184,77,.25);
   }
   .pvp-side-btn.tails.active img{
@@ -385,7 +385,7 @@
   .pvp-duel-name{font-weight:600;font-size:.85rem;margin-bottom:.25rem}
   .pvp-duel-bet{
     font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;
-    color:var(--accent-2);
+    color:#93c5fd;
   }
   .pvp-duel-choice{
     font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;
@@ -436,7 +436,42 @@
   #m-createMatch .pvp-duel{padding:1.5rem .5rem}
   #m-createMatch .pvp-duel-name{font-size:1.05rem;font-weight:800}
   #m-createMatch .pvp-duel-bet{font-size:.95rem;font-weight:800;color:#f5d76e}
-  .pvp-recent-item:hover{border-color:rgba(255,149,0,.35);transform:translateY(-1px)}
+  .pvp-recent-item:hover{border-color:rgba(255,255,255,0.12);transform:translateY(-1px)}
+
+  /* Clean professional coinflip */
+  .pvp-match, .pvp-recent-item {
+    background: #151a24 !important;
+    border: 1px solid rgba(255,255,255,0.07) !important;
+    border-radius: 14px !important;
+    box-shadow: none !important;
+  }
+  .pvp-match:hover, .pvp-recent-item:hover {
+    border-color: rgba(255,255,255,0.14) !important;
+    background: #1a2130 !important;
+  }
+  .pvp-match.own { border-color: rgba(59,130,246,0.35) !important; }
+  .pvp-join-btn, .pvp-view-btn, #pvpCreateBtn, #pvpConfirmCreate {
+    background: #3b82f6 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 800 !important;
+  }
+  .pvp-view-btn { background: #1e2633 !important; color: #c5cdd9 !important; }
+  .pvp-player-av, .pvp-duel-av {
+    border-color: rgba(255,255,255,0.12) !important;
+  }
+  .pvp-pot { color: #e2e8f0 !important; }
+  .mode-tabs button.active, .cf-tab.active {
+    background: #1e2633 !important;
+    color: #fff !important;
+    box-shadow: none !important;
+  }
+  #m-createMatch .modal {
+    background: #151a24;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+  }
 </style>
 </head>
 <body class="bb-ui">
@@ -1005,6 +1040,7 @@
 
 
 
+
 <script id="bb-shell-js">
 (function(){
   function qs(id){ return document.getElementById(id); }
@@ -1032,23 +1068,35 @@
     var el = qs('onlineCount');
     if(el) el.textContent = Number(n).toLocaleString();
   }
-  async function refreshOnline(){
+  async function heartbeat(){
     try {
       if(typeof Auth !== 'undefined' && Auth.isLoggedIn && Auth.isLoggedIn() && Auth.api){
-        var res = await Auth.api('/users/online');
-        if(res && res.ok){
-          var data = await res.json();
-          var count = data.count != null ? data.count : (data.online != null ? data.online : null);
-          if(count != null){ setOnline(count); return; }
-        }
+        await Auth.api('/users/heartbeat', { method: 'POST', body: '{}' });
       }
     } catch(e){}
-    setOnline(1200 + Math.floor((Date.now()/60000)%80) + Math.floor(Math.random()*12));
   }
+  async function refreshOnline(){
+    try {
+      var url = '/api/users/online';
+      var headers = {};
+      try {
+        var t = localStorage.getItem('bb_token');
+        if(t) headers['Authorization'] = 'Bearer ' + t;
+      } catch(e){}
+      var res = await fetch(url, { headers: headers, credentials: 'same-origin' });
+      if(res && res.ok){
+        var data = await res.json();
+        var count = data.count != null ? data.count : data.online;
+        if(count != null){ setOnline(count); return; }
+      }
+    } catch(e){}
+  }
+  heartbeat();
   refreshOnline();
-  setInterval(refreshOnline, 15000);
+  setInterval(heartbeat, 30000);
+  setInterval(refreshOnline, 10000);
 
-  /* ===== Live global chat ===== */
+  /* Live global chat */
   var chatBox = qs('sideChatMessages');
   var chatForm = qs('sideChatForm');
   var chatInput = qs('sideChatInput');
@@ -1061,14 +1109,13 @@
 
   function appendChat(msg, opts){
     if(!chatBox) return;
-    var id = msg.id || (msg.user + ':' + msg.text + ':' + (msg.at||''));
+    var id = msg.id || ((msg.user||msg.username||'') + ':' + (msg.text||msg.message||'') + ':' + (msg.at||''));
     if(seenIds[id]) return;
     seenIds[id] = true;
     var empty = chatBox.querySelector('.side-chat-empty');
     if(empty) empty.remove();
     var row = document.createElement('div');
-    row.className = 'side-chat-msg';
-    if(opts && opts.mine) row.classList.add('mine');
+    row.className = 'side-chat-msg' + (opts && opts.mine ? ' mine' : '');
     var u = document.createElement('span');
     u.className = 'side-chat-user';
     u.textContent = '@' + (msg.user || msg.username || 'user');
@@ -1083,23 +1130,22 @@
   }
 
   async function loadChat(){
-    if(!loggedIn || typeof Auth === 'undefined' || !Auth.api) return;
+    if(!loggedIn) return;
     try {
-      var res = await Auth.api('/chat/global');
+      var res = null;
+      if(typeof Auth !== 'undefined' && Auth.api) res = await Auth.api('/chat/global');
+      else {
+        var t = localStorage.getItem('bb_token');
+        res = await fetch('/api/chat/global', { headers: t ? { Authorization: 'Bearer ' + t } : {} });
+      }
       if(!res || !res.ok) return;
       var data = await res.json();
-      var msgs = data.messages || data.chat || data || [];
+      var msgs = data.messages || data.chat || [];
       if(!Array.isArray(msgs)) return;
       chatBox.innerHTML = '';
       seenIds = {};
       msgs.slice().reverse().forEach(function(m){
-        appendChat({
-          id: m.id,
-          user: m.username || m.user,
-          text: m.message || m.text,
-          nameColor: m.name_color || m.nameColor,
-          at: m.created_at || m.createdAt
-        });
+        appendChat({ id: m.id, user: m.username || m.user, text: m.message || m.text, nameColor: m.name_color || m.nameColor, at: m.created_at });
       });
     } catch(e){}
   }
@@ -1110,7 +1156,7 @@
     if(chatLock){ chatLock.textContent = 'Live'; chatLock.classList.add('live'); }
     if(chatBox) chatBox.innerHTML = '';
     loadChat();
-    setInterval(loadChat, 4000);
+    setInterval(loadChat, 3000);
   }
 
   if(chatForm){
@@ -1120,33 +1166,21 @@
       var text = (chatInput && chatInput.value || '').trim();
       if(!text) return;
       var me = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
-      var name = (me && me.username) || 'You';
-      appendChat({ user: name, text: text, id: 'local-' + Date.now() }, { mine: true });
+      appendChat({ user: (me && me.username) || 'You', text: text, id: 'local-' + Date.now() }, { mine: true });
       if(chatInput) chatInput.value = '';
       try {
-        if(Auth.api){
-          var res = await Auth.api('/chat/global', { method:'POST', body: JSON.stringify({ message: text }) });
-          if(res && res.ok){
-            var d = await res.json();
-            if(d.chat || d.message) loadChat();
-          }
-        }
+        if(Auth.api) await Auth.api('/chat/global', { method:'POST', body: JSON.stringify({ message: text }) });
+        setTimeout(loadChat, 400);
       } catch(err){}
     });
   }
 
-  /* Websocket live updates if available */
   try {
     if(typeof Auth !== 'undefined' && Auth.onMessage){
       Auth.onMessage(function(msg){
         if(!msg) return;
         if(msg.type === 'global_chat' && msg.chat){
-          appendChat({
-            id: msg.chat.id,
-            user: msg.chat.username,
-            text: msg.chat.message,
-            nameColor: msg.chat.name_color || msg.chat.nameColor
-          });
+          appendChat({ id: msg.chat.id, user: msg.chat.username, text: msg.chat.message, nameColor: msg.chat.name_color });
         }
         if(msg.type === 'users_online' && msg.count != null) setOnline(msg.count);
       });
@@ -1154,6 +1188,7 @@
   } catch(e){}
 })();
 </script>
+
 
 </body>
 </html>

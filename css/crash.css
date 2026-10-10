@@ -595,3 +595,19 @@ body.bb-ui .crash-panel {
   border: 1px solid rgba(255,255,255,0.06);
   background: #12141c;
 }
+
+body.bb-ui .crash-canvas-wrap {
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 20px !important;
+  background: transparent !important;
+}
+body.bb-ui .crash-stage {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+body.bb-ui .crash-panel {
+  background: #151a24 !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+}

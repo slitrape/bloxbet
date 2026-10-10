@@ -1851,7 +1851,7 @@ app.post('/api/wallet/deposit', requireAuth, (req, res) => {
    ============================================================ */
 app.get('/api/leaderboard', requireAuth, (req, res) => {
   const sort = String(req.query.sort || 'wagered');
-  const limit = Math.min(100, Math.max(10, parseInt(req.query.limit, 10) || 50));
+  const limit = Math.min(500, Math.max(10, parseInt(req.query.limit, 10) || 200));
 
   let rows;
   if(sort === 'balance') rows = stmts.topByBalance.all();
@@ -1984,25 +1984,27 @@ app.get('/api/flips/recent', requireAuth, (req, res) => {
   });
 });
 
-app.get('/api/users/online', requireAuth, (req, res) => {
-  const cutoff = Date.now() - (5 * 60 * 1000);
-  const rows = db.prepare(`
-    SELECT id, username, display_name, avatar, balance, level, rank, games_played
-    FROM users WHERE updated_at > ?
-    ORDER BY updated_at DESC LIMIT 20
-  `).all(cutoff);
+app.post('/api/users/heartbeat', requireAuth, (req, res) => {
+  try {
+    const now = Date.now();
+    db.prepare('UPDATE users SET updated_at = ? WHERE id = ?').run(now, req.user.id);
+    res.json({ ok: true, at: now });
+  } catch (err) {
+    console.error('[heartbeat]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
 
-  res.json({
-    users: rows.map(u => ({
-      id: u.id,
-      username: u.display_name || u.username,
-      avatar: avatarForUser(u),
-      balance: u.balance,
-      level: u.level,
-      rank: u.rank,
-      gamesPlayed: u.games_played
-    }))
-  });
+app.get('/api/users/online', (req, res) => {
+  try {
+    const cutoff = Date.now() - 2 * 60 * 1000;
+    const row = db.prepare('SELECT COUNT(*) AS c FROM users WHERE updated_at > ?').get(cutoff);
+    const count = row ? row.c : 0;
+    res.json({ count, online: count });
+  } catch (err) {
+    console.error('[users/online]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
 });
 
 /* ============================================================
@@ -3555,7 +3557,7 @@ app.get('/api/social/status/:userId', requireAuth, (req, res) => {
    ============================================================ */
 app.get('/api/profile/me/transactions', requireAuth, (req, res) => {
   try {
-    const limit = Math.min(100, Math.max(10, parseInt(req.query.limit, 10) || 50));
+    const limit = Math.min(500, Math.max(10, parseInt(req.query.limit, 10) || 200));
     const rows = db.prepare(`
       SELECT id, type, amount, balance_after, meta, created_at
       FROM transactions
@@ -3747,7 +3749,7 @@ app.get('/api/admin/stats', requireAdmin, (req, res) => {
 app.get('/api/admin/users', requireAdmin, (req, res) => {
   try {
     const q = String(req.query.q || '').trim();
-    const limit = Math.min(100, Math.max(10, parseInt(req.query.limit, 10) || 50));
+    const limit = Math.min(500, Math.max(10, parseInt(req.query.limit, 10) || 200));
 
     let rows;
     if(q){
