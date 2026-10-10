@@ -1849,6 +1849,26 @@ function serializeGlobalChat(c){
 /* ============================================================
    WALLET
    ============================================================ */
+
+app.post('/api/wallet/convert', requireAuth, (req, res) => {
+  try {
+    try { addCol('users', 'blox_coins', 'REAL DEFAULT 0'); } catch(e){}
+    const amt = parseInt((req.body||{}).amount, 10);
+    if(!Number.isFinite(amt) || amt < 1) return res.status(400).json({ error: 'INVALID_AMOUNT' });
+    const u = db.prepare('SELECT * FROM users WHERE id = ?').get(req.userId);
+    if(!u) return res.status(404).json({ error: 'NOT_FOUND' });
+    if((u.balance||0) < amt) return res.status(400).json({ error: 'INSUFFICIENT_BALANCE' });
+    const now = Date.now();
+    const newBal = (u.balance||0) - amt;
+    const newBc = Number(u.blox_coins||0) + amt;
+    db.prepare('UPDATE users SET balance = ?, blox_coins = ?, updated_at = ? WHERE id = ?').run(newBal, newBc, now, u.id);
+    res.json({ ok: true, balance: newBal, bloxCoins: newBc });
+  } catch (err) {
+    console.error('[wallet/convert]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
 app.post('/api/wallet/deposit', requireAuth, (req, res) => {
   try {
     const amount = parseInt(req.body.amount, 10);
@@ -3917,6 +3937,18 @@ app.post('/api/admin/users/:id/ban', requireAdmin, (req, res) => {
     res.json({ ok: true, banned: true, banUntil, reason: reason || null });
   } catch (err) {
     console.error('[admin/ban]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+
+app.post('/api/admin/users/:id/reset-wagered', requireAdmin, (req, res) => {
+  try {
+    const id = req.params.id;
+    db.prepare('UPDATE users SET total_wagered = 0, updated_at = ? WHERE id = ?').run(Date.now(), id);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[admin/reset-wagered]', err);
     res.status(500).json({ error: 'SERVER_ERROR' });
   }
 });

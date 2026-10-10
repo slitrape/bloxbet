@@ -2670,3 +2670,52 @@ body.bb-ui .side-discord .ico {
 .wallet-tab.active { background:linear-gradient(135deg,#ff9f2e,#ff6b00); color:#111; border-color:transparent; }
 .wallet-pane { display:none; }
 .wallet-pane.active { display:block; }
+
+/* Single currency box */
+.currency-box { position: relative; }
+.currency-box-btn {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: #151a24;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 900;
+  font-size: .95rem;
+  padding: .5rem .75rem;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  cursor: pointer;
+  min-width: 120px;
+}
+.currency-box-btn .currency-code { color: #ffb84d; font-size: .75rem; }
+.currency-convert { color: #93c5fd !important; border-top: 1px solid rgba(255,255,255,0.06); margin-top: .25rem; }
+
+/* Bigger sidebar icons */
+body.bb-ui .side-nav-item img.ico,
+body.bb-ui .side-dropdown-toggle img.ico,
+body.bb-ui .side-dropdown-menu a img.ico {
+  width: 22px !important;
+  height: 22px !important;
+}
+body.bb-ui .side-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .35rem;
+}
+body.bb-ui .side-row-top .side-nav-item { flex: 1; }
+body.bb-ui .side-hamburger {
+  width: 36px; height: 36px; flex-shrink: 0;
+}
+
+/* Wallet currency tabs */
+.wallet-cur-tabs { display:flex; gap:.4rem; margin-bottom:.75rem; }
+.wallet-cur-tabs .wcur {
+  flex:1; appearance:none; border:1px solid rgba(255,255,255,.08); background:#151a24;
+  color:#9aa3b5; font-family:inherit; font-weight:800; padding:.5rem; border-radius:10px; cursor:pointer;
+}
+.wallet-cur-tabs .wcur.active {
+  background:rgba(255,138,0,.12); color:#ffb84d; border-color:rgba(255,138,0,.35);
+}

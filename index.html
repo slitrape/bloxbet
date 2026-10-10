@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>BloxBet</title>
+<title>Home — BloxBet</title>
+<link rel="icon" type="image/png" href="icons/bloxbet.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -41,28 +43,24 @@
       <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
       <span class="nav-logo-text">BLOXBET</span>
     </a>
-    <button type="button" class="nav-hamburger" id="sidebarCollapseBtn" title="Toggle menu">
-      <img src="icons/menu.png" alt="" class="ico">
-    </button>
   </div>
   <div class="nav-center-links nav-center-funds">
-    <div class="balance-chip dual-bal" id="navBalanceChip">
-      <div class="value bal-rc"><span data-balance>0</span> <small>RC</small></div>
-      <div class="value bal-bc"><span data-bloxcoins>0.00</span> <small>BC</small></div>
-    </div>
-    <div class="currency-switch" id="currencySwitch">
-      <button type="button" class="currency-switch-btn" id="currencySwitchBtn">
-        <span id="currencySwitchLabel">RC</span>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    <div class="currency-box" id="currencyBox">
+      <button type="button" class="currency-box-btn" id="currencySwitchBtn">
+        <span class="currency-amt" id="currencyAmt">0</span>
+        <span class="currency-code" id="currencySwitchLabel">RC</span>
+        <svg class="currency-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="currency-switch-menu" id="currencySwitchMenu">
         <button type="button" data-cur="rc">RoCoins (RC)</button>
         <button type="button" data-cur="bc">BloxCoins (BC)</button>
+        <button type="button" data-cur="convert" class="currency-convert">Convert RC → BC</button>
       </div>
     </div>
     <button class="wallet-btn" type="button" onclick="Modal.open('m-deposit')">Wallet</button>
   </div>
   <div class="nav-right">
+    <a href="leaderboard.html" class="nav-lb-link"><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
     <div class="dropdown">
       <button class="nav-icon-btn" data-dropdown data-tip="Notifications" type="button">
         <img src="icons/bell.png" alt="" class="ico" draggable="false">
@@ -84,16 +82,18 @@
 
 
 
+
 <aside class="sidebar" id="appSidebar">
   <div class="side-nav-block">
-    <a class="side-nav-item" href="leaderboard.html">
-      <img src="icons/leaderboard.png" alt="" class="ico" draggable="false">
-      <span>Leaderboard</span>
-    </a>
-    <a class="side-nav-item active" href="index.html">
-      <img src="icons/home.png" alt="" class="ico" draggable="false">
-      <span>Home</span>
-    </a>
+    <div class="side-row-top">
+      <a class="side-nav-item active" href="index.html">
+        <img src="icons/home.png" alt="" class="ico" draggable="false">
+        <span>Home</span>
+      </a>
+      <button type="button" class="side-hamburger" id="sidebarCollapseBtn" title="Toggle menu">
+        <img src="icons/menu.png" alt="" class="ico">
+      </button>
+    </div>
     <div class="side-dropdown open" id="originalsDropdown">
       <button type="button" class="side-dropdown-toggle" id="originalsToggle">
         <img src="icons/games.png" alt="" class="ico" draggable="false">
@@ -102,7 +102,7 @@
       </button>
       <div class="side-dropdown-menu">
         <a href="coinflip.html"><img src="icons/coin.png" alt="" class="ico"> Coinflip</a>
-        <a href="mines.html"><img src="icons/bomb.png" alt="" class="ico"> Mines</a>
+        <a href="mines.html"><img src="icons/mines-side.png" alt="" class="ico"> Mines</a>
         <a href="crash.html"><img src="icons/crash-side.png" alt="" class="ico"> Crash</a>
         <a href="casebattles.html"><img src="icons/gift.png" alt="" class="ico"> Case Battles</a>
       </div>
@@ -113,13 +113,17 @@
     </a>
   </div>
   <div class="side-footer-links">
+    <a class="side-nav-item" href="leaderboard.html">
+      <img src="icons/leaderboard.png" alt="" class="ico" draggable="false">
+      <span>Leaderboard</span>
+    </a>
     <a class="side-discord" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">
       <img src="icons/discord.png" alt="" class="ico">
       <span>Discord</span>
     </a>
     <div class="side-pf">
       <div class="side-pf-title"><img src="icons/check.png" alt="" class="ico"> Provably Fair</div>
-      <p>Every game uses cryptographic seeds so outcomes can be verified. Your client seed + our server seed hash prove results weren’t altered.</p>
+      <p>Every game uses cryptographic seeds so outcomes can be verified. Displayed house edge 3%.</p>
     </div>
   </div>
 </aside>
@@ -301,12 +305,13 @@
 
 
 
+
 <div class="modal-overlay" id="m-deposit">
-  <div class="modal deposit-modal">
+  <div class="modal deposit-modal wallet-pro">
     <div class="modal-head">
       <div>
         <h3>Wallet</h3>
-        <p>Deposit or withdraw BloxCoins. Min deposit 7 BC.</p>
+        <p>Deposit, withdraw, and manage RC &amp; BC</p>
       </div>
       <button class="modal-close" onclick="Modal.close('m-deposit')" type="button">
         <img src="icons/close.png" alt="" class="ico" draggable="false">
@@ -318,11 +323,15 @@
         <button type="button" class="wallet-tab" data-wtab="withdraw">Withdraw</button>
       </div>
       <div class="wallet-pane active" id="walletDepositPane">
+        <div class="wallet-cur-tabs">
+          <button type="button" class="wcur active" data-wcur="bc">BloxCoins</button>
+          <button type="button" class="wcur" data-wcur="rc">RoCoins</button>
+        </div>
         <div class="dep-amount-wrap">
-          <label>Deposit amount (BloxCoins)</label>
+          <label>Amount</label>
           <div class="dep-amount-box">
             <input type="number" id="depositAmount" value="100" min="7" step="1">
-            <span class="dep-unit">BC</span>
+            <span class="dep-unit" id="depositUnit">BC</span>
           </div>
         </div>
         <div class="dep-quick">
@@ -333,23 +342,17 @@
           <button class="dep-chip" data-deposit="1000" type="button">1K</button>
           <button class="dep-chip" data-deposit="5000" type="button">5K</button>
         </div>
-        <div class="dep-methods">
-          <button type="button" class="dep-method active" data-method="gamepass">
-            <span class="dep-method-title">Roblox</span>
-            <span class="dep-method-sub">Pay with Robux / gamepass</span>
-          </button>
-        </div>
-        <div class="dep-note">Minimum 7 BC · 1 BC tracks USD deposit value</div>
+        <div class="dep-note">Min 7 · BC is the USD deposit currency · RC is for play</div>
       </div>
       <div class="wallet-pane" id="walletWithdrawPane">
         <div class="dep-amount-wrap">
-          <label>Withdraw amount (BloxCoins)</label>
+          <label>Withdraw BloxCoins</label>
           <div class="dep-amount-box">
             <input type="number" id="withdrawAmount" value="7" min="7" step="1">
             <span class="dep-unit">BC</span>
           </div>
         </div>
-        <div class="dep-note">Withdrawals process to your linked Roblox account. Min 7 BC.</div>
+        <div class="dep-note">Min 7 BC · Sent to linked Roblox</div>
       </div>
     </div>
     <div class="modal-foot">
@@ -644,23 +647,62 @@
 </script>
 
 
+
 <script id="bb-wallet-js">
 (function(){
   var cur = localStorage.getItem('bb_pref_currency') || 'rc';
+  function user(){
+    try {
+      if(typeof Auth !== 'undefined' && Auth.getUser) return Auth.getUser();
+      return JSON.parse(localStorage.getItem('bb_user')||'null');
+    } catch(e){ return null; }
+  }
   function paintCur(){
+    var u = user() || {};
     var lab = document.getElementById('currencySwitchLabel');
+    var amt = document.getElementById('currencyAmt');
+    var rc = Number(u.balance||0);
+    var bc = Number(u.bloxCoins != null ? u.bloxCoins : (u.blox_coins||0));
     if(lab) lab.textContent = cur === 'bc' ? 'BC' : 'RC';
-    document.body.classList.toggle('currency-bc', cur === 'bc');
-    document.body.classList.toggle('currency-rc', cur !== 'bc');
+    if(amt){
+      amt.textContent = cur === 'bc'
+        ? bc.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})
+        : rc.toLocaleString();
+    }
   }
   paintCur();
+  setInterval(paintCur, 3000);
   var btn = document.getElementById('currencySwitchBtn');
   var menu = document.getElementById('currencySwitchMenu');
   if(btn && menu){
     btn.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('open'); });
     menu.querySelectorAll('[data-cur]').forEach(function(b){
-      b.addEventListener('click', function(){
-        cur = b.getAttribute('data-cur') || 'rc';
+      b.addEventListener('click', async function(){
+        var c = b.getAttribute('data-cur');
+        if(c === 'convert'){
+          menu.classList.remove('open');
+          var u = user();
+          var rc = Number(u && u.balance || 0);
+          if(rc < 1){ if(window.Toast) Toast.error('Convert','No RC to convert'); return; }
+          var amt = prompt('Convert how much RC to BC? (1 RC = 1 BC)', String(rc));
+          if(amt==null) return;
+          amt = parseInt(amt,10);
+          if(!Number.isFinite(amt)||amt<1){ Toast.error('Invalid','Enter a positive amount'); return; }
+          try {
+            if(typeof Auth !== 'undefined' && Auth.api){
+              var res = await Auth.api('/wallet/convert', { method:'POST', body: JSON.stringify({ amount: amt }) });
+              if(!res.ok){ Toast.error('Convert','Failed'); return; }
+              var d = await res.json();
+              if(d.balance!=null || d.bloxCoins!=null){
+                Auth.updateUser({ balance: d.balance, bloxCoins: d.bloxCoins });
+              }
+              Toast.success('Converted', amt.toLocaleString()+' RC → BC');
+              paintCur();
+            }
+          } catch(e){ Toast.error('Convert','Failed'); }
+          return;
+        }
+        cur = c || 'rc';
         localStorage.setItem('bb_pref_currency', cur);
         menu.classList.remove('open');
         paintCur();
@@ -668,10 +710,25 @@
     });
     document.addEventListener('click', function(){ menu.classList.remove('open'); });
   }
-  // Wallet tabs
+  document.querySelectorAll('.wcur').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.wcur').forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      var unit = document.getElementById('depositUnit');
+      if(unit) unit.textContent = b.getAttribute('data-wcur') === 'rc' ? 'RC' : 'BC';
+    });
+  });
   document.querySelectorAll('.wallet-tab').forEach(function(tab){
     tab.addEventListener('click', function(){
-      document.querySelectorAll('.wallet-tab').forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.wcur').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.wcur').forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      var unit = document.getElementById('depositUnit');
+      if(unit) unit.textContent = b.getAttribute('data-wcur') === 'rc' ? 'RC' : 'BC';
+    });
+  });
+  document.querySelectorAll('.wallet-tab').forEach(function(t){ t.classList.remove('active'); });
       document.querySelectorAll('.wallet-pane').forEach(function(p){ p.classList.remove('active'); });
       tab.classList.add('active');
       var id = tab.dataset.wtab === 'withdraw' ? 'walletWithdrawPane' : 'walletDepositPane';
@@ -687,16 +744,14 @@
   if(wdBtn){
     wdBtn.addEventListener('click', function(){
       var amt = parseInt((document.getElementById('withdrawAmount')||{}).value, 10);
-      if(!Number.isFinite(amt) || amt < 7){
-        if(window.Toast) Toast.error('Invalid', 'Minimum withdraw is 7 BC');
-        return;
-      }
-      if(window.Toast) Toast.info('Withdraw', 'Withdrawal request submitted for ' + amt + ' BC');
+      if(!Number.isFinite(amt) || amt < 7){ if(window.Toast) Toast.error('Invalid', 'Minimum withdraw is 7'); return; }
+      if(window.Toast) Toast.info('Withdraw', 'Withdrawal requested for ' + amt);
       if(window.Modal) Modal.close('m-deposit');
     });
   }
 })();
 </script>
+
 
 
 <script>

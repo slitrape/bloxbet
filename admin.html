@@ -4,6 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Admin — BloxBet</title>
+<link rel="icon" type="image/png" href="icons/bloxbet.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -449,6 +451,40 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
       <div id="logsTable" class="av3-empty">Loading logs…</div>
     </div>
   </div>
+
+<div class="av3-modal" id="adminActionPanel" hidden>
+  <div class="av3-modal-card">
+    <div class="av3-modal-head">
+      <h3 id="aapTitle">User</h3>
+      <button type="button" class="btn btn-ghost btn-sm" id="aapClose">Close</button>
+    </div>
+    <div class="av3-modal-body">
+      <div class="aap-row"><span>User</span><strong id="aapUser">—</strong></div>
+      <div class="aap-row"><span>RC</span><strong id="aapRc">—</strong></div>
+      <div class="aap-row"><span>BC</span><strong id="aapBc">—</strong></div>
+      <div class="aap-row"><span>Wagered</span><strong id="aapWager">—</strong></div>
+      <div class="aap-row"><span>Rank</span><strong id="aapRank">—</strong></div>
+      <div class="aap-section">
+        <label>Currency</label>
+        <select id="aapCurrency"><option value="rc">RoCoins (RC)</option><option value="bc">BloxCoins (BC)</option></select>
+      </div>
+      <div class="aap-section">
+        <label>Amount</label>
+        <input type="number" id="aapAmount" min="0" value="100">
+      </div>
+      <div class="aap-actions">
+        <button type="button" class="btn btn-primary btn-sm" id="aapAdd">Add</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="aapSet">Set</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="aapTempBan">Temp Ban</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="aapBan">Ban</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="aapUnban">Unban</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="aapAdmin">Toggle Admin</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="aapResetLb">Remove from Leaderboard</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <script src="js/toasts.js"></script>
@@ -538,15 +574,20 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
             '<div class="av3-bal"><div class="lbl">RC / BC</div><div class="val">'+fmt(u.balance)+'</div><div class="lbl">'+fmt(u.bloxCoins||0)+' BC</div></div>' +
           '</div>' +
           '<div class="av3-actions">' +
-            '<button type="button" class="btn btn-sm btn-primary" data-act="add">+ Funds</button>' +
-            '<button type="button" class="btn btn-sm btn-ghost" data-act="set">Set</button>' +
-            '<button type="button" class="btn btn-sm btn-ghost" data-act="tempban">Temp Ban</button>' +
-            '<button type="button" class="btn btn-sm btn-ghost" data-act="ban">Ban</button>' +
+            '<button type="button" class="btn btn-sm btn-primary" data-act="manage">Manage</button>' +
+            '<button type="button" class="btn btn-sm btn-ghost" data-act="stats">Stats</button>' +
             (u.banned?'<button type="button" class="btn btn-sm btn-ghost" data-act="unban">Unban</button>':'') +
-            '<button type="button" class="btn btn-sm btn-ghost" data-act="admin">'+(u.isAdmin?'Revoke Admin':'Make Admin')+'</button>' +
           '</div>';
         card.querySelectorAll('[data-act]').forEach(function(btn){
-          btn.addEventListener('click', function(){ handleAct(btn.getAttribute('data-act'), u); });
+          btn.addEventListener('click', function(){
+            var act = btn.getAttribute('data-act');
+            if(act === 'manage'){ openUserPanel(u); return; }
+            if(act === 'stats'){
+              alert('Stats for @'+(u.username||'')+'\nRC: '+fmt(u.balance)+'\nBC: '+fmt(u.bloxCoins||0)+'\nWagered: '+fmt(u.totalWagered||0)+'\nGames: '+fmt(u.gamesPlayed||0)+'\nRank: '+(u.rank||'—')+'\nLevel: '+(u.level||1));
+              return;
+            }
+            handleAct(act, u);
+          });
         });
         grid.appendChild(card);
       });
@@ -556,6 +597,47 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
       console.error(err);
     }
   }
+
+  
+  var panelUser = null;
+  function openUserPanel(u){
+    panelUser = u;
+    var panel = document.getElementById('adminActionPanel');
+    if(!panel) return;
+    panel.hidden = false;
+    document.getElementById('aapTitle').textContent = 'Manage ' + (u.displayName || u.username || 'User');
+    document.getElementById('aapUser').textContent = '@' + (u.username||'');
+    document.getElementById('aapRc').textContent = fmt(u.balance);
+    document.getElementById('aapBc').textContent = fmt(u.bloxCoins||0);
+    document.getElementById('aapWager').textContent = fmt(u.totalWagered||0);
+    document.getElementById('aapRank').textContent = u.rank || '—';
+  }
+  document.getElementById('aapClose').addEventListener('click', function(){ document.getElementById('adminActionPanel').hidden = true; });
+
+  async function panelBalance(action){
+    if(!panelUser) return;
+    var cur = document.getElementById('aapCurrency').value || 'rc';
+    var amount = parseInt(document.getElementById('aapAmount').value, 10);
+    if(!Number.isFinite(amount)||amount<0){ Toast.error('Invalid','Amount'); return; }
+    var r = await Auth.api('/admin/users/'+panelUser.id+'/balance', {
+      method:'POST', body: JSON.stringify({ action: action, amount: amount, currency: cur })
+    });
+    if(r.ok){ Toast.success('Saved','Balance updated'); document.getElementById('adminActionPanel').hidden = true; loadUsers(document.getElementById('userSearch').value.trim()); loadStats(); }
+    else Toast.error('Failed','Rejected');
+  }
+  document.getElementById('aapAdd').addEventListener('click', function(){ panelBalance('add'); });
+  document.getElementById('aapSet').addEventListener('click', function(){ panelBalance('set'); });
+  document.getElementById('aapTempBan').addEventListener('click', function(){ if(panelUser) handleAct('tempban', panelUser); });
+  document.getElementById('aapBan').addEventListener('click', function(){ if(panelUser) handleAct('ban', panelUser); });
+  document.getElementById('aapUnban').addEventListener('click', function(){ if(panelUser) handleAct('unban', panelUser); });
+  document.getElementById('aapAdmin').addEventListener('click', function(){ if(panelUser) handleAct('admin', panelUser); });
+  document.getElementById('aapResetLb').addEventListener('click', async function(){
+    if(!panelUser) return;
+    if(!confirm('Remove this player from leaderboard (reset wagered)?')) return;
+    var r = await Auth.api('/admin/users/'+panelUser.id+'/reset-wagered', { method:'POST', body:'{}' });
+    if(r.ok){ Toast.success('Removed','Leaderboard wagered reset'); loadUsers(document.getElementById('userSearch').value.trim()); }
+    else Toast.error('Failed','Could not reset');
+  });
 
   async function handleAct(act, u){
     var id = u.id;

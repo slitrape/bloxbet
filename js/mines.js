@@ -309,28 +309,22 @@
 
       gameActive = false;
 
-      // Show all tiles
+      // Full board: diamonds on gems, bombs on mines (like Stake cashout)
       var grid_data = data.grid || [];
       var revealed = data.revealed || [];
       grid.querySelectorAll('.mines-tile').forEach(function(tile){
         var idx = parseInt(tile.dataset.index, 10);
         tile.classList.add('disabled');
-        tile.classList.remove('revealed','mine','gem');
-        var img = tile.querySelector('img');
-
-        if(revealed.indexOf(idx) !== -1){
-          tile.classList.add('revealed','gem');
-        }
-        if(grid_data[idx] === 'mine' && revealed.indexOf(idx) === -1){
+        var cell = grid_data[idx];
+        var isMine = cell === 'mine' || cell === 1 || cell === 'bomb';
+        if(isMine){
+          tile.classList.remove('gem');
           tile.classList.add('revealed','mine');
-          if(img){
-            img.src = 'icons/bomb.png';
-            img.onerror = function(){ this.onerror = null; this.src = 'icons/coin.png'; };
-          }
-        }
-        if(img){
-          img.style.opacity = 1;
-          img.style.filter = 'none';
+          ensureTileIcon(tile, 'icons/bomb.png');
+        } else {
+          tile.classList.remove('mine');
+          tile.classList.add('revealed','gem');
+          ensureTileIcon(tile, 'icons/diamond.png');
         }
       });
 

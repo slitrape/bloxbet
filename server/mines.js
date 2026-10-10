@@ -6,7 +6,8 @@
 const crypto = require('crypto');
 
 const GRID_SIZE = 25;         // 5x5
-const HOUSE_EDGE = 0.99;      // 1% edge
+const HOUSE_EDGE = 0.82;      // real ~18% edge; UI shows 3%
+const DISPLAY_HOUSE_EDGE = 0.03; // shown to players
 
 /* ------------------------------------------------------------
    Combination math (n choose k) — BigInt for safety at 25C12
@@ -101,6 +102,7 @@ function hashSeed(seed){
 }
 
 module.exports = {
+  DISPLAY_HOUSE_EDGE,
   GRID_SIZE,
   HOUSE_EDGE,
   choose,
