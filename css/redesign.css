@@ -2424,3 +2424,159 @@ body.bb-ui .btn-orange {
   body.bb-ui .chat-rail { display: none; }
   body.bb-ui .main { margin-right: 0 !important; }
 }
+
+/* Dual currency balance */
+body.bb-ui .balance-chip.dual-bal {
+  display: flex !important;
+  align-items: center;
+  gap: .65rem;
+  padding: .35rem .7rem !important;
+}
+body.bb-ui .balance-chip.dual-bal .value {
+  display: flex;
+  align-items: baseline;
+  gap: .25rem;
+  font-weight: 900 !important;
+  font-size: .95rem !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  color: #fff;
+}
+body.bb-ui .balance-chip.dual-bal .value small {
+  font-size: .68rem;
+  font-weight: 900;
+  color: #ffb84d;
+  letter-spacing: .04em;
+}
+body.bb-ui .balance-chip.dual-bal .bal-bc small { color: #60a5fa; }
+
+/* Sidebar top hamburger + footer links */
+body.bb-ui .side-top-bar {
+  padding: .65rem .75rem .25rem;
+}
+body.bb-ui .side-hamburger {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #151a24;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: #fff;
+}
+body.bb-ui .side-hamburger .ico { width: 18px; height: 18px; }
+body.bb-ui .side-footer-links {
+  margin-top: auto;
+  padding: .85rem .85rem 1rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+body.bb-ui .side-discord {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  text-decoration: none;
+  font-weight: 900;
+  font-size: .95rem;
+  color: #fff;
+  background: #5865F2;
+  border-radius: 12px;
+  padding: .7rem .85rem;
+}
+body.bb-ui .side-discord .ico { width: 20px; height: 20px; filter: brightness(0) invert(1); }
+body.bb-ui .side-discord:hover { filter: brightness(1.08); }
+body.bb-ui .side-pf {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: .75rem .8rem;
+}
+body.bb-ui .side-pf-title {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-weight: 900;
+  font-size: .82rem;
+  color: #fff;
+  margin-bottom: .35rem;
+}
+body.bb-ui .side-pf-title .ico { width: 14px; height: 14px; }
+body.bb-ui .side-pf p {
+  margin: 0;
+  font-size: .72rem;
+  line-height: 1.45;
+  color: #8b95a8;
+  font-weight: 600;
+}
+body.bb-ui .sidebar {
+  display: flex;
+  flex-direction: column;
+}
+body.bb-ui .sidebar.collapsed .side-footer-links,
+body.bb-ui .sidebar.collapsed .side-nav-item span,
+body.bb-ui .sidebar.collapsed .side-dropdown-toggle span,
+body.bb-ui .sidebar.collapsed .side-dropdown-toggle .chev {
+  display: none;
+}
+body.bb-ui .sidebar.collapsed .side-discord span { display: none; }
+body.bb-ui .sidebar.collapsed .side-discord { justify-content: center; padding: .65rem; }
+
+/* Chat collapse */
+body.bb-ui .chat-rail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+body.bb-ui .chat-collapse-btn {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #151a24;
+  color: #fff;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+body.bb-ui .chat-expand-fab {
+  display: none;
+  position: fixed;
+  top: 72px;
+  right: 12px;
+  z-index: 50;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: #151a24;
+  color: #fff;
+  place-items: center;
+  cursor: pointer;
+}
+body.bb-ui.chat-collapsed .chat-rail { display: none !important; }
+body.bb-ui.chat-collapsed .main { margin-right: 0 !important; }
+body.bb-ui.chat-collapsed .chat-expand-fab { display: grid; }
+
+/* Game card name label top-left */
+.orig-label {
+  position: absolute;
+  top: .55rem;
+  left: .55rem;
+  z-index: 2;
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(6px);
+  border-radius: 8px;
+  padding: .28rem .5rem;
+  pointer-events: none;
+}
+.orig-card-art { position: relative; }

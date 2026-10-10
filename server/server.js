@@ -965,6 +965,7 @@ function serializeUser(u){
     avatarLetter: (u.display_name || u.username || 'U')[0].toUpperCase(),
     hasVerifiedBadge: !!u.has_verified_badge,
     balance: u.balance,
+        bloxCoins: u.blox_coins || 0,
     level: u.level,
     xp: u.xp,
     rank: u.rank,
@@ -2598,6 +2599,7 @@ app.get('/api/mines/history', requireAuth, (req, res) => {
 /* ============================================================
 
   try { addCol('users', 'banned', 'INTEGER DEFAULT 0'); } catch(e){}
+  try { addCol('users', 'blox_coins', 'REAL DEFAULT 0'); } catch(e){}
   try { addCol('users', 'ban_until', 'INTEGER'); } catch(e){}
   try { addCol('users', 'ban_reason', 'TEXT'); } catch(e){}
 

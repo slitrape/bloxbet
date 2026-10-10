@@ -335,13 +335,57 @@ body.bb-ui .ad-empty {
 .ad-badge.online { background: rgba(34,197,94,.12); color: #4ade80; }
 .ad-badge.admin { background: rgba(255,138,0,.15); color: #ffb84d; }
 </style>
+
+<style id="admin-v3">
+body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25rem 3rem; }
+.admin-v3 h1 { font-size: 1.7rem; font-weight: 900; margin: 0 0 .35rem; }
+.admin-v3 .sub { color: #8b95a8; font-weight: 600; margin-bottom: 1.25rem; }
+.av3-stats { display:grid; grid-template-columns: repeat(4,1fr); gap:.75rem; margin-bottom:1.25rem; }
+@media(max-width:800px){ .av3-stats { grid-template-columns: 1fr 1fr; } }
+.av3-stat { background:#151a24; border:1px solid rgba(255,255,255,.07); border-radius:14px; padding:1rem; }
+.av3-stat .lbl { font-size:.7rem; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.06em; }
+.av3-stat .val { font-size:1.35rem; font-weight:900; color:#fff; margin-top:.25rem; font-family:'JetBrains Mono',monospace; }
+.av3-tabs { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1rem; }
+.av3-tab {
+  appearance:none; border:1px solid rgba(255,255,255,.08); background:#151a24; color:#9aa3b5;
+  font-family:inherit; font-weight:800; font-size:.85rem; padding:.55rem .9rem; border-radius:10px; cursor:pointer;
+}
+.av3-tab.active { background:linear-gradient(135deg,#ff9f2e,#ff6b00); color:#111; border-color:transparent; }
+.av3-panel { display:none; }
+.av3-panel.active { display:block; }
+.av3-toolbar { display:flex; gap:.5rem; margin-bottom:1rem; flex-wrap:wrap; }
+.av3-toolbar input {
+  flex:1; min-width:200px; background:#0e1219; border:1px solid rgba(255,255,255,.1); border-radius:12px;
+  color:#fff; font-family:inherit; font-weight:600; padding:.65rem .9rem; outline:none;
+}
+.av3-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:1rem; }
+.av3-card {
+  background: linear-gradient(145deg,#171c28,#12161f);
+  border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:1.1rem;
+}
+.av3-card.is-banned { border-color: rgba(239,68,68,.35); }
+.av3-top { display:grid; grid-template-columns:56px 1fr auto; gap:.75rem; align-items:center; margin-bottom:.75rem; }
+.av3-av { width:56px; height:56px; border-radius:50%; object-fit:cover; background:#1e2633; border:2px solid rgba(255,255,255,.1); }
+.av3-av-ph { width:56px; height:56px; border-radius:50%; display:grid; place-items:center; font-weight:900; color:#fff; background:#1e2633; }
+.av3-name { font-weight:900; color:#fff; font-size:1rem; }
+.av3-handle { color:#6b7280; font-weight:600; font-size:.78rem; }
+.av3-flags { display:flex; gap:.3rem; flex-wrap:wrap; margin-top:.3rem; }
+.av3-badge { font-size:.65rem; font-weight:800; padding:.2rem .45rem; border-radius:6px; background:rgba(255,255,255,.06); color:#9aa3b5; }
+.av3-badge.admin { background:rgba(255,138,0,.15); color:#ffb84d; }
+.av3-badge.online { background:rgba(34,197,94,.12); color:#4ade80; }
+.av3-badge.ban { background:rgba(239,68,68,.15); color:#f87171; }
+.av3-bal { text-align:right; }
+.av3-bal .lbl { font-size:.65rem; font-weight:800; color:#6b7280; text-transform:uppercase; }
+.av3-bal .val { font-weight:900; color:#f5d76e; font-size:1.1rem; font-family:'JetBrains Mono',monospace; }
+.av3-actions { display:flex; flex-wrap:wrap; gap:.35rem; }
+.av3-actions .btn { font-size:.72rem !important; font-weight:800 !important; padding:.4rem .65rem !important; border-radius:8px !important; }
+.av3-empty { padding:2rem; text-align:center; color:#6b7280; font-weight:700; }
+.av3-table { width:100%; border-collapse:collapse; }
+.av3-table th, .av3-table td { text-align:left; padding:.65rem .5rem; border-bottom:1px solid rgba(255,255,255,.05); font-size:.85rem; }
+.av3-table th { color:#6b7280; font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; }
+</style>
 </head>
 <body class="bb-ui">
-<script>
-(function(){try{if(localStorage.getItem('bb_token')&&localStorage.getItem('bb_user'))document.documentElement.classList.add('bb-logged-in')}catch(e){}})();
-</script>
-
-<!-- TOP NAV -->
 <nav class="nav">
   <div class="nav-left">
     <a href="index.html" class="nav-logo">
@@ -350,19 +394,14 @@ body.bb-ui .ad-empty {
     </a>
   </div>
   <div class="nav-center-links nav-center-funds">
-    <div class="balance-chip" id="navBalanceChip">
-      <div class="value"><span data-balance>0</span> RC</div>
+    <div class="balance-chip dual-bal" id="navBalanceChip">
+      <div class="value bal-rc"><span data-balance>0</span> <small>RC</small></div>
+      <div class="value bal-bc"><span data-bloxcoins>0.00</span> <small>BC</small></div>
     </div>
     <button class="wallet-btn" type="button" onclick="Modal.open('m-deposit')">Add Funds</button>
   </div>
   <div class="nav-right">
-    <a href="leaderboard.html" class="nav-lb-link "><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
-    <div class="dropdown">
-      <button class="nav-icon-btn" data-dropdown data-tip="Notifications" type="button">
-        <img src="icons/bell.png" alt="" class="ico" draggable="false">
-      </button>
-      <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
-    </div>
+    <a href="leaderboard.html" class="nav-lb-link"><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
     <div class="dropdown">
       <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar" type="button">?</button>
       <div class="dropdown-menu">
@@ -375,129 +414,50 @@ body.bb-ui .ad-empty {
   </div>
 </nav>
 
+<main class="main" style="margin-left:0;margin-right:0">
+  <div class="admin-v3">
+    <h1>Admin Panel</h1>
+    <div class="sub">Manage users, balances, bans, and audit logs.</div>
 
-
-<aside class="sidebar" id="appSidebar">
-  <div class="side-nav-block">
-    <a class="side-nav-item" href="index.html">
-      <img src="icons/home.png" alt="" class="ico" draggable="false">
-      <span>Home</span>
-    </a>
-    <div class="side-dropdown" id="originalsDropdown">
-      <button type="button" class="side-dropdown-toggle" id="originalsToggle">
-        <img src="icons/games.png" alt="" class="ico" draggable="false">
-        <span>Originals</span>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="side-dropdown-menu">
-        <a href="coinflip.html"><img src="icons/coin.png" alt="" class="ico"> Coinflip</a>
-        <a href="mines.html"><img src="icons/bomb.png" alt="" class="ico"> Mines</a>
-        <a href="crash.html"><img src="icons/chart.png" alt="" class="ico"> Crash</a>
-        <a href="casebattles.html"><img src="icons/gift.png" alt="" class="ico"> Case Battles</a>
-      </div>
-    </div>
-    <a class="side-nav-item" href="rewards.html">
-      <img src="icons/rewards.png" alt="" class="ico" draggable="false">
-      <span>Rewards</span>
-    </a>
-  </div>
-  <div class="sidebar-collapse-bar">
-    <button type="button" id="sidebarCollapseBtn" title="Collapse sidebar">
-      <img src="icons/chevron-left.png" alt="" class="ico">
-      <span>Collapse</span>
-    </button>
-  </div>
-</aside>
-
-<aside class="chat-rail" id="chatRail">
-  <div class="chat-rail-head">
-    <span class="chat-rail-title">Chat</span>
-  </div>
-  <div class="chat-rail-messages" id="sideChatMessages">
-    <div class="side-chat-empty">Sign in with Roblox to chat.</div>
-  </div>
-  <form class="chat-rail-form" id="sideChatForm">
-    <input type="text" id="sideChatInput" placeholder="Type a message…" maxlength="200" autocomplete="off" disabled>
-    <button type="submit" id="sideChatSend" class="chat-send-btn" disabled title="Send" aria-label="Send">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-    </button>
-  </form>
-</aside>
-
-
-<main class="main" style="margin-left:0">
-  <div class="container page ad-shell">
-    <div class="ad-hero">
-      <div>
-        <h1>Control panel</h1>
-        <p>Live ops, economy, and audit trail. Every balance and role change is logged.</p>
-      </div>
-      <div class="ad-hero-actions">
-        <button class="btn btn-ghost btn-sm" id="btnRefresh">Refresh</button>
-        <a class="btn btn-secondary btn-sm" href="index.html">Exit</a>
-      </div>
+    <div class="av3-stats">
+      <div class="av3-stat"><div class="lbl">Users</div><div class="val" id="stUsers">—</div></div>
+      <div class="av3-stat"><div class="lbl">Active 24h</div><div class="val" id="stActive">—</div></div>
+      <div class="av3-stat"><div class="lbl">Balance pool</div><div class="val" id="stPool">—</div></div>
+      <div class="av3-stat"><div class="lbl">Wagered 24h</div><div class="val" id="stWager">—</div></div>
     </div>
 
-    <div class="ad-stats" id="adStats">
-      <div class="ad-stat"><div class="ad-stat-label">Users</div><div class="ad-stat-value" id="stUsers">—</div><div class="ad-stat-sub" id="stUsersSub">total</div></div>
-      <div class="ad-stat"><div class="ad-stat-label">Active 24h</div><div class="ad-stat-value" id="stActive">—</div></div>
-      <div class="ad-stat"><div class="ad-stat-label">Balance pool</div><div class="ad-stat-value accent" id="stPool">—</div></div>
-      <div class="ad-stat"><div class="ad-stat-label">Flips 24h</div><div class="ad-stat-value" id="stFlips">—</div></div>
-      <div class="ad-stat"><div class="ad-stat-label">Wagered 24h</div><div class="ad-stat-value" id="stWager">—</div></div>
-      <div class="ad-stat"><div class="ad-stat-label">Online</div><div class="ad-stat-value" id="stOnline">—</div><div class="ad-stat-sub"><span class="ad-pulse"></span>last 5 min</div></div>
+    <div class="av3-tabs">
+      <button type="button" class="av3-tab active" data-tab="users">Users</button>
+      <button type="button" class="av3-tab" data-tab="chat">Chat</button>
+      <button type="button" class="av3-tab" data-tab="logs">Audit log</button>
     </div>
 
-    <div class="ad-tabs" id="adTabs">
-      <button class="ad-tab active" data-tab="users">Users</button>
-      <button class="ad-tab" data-tab="live">Live</button>
-      <button class="ad-tab" data-tab="chat">Chat</button>
-      <button class="ad-tab" data-tab="logs">Audit log</button>
-    </div>
-
-    <div class="ad-panel" id="panel-live">
-      <div class="ad-live-grid">
-        <div>
-          <div class="ad-section-title">Players online</div>
-          <div class="ad-card" id="liveOnline"><div class="ad-empty">Loading…</div></div>
-        </div>
-        <div>
-          <div class="ad-section-title">Recent flips</div>
-          <div class="ad-card" id="liveFlips"><div class="ad-empty">Loading…</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="ad-panel active" id="panel-users">
-      <div class="ad-toolbar">
+    <div class="av3-panel active" id="av3-users">
+      <div class="av3-toolbar">
         <input type="search" id="userSearch" placeholder="Search username or id…">
-        <button class="btn btn-ghost btn-sm" id="userSearchBtn">Search</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="userSearchBtn">Search</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnRefresh">Refresh</button>
       </div>
-      <div id="userTable" class="ad-user-host"><div class="ad-empty">Loading users…</div></div>
+      <div id="userTable" class="av3-grid"><div class="av3-empty">Loading users…</div></div>
     </div>
 
-    <div class="ad-panel" id="panel-chat">
-      <div class="ad-toolbar">
-        <button class="btn btn-ghost btn-sm" id="chatReload">Reload</button>
-      </div>
-      <div class="ad-card ad-chat" id="chatTable"></div>
+    <div class="av3-panel" id="av3-chat">
+      <div id="chatTable" class="av3-empty">Loading chat…</div>
     </div>
 
-    <div class="ad-panel" id="panel-logs">
-      <p class="ad-note">Operator actions: balance changes, admin grants, chat deletes, notes.</p>
-      <div class="ad-toolbar">
-        <button class="btn btn-ghost btn-sm" id="logsReload">Reload</button>
-      </div>
-      <div class="ad-card ad-logs" id="logsTable"></div>
+    <div class="av3-panel" id="av3-logs">
+      <div id="logsTable" class="av3-empty">Loading logs…</div>
     </div>
   </div>
 </main>
 
 <script src="js/toasts.js"></script>
 <script src="js/auth.js"></script>
-<script src="js/app.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/modals.js"></script>
 <script>
 (function(){
-  if(typeof Auth === 'undefined') return;
+  if(typeof Auth === 'undefined'){ location.href = 'login.html'; return; }
   if(!Auth.isLoggedIn()){ Auth.safeRedirect('login'); return; }
   var me = Auth.getUser();
   if(!me || !me.isAdmin){
@@ -509,473 +469,184 @@ body.bb-ui .ad-empty {
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
   function fmt(n){ return Number(n||0).toLocaleString(); }
-  function shortUa(ua){
-    if(!ua) return '—';
-    ua = String(ua);
-    if(/iPhone|iPad/i.test(ua)) return 'iOS Safari';
-    if(/Android/i.test(ua)) return 'Android';
-    if(/Windows/i.test(ua)) return 'Windows';
-    if(/Mac OS/i.test(ua)) return 'macOS';
-    if(/Linux/i.test(ua)) return 'Linux';
-    return ua.slice(0, 22) + (ua.length>22?'…':'');
-  }
   function ago(ts){
     if(!ts) return '—';
     var s = Math.floor((Date.now()-Number(ts))/1000);
-    if(s<0) s = 0;
     if(s<60) return s+'s';
     if(s<3600) return Math.floor(s/60)+'m';
     if(s<86400) return Math.floor(s/3600)+'h';
     return Math.floor(s/86400)+'d';
   }
-  function av(u){
-    var id = u.id || u.userId;
-    var letter = ((u.username||u.displayName||'U')[0]||'U').toUpperCase();
-    if(!id || id === 'demo') return '<div class="ad-avatar">'+letter+'</div>';
-    return '<div class="ad-avatar"><img src="/api/avatar/'+encodeURIComponent(id)+'" alt="" referrerpolicy="no-referrer" onerror="this.remove()"></div>';
-  }
 
-  document.querySelectorAll('.ad-tab').forEach(function(tab){
+  document.querySelectorAll('.av3-tab').forEach(function(tab){
     tab.addEventListener('click', function(){
-      document.querySelectorAll('.ad-tab').forEach(function(t){ t.classList.remove('active'); });
-      document.querySelectorAll('.ad-panel').forEach(function(p){ p.classList.remove('active'); });
+      document.querySelectorAll('.av3-tab').forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.av3-panel').forEach(function(p){ p.classList.remove('active'); });
       tab.classList.add('active');
-      document.getElementById('panel-'+tab.dataset.tab).classList.add('active');
-      loadTab(tab.dataset.tab);
+      var panel = document.getElementById('av3-' + tab.dataset.tab);
+      if(panel) panel.classList.add('active');
+      if(tab.dataset.tab === 'users') loadUsers(document.getElementById('userSearch').value.trim());
+      if(tab.dataset.tab === 'chat') loadChat();
+      if(tab.dataset.tab === 'logs') loadLogs();
     });
   });
 
   async function loadStats(){
-    try{
+    try {
       var res = await Auth.api('/admin/stats');
-      if(res.ok){
-        var d = await res.json();
-        var users = d.users || {};
-        var eco = d.economy || {};
-        var act = d.activity || {};
-        document.getElementById('stUsers').textContent = fmt(users.total||0);
-        document.getElementById('stUsersSub').textContent = '+' + fmt(users.new24h||0) + ' new / 24h';
-        document.getElementById('stActive').textContent = fmt(users.active24h||0);
-        document.getElementById('stPool').textContent = fmt(eco.totalBalance||0);
-        document.getElementById('stFlips').textContent = fmt(act.flips24h||0);
-        document.getElementById('stWager').textContent = fmt(act.flipsWagered24h||0);
-      }
-    }catch(e){}
-    try{
-      var live = await Auth.api('/admin/live');
-      if(live.ok){
-        var L = await live.json();
-        document.getElementById('stOnline').textContent = fmt((L.online||[]).length);
-      }
-    }catch(e){}
+      if(!res.ok) return;
+      var d = await res.json();
+      var users = d.users || {};
+      var eco = d.economy || {};
+      var act = d.activity || {};
+      document.getElementById('stUsers').textContent = fmt(users.total||0);
+      document.getElementById('stActive').textContent = fmt(users.active24h||0);
+      document.getElementById('stPool').textContent = fmt(eco.balancePool||eco.totalBalance||0);
+      document.getElementById('stWager').textContent = fmt(act.wagered24h||eco.wagered24h||0);
+    } catch(e){}
   }
 
-  async function loadLive(){
-    var res = await Auth.api('/admin/live');
-    if(!res.ok) return;
-    var d = await res.json();
-    var on = d.online || [];
-    var onlineEl = document.getElementById('liveOnline');
-    if(!on.length) onlineEl.innerHTML = '<div class="ad-empty">No recent players</div>';
-    else onlineEl.innerHTML = '<div class="ad-row head"><span>Player</span><span>Balance</span><span>Rank</span><span>Seen</span></div>' +
-      on.map(function(u){
-        return '<div class="ad-row"><span style="font-weight:600">'+esc(u.username)+'</span><span class="ad-mono">'+fmt(u.balance)+'</span><span>'+esc(u.rank||'—')+'</span><span class="ad-mono">'+ago(u.lastSeen)+'</span></div>';
-      }).join('');
-
-    var flips = d.recentFlips || [];
-    var fl = document.getElementById('liveFlips');
-    if(!flips.length) fl.innerHTML = '<div class="ad-empty">No flips yet</div>';
-    else fl.innerHTML = '<div class="ad-row head"><span>Player</span><span>Bet</span><span>Net</span><span>When</span></div>' +
-      flips.map(function(f){
-        return '<div class="ad-row"><span>'+esc(f.username||'?')+'</span><span class="ad-mono">'+fmt(f.bet)+'</span><span class="ad-badge '+(f.win?'win':'lose')+'">'+(f.net>=0?'+':'')+fmt(f.net)+'</span><span class="ad-mono">'+ago(f.at)+'</span></div>';
-      }).join('');
-  }
-
-  
-  
   async function loadUsers(q){
     var el = document.getElementById('userTable');
-    if(!el) return;
-    el.innerHTML = '<div class="ad-empty">Loading users…</div>';
+    el.innerHTML = '<div class="av3-empty">Loading users…</div>';
     try {
-      var url = '/admin/users?limit=200' + (q ? ('&q='+encodeURIComponent(q)) : '');
-      var res = await Auth.api(url);
+      var res = await Auth.api('/admin/users?limit=200' + (q ? ('&q='+encodeURIComponent(q)) : ''));
       if(!res.ok){
-        el.innerHTML = '<div class="ad-empty">Failed to load users ('+res.status+'). Are you admin on the server?</div>'; if(window.Toast) Toast.error('Admin','Users API '+res.status);
+        el.innerHTML = '<div class="av3-empty">Failed to load users ('+res.status+'). Check admin flag on server.</div>';
         return;
       }
       var d = await res.json();
       var users = d.users || [];
-      if(!users.length){
-        el.innerHTML = '<div class="ad-empty">No users found</div>';
-        return;
-      }
-      var html = '<div class="ad-user-grid">';
+      if(!users.length){ el.innerHTML = '<div class="av3-empty">No users found</div>'; return; }
+      el.innerHTML = '';
+      var grid = document.createElement('div');
+      grid.className = 'av3-grid';
       users.forEach(function(u){
         var name = u.displayName || u.username || '?';
-        var handle = u.username || '';
         var letter = String(name).slice(0,1).toUpperCase();
-        var avUrl = u.avatar || (u.id ? ('/api/avatar/' + encodeURIComponent(u.id)) : '');
-        var status = u.banned
-          ? '<span class="ad-badge ban">Banned</span>'
-          : (u.online ? '<span class="ad-badge online">Online</span>' : '<span class="ad-badge">Offline</span>');
-        var role = u.isAdmin ? '<span class="ad-badge admin">Admin</span>' : '<span class="ad-badge">User</span>';
-        html += '<div class="ad-user-card'+(u.banned?' is-banned':'')+'">' +
-          '<div class="ad-user-top">' +
-            '<div class="ad-av-wrap">' +
-              (avUrl ? '<img class="ad-avatar-lg" src="'+esc(avUrl)+'" alt="" referrerpolicy="no-referrer" onerror="this.style.display=\\'none\\';this.parentNode.querySelector(\\'.ad-avatar-ph\\').style.display=\\'grid\\'">' : '') +
-              '<div class="ad-avatar-ph ad-avatar-lg"'+(avUrl?' style="display:none"':'')+'>'+esc(letter)+'</div>' +
-            '</div>' +
-            '<div class="ad-user-meta">' +
-              '<div class="ad-user-name">'+esc(name)+'</div>' +
-              '<div class="ad-user-handle">@'+esc(handle)+'</div>' +
-              '<div class="ad-user-flags">'+role+' '+status+'</div>' +
-            '</div>' +
-            '<div class="ad-user-bal">' +
-              '<div class="ad-bal-label">Balance</div>' +
-              '<div class="ad-bal-val">'+fmt(u.balance)+'</div>' +
-              '<div class="ad-bal-sub">Wagered '+fmt(u.totalWagered||0)+'</div>' +
-            '</div>' +
+        var avUrl = u.avatar || (u.id ? '/api/avatar/'+encodeURIComponent(u.id) : '');
+        var card = document.createElement('div');
+        card.className = 'av3-card' + (u.banned ? ' is-banned' : '');
+        card.innerHTML =
+          '<div class="av3-top">' +
+            '<div>' + (avUrl ? '<img class="av3-av" src="'+esc(avUrl)+'" alt="" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' : '<div class="av3-av-ph">'+esc(letter)+'</div>') + '</div>' +
+            '<div><div class="av3-name">'+esc(name)+'</div><div class="av3-handle">@'+esc(u.username||'')+'</div>' +
+            '<div class="av3-flags">' +
+              (u.isAdmin?'<span class="av3-badge admin">Admin</span>':'<span class="av3-badge">User</span>') +
+              (u.banned?'<span class="av3-badge ban">Banned</span>':(u.online?'<span class="av3-badge online">Online</span>':'<span class="av3-badge">Offline</span>')) +
+            '</div></div>' +
+            '<div class="av3-bal"><div class="lbl">Balance</div><div class="val">'+fmt(u.balance)+'</div></div>' +
           '</div>' +
-          '<div class="ad-user-actions">' +
-            '<button type="button" class="btn btn-sm btn-primary" data-act="add" data-id="'+esc(u.id)+'">+ Funds</button>' +
-            '<button type="button" class="btn btn-sm btn-ghost" data-act="set" data-id="'+esc(u.id)+'">Set Balance</button>' +
-            '<button type="button" class="btn btn-sm btn-ghost" data-act="tempban" data-id="'+esc(u.id)+'">Temp Ban</button>' +
-            '<button type="button" class="btn btn-sm btn-ghost" data-act="ban" data-id="'+esc(u.id)+'">Ban</button>' +
-            (u.banned ? '<button type="button" class="btn btn-sm btn-ghost" data-act="unban" data-id="'+esc(u.id)+'">Unban</button>' : '') +
-            '<button type="button" class="btn btn-sm btn-ghost" data-act="admin" data-id="'+esc(u.id)+'" data-admin="'+(u.isAdmin?1:0)+'">'+(u.isAdmin?'Revoke Admin':'Make Admin')+'</button>' +
-            '<button type="button" class="btn btn-sm btn-ghost" data-act="sessions" data-id="'+esc(u.id)+'">Logs</button>' +
-          '</div>' +
-        '</div>';
-      });
-      html += '</div>';
-      el.innerHTML = html;
-
-      el.querySelectorAll('[data-act]').forEach(function(btn){
-        btn.addEventListener('click', async function(){
-          var id = btn.getAttribute('data-id');
-          var act = btn.getAttribute('data-act');
-          if(act === 'sessions'){
-            var r = await Auth.api('/admin/users/'+id+'/sessions');
-            if(!r.ok){ Toast.error('Failed','Could not load sessions'); return; }
-            var d = await r.json();
-            var lines = (d.sessions||[]).map(function(s){ return (s.ip||'?')+' · '+shortUa(s.userAgent)+' · '+ago(s.createdAt); });
-            alert(lines.length?lines.join('\\n'):'No login events yet');
-            return;
-          }
-          if(act === 'admin'){
-            var make = btn.getAttribute('data-admin') !== '1';
-            if(!confirm(make ? 'Grant admin?' : 'Revoke admin?')) return;
-            var r = await Auth.api('/admin/users/'+id+'/admin', { method:'POST', body: JSON.stringify({ isAdmin: make }) });
-            if(r.ok){ Toast.success('Saved','Updated'); loadUsers(document.getElementById('userSearch').value.trim()); }
-            else Toast.error('Failed','Could not update');
-            return;
-          }
-          if(act === 'ban'){
-            var reason = prompt('Ban reason:') || 'Banned by admin';
-            if(!confirm('Permanently ban?')) return;
-            var r = await Auth.api('/admin/users/'+id+'/ban', { method:'POST', body: JSON.stringify({ permanent:true, reason:reason }) });
-            if(r.ok){ Toast.success('Banned','Done'); loadUsers(document.getElementById('userSearch').value.trim()); }
-            else Toast.error('Failed','Ban rejected');
-            return;
-          }
-          if(act === 'tempban'){
-            var hours = prompt('Hours:', '24');
-            if(hours == null) return;
-            hours = parseInt(hours, 10);
-            if(!Number.isFinite(hours) || hours < 1){ Toast.error('Invalid','Hours >= 1'); return; }
-            var reason = prompt('Reason:') || 'Temp ban';
-            var r = await Auth.api('/admin/users/'+id+'/ban', { method:'POST', body: JSON.stringify({ permanent:false, hours:hours, reason:reason }) });
-            if(r.ok){ Toast.success('Temp banned', hours+'h'); loadUsers(document.getElementById('userSearch').value.trim()); }
-            else Toast.error('Failed','Rejected');
-            return;
-          }
-          if(act === 'unban'){
-            if(!confirm('Unban?')) return;
-            var r = await Auth.api('/admin/users/'+id+'/unban', { method:'POST', body: '{}' });
-            if(r.ok){ Toast.success('Unbanned','Done'); loadUsers(document.getElementById('userSearch').value.trim()); }
-            else Toast.error('Failed','Rejected');
-            return;
-          }
-          var amount = prompt(act === 'add' ? 'RoCoins to add' : 'Set balance to');
-          if(amount == null) return;
-          amount = parseInt(amount, 10);
-          if(!Number.isFinite(amount) || amount < 0){ Toast.error('Invalid','Need non-negative integer'); return; }
-          var r = await Auth.api('/admin/users/'+id+'/balance', {
-            method:'POST',
-            body: JSON.stringify({ action: act === 'add' ? 'add' : 'set', amount: amount })
-          });
-          if(r.ok){ Toast.success('Balance updated','Saved'); loadUsers(document.getElementById('userSearch').value.trim()); loadStats(); }
-          else Toast.error('Failed','Rejected');
+          '<div class="av3-actions">' +
+            '<button type="button" class="btn btn-sm btn-primary" data-act="add">+ Funds</button>' +
+            '<button type="button" class="btn btn-sm btn-ghost" data-act="set">Set</button>' +
+            '<button type="button" class="btn btn-sm btn-ghost" data-act="tempban">Temp Ban</button>' +
+            '<button type="button" class="btn btn-sm btn-ghost" data-act="ban">Ban</button>' +
+            (u.banned?'<button type="button" class="btn btn-sm btn-ghost" data-act="unban">Unban</button>':'') +
+            '<button type="button" class="btn btn-sm btn-ghost" data-act="admin">'+(u.isAdmin?'Revoke Admin':'Make Admin')+'</button>' +
+          '</div>';
+        card.querySelectorAll('[data-act]').forEach(function(btn){
+          btn.addEventListener('click', function(){ handleAct(btn.getAttribute('data-act'), u); });
         });
+        grid.appendChild(card);
       });
+      el.appendChild(grid);
     } catch(err){
-      el.innerHTML = '<div class="ad-empty">Error loading users</div>';
+      el.innerHTML = '<div class="av3-empty">Error loading users</div>';
       console.error(err);
     }
   }
 
-
-  async function loadTx(){ if(!document.getElementById('txTable')) return;
-    var res = await Auth.api('/admin/transactions');
-    if(!res.ok) return;
-    var d = await res.json();
-    var rows = d.transactions || d.rows || [];
-    var el = document.getElementById('txTable');
-    if(!rows.length){ el.innerHTML = '<div class="ad-empty">No transactions</div>'; return; }
-    el.innerHTML = '<div class="ad-row head"><span>User</span><span>Type</span><span>Amount</span><span>Balance after</span><span>When</span></div>' +
-      rows.map(function(t){
-        return '<div class="ad-row"><span>'+esc(t.username||t.userId||'—')+'</span><span class="ad-badge">'+esc(t.type)+'</span><span class="ad-mono">'+fmt(t.amount)+'</span><span class="ad-mono">'+fmt(t.balanceAfter||t.balance_after||0)+'</span><span class="ad-mono">'+ago(t.createdAt||t.created_at)+'</span></div>';
-      }).join('');
+  async function handleAct(act, u){
+    var id = u.id;
+    if(act === 'admin'){
+      if(!confirm(u.isAdmin?'Revoke admin?':'Grant admin?')) return;
+      var r = await Auth.api('/admin/users/'+id+'/admin', { method:'POST', body: JSON.stringify({ isAdmin: !u.isAdmin }) });
+      if(r.ok){ Toast.success('Saved','Updated'); loadUsers(document.getElementById('userSearch').value.trim()); }
+      else Toast.error('Failed','Could not update');
+      return;
+    }
+    if(act === 'ban'){
+      var reason = prompt('Ban reason:') || 'Banned by admin';
+      if(!confirm('Permanent ban?')) return;
+      var r = await Auth.api('/admin/users/'+id+'/ban', { method:'POST', body: JSON.stringify({ permanent:true, reason:reason }) });
+      if(r.ok){ Toast.success('Banned','Done'); loadUsers(document.getElementById('userSearch').value.trim()); }
+      else Toast.error('Failed','Ban rejected');
+      return;
+    }
+    if(act === 'tempban'){
+      var hours = prompt('Hours:', '24');
+      if(hours==null) return;
+      hours = parseInt(hours,10);
+      if(!Number.isFinite(hours)||hours<1){ Toast.error('Invalid','Hours >= 1'); return; }
+      var reason = prompt('Reason:') || 'Temp ban';
+      var r = await Auth.api('/admin/users/'+id+'/ban', { method:'POST', body: JSON.stringify({ permanent:false, hours:hours, reason:reason }) });
+      if(r.ok){ Toast.success('Temp banned', hours+'h'); loadUsers(document.getElementById('userSearch').value.trim()); }
+      else Toast.error('Failed','Rejected');
+      return;
+    }
+    if(act === 'unban'){
+      if(!confirm('Unban?')) return;
+      var r = await Auth.api('/admin/users/'+id+'/unban', { method:'POST', body:'{}' });
+      if(r.ok){ Toast.success('Unbanned','Done'); loadUsers(document.getElementById('userSearch').value.trim()); }
+      else Toast.error('Failed','Rejected');
+      return;
+    }
+    var amount = prompt(act==='add'?'RoCoins to add':'Set balance to');
+    if(amount==null) return;
+    amount = parseInt(amount,10);
+    if(!Number.isFinite(amount)||amount<0){ Toast.error('Invalid','Need non-negative integer'); return; }
+    var r = await Auth.api('/admin/users/'+id+'/balance', {
+      method:'POST', body: JSON.stringify({ action: act==='add'?'add':'set', amount: amount })
+    });
+    if(r.ok){ Toast.success('Balance updated','Saved'); loadUsers(document.getElementById('userSearch').value.trim()); loadStats(); }
+    else Toast.error('Failed','Rejected');
   }
 
   async function loadChat(){
-    var res = await Auth.api('/admin/chat/recent');
-    if(!res.ok) return;
-    var d = await res.json();
-    var rows = d.messages || [];
     var el = document.getElementById('chatTable');
-    if(!rows.length){ el.innerHTML = '<div class="ad-empty">No chat messages</div>'; return; }
-    el.innerHTML = '<div class="ad-row head"><span>User</span><span>Message</span><span>When</span><span></span></div>' +
-      rows.map(function(m){
-        return '<div class="ad-row"><span class="ad-mono">'+esc(m.username)+'</span><span>'+esc(m.message||m.text)+'</span><span class="ad-mono">'+ago(m.createdAt||m.created_at)+'</span><span><button class="btn btn-ghost btn-sm" data-del="'+esc(m.id)+'">Delete</button></span></div>';
-      }).join('');
-    el.querySelectorAll('[data-del]').forEach(function(btn){
-      btn.addEventListener('click', async function(){
-        if(!confirm('Delete this message?')) return;
-        var r = await Auth.api('/admin/chat/'+btn.getAttribute('data-del'), { method:'DELETE' });
-        if(r.ok){ Toast.success('Deleted','Message removed'); loadChat(); }
-      });
-    });
+    try {
+      var res = await Auth.api('/admin/chat?limit=50');
+      if(!res.ok){ el.innerHTML = '<div class="av3-empty">Could not load chat</div>'; return; }
+      var d = await res.json();
+      var rows = d.messages || d.chat || [];
+      if(!rows.length){ el.innerHTML = '<div class="av3-empty">No messages</div>'; return; }
+      el.innerHTML = '<table class="av3-table"><tr><th>User</th><th>Message</th><th>When</th></tr>' +
+        rows.map(function(m){
+          return '<tr><td>@'+esc(m.username||m.user||'')+'</td><td>'+esc(m.message||m.text||'')+'</td><td>'+ago(m.created_at||m.createdAt)+'</td></tr>';
+        }).join('') + '</table>';
+    } catch(e){ el.innerHTML = '<div class="av3-empty">Error</div>'; }
   }
 
   async function loadLogs(){
-    var res = await Auth.api('/admin/logs');
-    if(!res.ok) return;
-    var d = await res.json();
-    var rows = d.logs || [];
     var el = document.getElementById('logsTable');
-    if(!rows.length){ el.innerHTML = '<div class="ad-empty">No audit events yet — actions will appear here</div>'; return; }
-    el.innerHTML = '<div class="ad-row head"><span>When</span><span>Admin</span><span>Action</span><span>Target / detail</span><span>IP</span></div>' +
-      rows.map(function(l){
-        var detail = l.detail || '';
-        try { detail = JSON.stringify(JSON.parse(detail)); } catch(e){}
-        return '<div class="ad-row"><span class="ad-mono">'+ago(l.createdAt)+'</span><span>'+esc(l.adminUsername||'—')+'</span><span class="ad-badge">'+esc(l.action)+'</span><span class="ad-mono">'+esc(l.targetUsername||l.targetId||'')+' '+esc(detail).slice(0,90)+'</span><span class="ad-mono">'+esc(l.ip||'')+'</span></div>';
-      }).join('');
+    try {
+      var res = await Auth.api('/admin/logs');
+      if(!res.ok){ el.innerHTML = '<div class="av3-empty">Could not load logs</div>'; return; }
+      var d = await res.json();
+      var rows = d.logs || [];
+      if(!rows.length){ el.innerHTML = '<div class="av3-empty">No audit events yet</div>'; return; }
+      el.innerHTML = '<table class="av3-table"><tr><th>When</th><th>Admin</th><th>Action</th><th>Target</th></tr>' +
+        rows.map(function(l){
+          return '<tr><td>'+ago(l.createdAt||l.created_at)+'</td><td>'+esc(l.adminUsername||'')+'</td><td>'+esc(l.action)+'</td><td>'+esc(l.targetUsername||l.targetId||'')+'</td></tr>';
+        }).join('') + '</table>';
+    } catch(e){ el.innerHTML = '<div class="av3-empty">Error</div>'; }
   }
 
-  function loadTab(name){
-    if(name==='live') loadLive();
-    if(name==='users') loadUsers(document.getElementById('userSearch').value.trim());
-    
-    if(name==='chat') loadChat();
-    if(name==='logs') loadLogs();
-  }
-
-  document.getElementById('btnRefresh').addEventListener('click', function(){
-    loadStats();
-    var active = document.querySelector('.ad-tab.active');
-    if(active) loadTab(active.dataset.tab);
-  });
   document.getElementById('userSearchBtn').addEventListener('click', function(){
     loadUsers(document.getElementById('userSearch').value.trim());
   });
   document.getElementById('userSearch').addEventListener('keydown', function(e){
     if(e.key==='Enter') loadUsers(e.target.value.trim());
   });
-  
-  document.getElementById('chatReload').addEventListener('click', loadChat);
-  document.getElementById('logsReload').addEventListener('click', loadLogs);
+  document.getElementById('btnRefresh').addEventListener('click', function(){
+    loadStats();
+    loadUsers(document.getElementById('userSearch').value.trim());
+  });
 
-
-  document.querySelectorAll('.ad-tab').forEach(function(t){ t.classList.toggle('active', t.dataset.tab==='users'); });
-  document.querySelectorAll('.ad-panel').forEach(function(p){ p.classList.toggle('active', p.id==='panel-users'); });
   loadStats();
   loadUsers('');
-
-  setInterval(function(){
-    loadStats();
-    var t = document.querySelector('.ad-tab.active');
-    if(t && t.dataset.tab==='live') loadLive();
-    if(t && t.dataset.tab==='users') loadUsers(document.getElementById('userSearch').value.trim());
-  }, 30000);
 })();
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script id="bb-shell-js">
-(function(){
-  function qs(id){ return document.getElementById(id); }
-  var side = qs('appSidebar');
-  var main = document.querySelector('main.main');
-  var colBtn = qs('sidebarCollapseBtn');
-  function applyCollapsed(on){
-    if(!side) return;
-    side.classList.toggle('collapsed', !!on);
-    document.body.classList.toggle('sidebar-collapsed', !!on);
-    if(main) main.classList.toggle('expanded', !!on);
-    try { localStorage.setItem('bb_sidebar_collapsed', on ? '1' : '0'); } catch(e){}
-  }
-  try { if(localStorage.getItem('bb_sidebar_collapsed') === '1') applyCollapsed(true); } catch(e){}
-  if(colBtn) colBtn.addEventListener('click', function(e){ e.preventDefault(); applyCollapsed(!(side && side.classList.contains('collapsed'))); });
-  var dd = qs('originalsDropdown');
-  var btn = qs('originalsToggle');
-  if(btn && dd) btn.addEventListener('click', function(e){ e.preventDefault(); dd.classList.toggle('open'); });
-
-  var chatBox = qs('sideChatMessages');
-  var chatForm = qs('sideChatForm');
-  var chatInput = qs('sideChatInput');
-  var chatSend = qs('sideChatSend');
-  var loggedIn = false;
-  try { loggedIn = !!(localStorage.getItem('bb_token') && localStorage.getItem('bb_user')); } catch(e){}
-  if(typeof Auth !== 'undefined' && Auth.isLoggedIn) loggedIn = !!Auth.isLoggedIn();
-  var seenIds = {};
-  var meUser = null;
-  try { meUser = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : JSON.parse(localStorage.getItem('bb_user')||'null'); } catch(e){}
-
-  function avNode(msg){
-    var wrap = document.createElement('a');
-    wrap.className = 'side-chat-av';
-    var id = msg.userId || msg.user_id || '';
-    var name = String(msg.user || msg.username || '?').replace(/^@/,'');
-    var letter = name.slice(0,1).toUpperCase();
-    wrap.href = 'profile.html?user=' + encodeURIComponent(id || name);
-    if(id){
-      var img = document.createElement('img');
-      img.src = '/api/avatar/' + encodeURIComponent(id);
-      img.alt = '';
-      img.referrerPolicy = 'no-referrer';
-      img.onerror = function(){ wrap.textContent = letter; };
-      wrap.appendChild(img);
-    } else {
-      wrap.textContent = letter;
-    }
-    return wrap;
-  }
-
-  function appendChat(msg, opts){
-    if(!chatBox) return;
-    var id = msg.id || ((msg.user||'') + ':' + (msg.text||'') + ':' + (msg.at||''));
-    if(seenIds[id]) return;
-    seenIds[id] = true;
-    var empty = chatBox.querySelector('.side-chat-empty');
-    if(empty) empty.remove();
-    var mine = !!(opts && opts.mine);
-    if(!mine && meUser && msg.userId && String(msg.userId) === String(meUser.id)) mine = true;
-    if(!mine && meUser && msg.user && String(msg.user).toLowerCase() === String(meUser.username||'').toLowerCase()) mine = true;
-    var row = document.createElement('div');
-    row.className = 'side-chat-msg' + (mine ? ' mine' : ' theirs');
-    var body = document.createElement('div');
-    body.className = 'side-chat-body';
-    var u = document.createElement('span');
-    u.className = 'side-chat-user';
-    u.textContent = '@' + String(msg.user || msg.username || 'user').replace(/^@/,'');
-    var t = document.createElement('span');
-    t.className = 'side-chat-text';
-    t.textContent = msg.text || msg.message || '';
-    body.appendChild(u);
-    body.appendChild(t);
-    if(mine){
-      row.appendChild(body);
-      row.appendChild(avNode(msg));
-    } else {
-      row.appendChild(avNode(msg));
-      row.appendChild(body);
-    }
-    chatBox.appendChild(row); // top-to-bottom chronological
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  async function loadChat(){
-    if(!loggedIn) return;
-    try {
-      var res = typeof Auth !== 'undefined' && Auth.api ? await Auth.api('/chat/global') : null;
-      if(!res || !res.ok) return;
-      var data = await res.json();
-      var msgs = data.messages || data.chat || [];
-      if(!Array.isArray(msgs)) return;
-      chatBox.innerHTML = '';
-      seenIds = {};
-      // API may return newest first — render oldest first (top to bottom)
-      var list = msgs.slice();
-      if(list.length > 1 && (list[0].created_at||list[0].createdAt||0) > (list[list.length-1].created_at||list[list.length-1].createdAt||0)){
-        list = list.reverse();
-      }
-      list.forEach(function(m){
-        appendChat({ id:m.id, user:m.username||m.user, userId:m.user_id||m.userId, text:m.message||m.text, at:m.created_at||m.createdAt });
-      });
-    } catch(e){}
-  }
-
-  if(loggedIn){
-    if(chatInput) chatInput.disabled = false;
-    if(chatSend) chatSend.disabled = false;
-    if(chatBox) chatBox.innerHTML = '';
-    loadChat();
-    setInterval(loadChat, 3000);
-  }
-  if(chatForm){
-    chatForm.addEventListener('submit', async function(e){
-      e.preventDefault();
-      if(!loggedIn) return;
-      var text = (chatInput && chatInput.value || '').trim();
-      if(!text) return;
-      var me = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : meUser;
-      appendChat({ user:(me&&me.username)||'You', userId:me&&me.id, text:text, id:'local-'+Date.now() }, { mine:true });
-      if(chatInput) chatInput.value = '';
-      try { if(Auth.api) await Auth.api('/chat/global', { method:'POST', body: JSON.stringify({ message: text }) }); setTimeout(loadChat, 400); } catch(err){}
-    });
-  }
-  if(chatInput){
-    chatInput.addEventListener('keydown', function(e){
-      if(e.key === 'Enter' && !e.shiftKey){
-        e.preventDefault();
-        if(chatForm) chatForm.requestSubmit ? chatForm.requestSubmit() : chatForm.dispatchEvent(new Event('submit', {cancelable:true, bubbles:true}));
-      }
-    });
-  }
-})();
-</script>
-
-
-
-
-
-
-<footer class="site-footer">
-  <div class="site-footer-inner">
-    <div class="sf-brand">
-      <a href="index.html" class="sf-logo">
-        <img src="icons/bloxbet.png" alt="" class="sf-logo-mark">
-        <span>BLOXBET</span>
-      </a>
-      <p>BloxBet is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Roblox Corporation, Roblox, or any of its subsidiaries or affiliates. The official Roblox website is https://www.roblox.com. Roblox, Robux and all related names, marks, emblems and images are registered trademarks of Roblox Corporation. All rights reserved.</p>
-      <p class="sf-legal">Legal: <a href="mailto:legal@bloxbet.com">legal@bloxbet.com</a></p>
-    </div>
-    <div class="sf-col">
-      <h4>About</h4>
-    </div>
-    <div class="sf-col">
-      <h4>Help</h4>
-      <a href="https://discord.gg/bloxbet" target="_blank" rel="noopener">Support</a>
-    </div>
-    <div class="sf-col sf-disclaimer">
-      <h4>Disclaimer</h4>
-      <p>BloxBet is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Roblox Corporation, Roblox, or any of its subsidiaries or affiliates. The official Roblox website is https://www.roblox.com. Roblox, Robux and all related names, marks, emblems and images are registered trademarks of Roblox Corporation.</p>
-    </div>
-  </div>
-</footer>
-
 </body>
 </html>

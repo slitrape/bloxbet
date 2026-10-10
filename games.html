@@ -117,13 +117,13 @@
     </a>
   </div>
   <div class="nav-center-links nav-center-funds">
-    <div class="balance-chip" id="navBalanceChip">
-      <div class="value"><span data-balance>0</span> RC</div>
+    <div class="balance-chip dual-bal" id="navBalanceChip">
+      <div class="value bal-rc"><span data-balance>0</span> <small>RC</small></div>
+      <div class="value bal-bc"><span data-bloxcoins>0.00</span> <small>BC</small></div>
     </div>
     <button class="wallet-btn" type="button" onclick="Modal.open('m-deposit')">Add Funds</button>
   </div>
   <div class="nav-right">
-    <a href="leaderboard.html" class="nav-lb-link "><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
     <div class="dropdown">
       <button class="nav-icon-btn" data-dropdown data-tip="Notifications" type="button">
         <img src="icons/bell.png" alt="" class="ico" draggable="false">
@@ -144,8 +144,18 @@
 
 
 
+
 <aside class="sidebar" id="appSidebar">
+  <div class="side-top-bar">
+    <button type="button" class="side-hamburger" id="sidebarCollapseBtn" title="Toggle menu">
+      <img src="icons/menu.png" alt="" class="ico">
+    </button>
+  </div>
   <div class="side-nav-block">
+    <a class="side-nav-item" href="leaderboard.html">
+      <img src="icons/leaderboard.png" alt="" class="ico" draggable="false">
+      <span>Leaderboard</span>
+    </a>
     <a class="side-nav-item" href="index.html">
       <img src="icons/home.png" alt="" class="ico" draggable="false">
       <span>Home</span>
@@ -168,17 +178,25 @@
       <span>Rewards</span>
     </a>
   </div>
-  <div class="sidebar-collapse-bar">
-    <button type="button" id="sidebarCollapseBtn" title="Collapse sidebar">
-      <img src="icons/chevron-left.png" alt="" class="ico">
-      <span>Collapse</span>
-    </button>
+  <div class="side-footer-links">
+    <a class="side-discord" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">
+      <img src="icons/discord.png" alt="" class="ico">
+      <span>Discord</span>
+    </a>
+    <div class="side-pf">
+      <div class="side-pf-title"><img src="icons/check.png" alt="" class="ico"> Provably Fair</div>
+      <p>Every game uses cryptographic seeds so outcomes can be verified. Your client seed + our server seed hash prove results weren’t altered.</p>
+    </div>
   </div>
 </aside>
+
 
 <aside class="chat-rail" id="chatRail">
   <div class="chat-rail-head">
     <span class="chat-rail-title">Chat</span>
+    <button type="button" class="chat-collapse-btn" id="chatCollapseBtn" title="Collapse chat" aria-label="Collapse chat">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
   </div>
   <div class="chat-rail-messages" id="sideChatMessages">
     <div class="side-chat-empty">Sign in with Roblox to chat.</div>
@@ -190,6 +208,10 @@
     </button>
   </form>
 </aside>
+<button type="button" class="chat-expand-fab" id="chatExpandBtn" title="Open chat" aria-label="Open chat">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+
 
 
 <main class="main">
@@ -268,10 +290,10 @@
     </div>
     <div class="modal-body deposit-body">
       <div class="dep-amount-wrap">
-        <label>Amount (RC)</label>
+        <label>Amount (BloxCoins)</label>
         <div class="dep-amount-box">
           <input type="number" id="depositAmount" value="1000" min="100" step="100">
-          <span class="dep-unit">RC</span>
+          <span class="dep-unit">BC</span>
         </div>
       </div>
       <div class="dep-quick">
@@ -292,7 +314,7 @@
           <span class="dep-method-sub">Trade limiteds for RC</span>
         </button>
       </div>
-      <div class="dep-note">Minimum 100 RC · Balance updates after confirmation</div>
+      <div class="dep-note">Minimum 100 BC · Converts for play balance · Balance updates after confirmation</div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="Modal.close('m-deposit')" type="button">Cancel</button>
@@ -451,6 +473,7 @@
 
 
 
+
 <script id="bb-shell-js">
 (function(){
   function qs(id){ return document.getElementById(id); }
@@ -469,6 +492,30 @@
   var dd = qs('originalsDropdown');
   var btn = qs('originalsToggle');
   if(btn && dd) btn.addEventListener('click', function(e){ e.preventDefault(); dd.classList.toggle('open'); });
+
+  /* Chat collapse */
+  var rail = qs('chatRail');
+  var chatCol = qs('chatCollapseBtn');
+  var chatExp = qs('chatExpandBtn');
+  function applyChatCollapsed(on){
+    document.body.classList.toggle('chat-collapsed', !!on);
+    try { localStorage.setItem('bb_chat_collapsed', on ? '1' : '0'); } catch(e){}
+  }
+  try { if(localStorage.getItem('bb_chat_collapsed') === '1') applyChatCollapsed(true); } catch(e){}
+  if(chatCol) chatCol.addEventListener('click', function(){ applyChatCollapsed(true); });
+  if(chatExp) chatExp.addEventListener('click', function(){ applyChatCollapsed(false); });
+
+  /* Dual currency paint */
+  try {
+    var u = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : JSON.parse(localStorage.getItem('bb_user')||'null');
+    if(u){
+      document.querySelectorAll('[data-balance]').forEach(function(el){ el.textContent = Number(u.balance||0).toLocaleString(); });
+      var bc = u.bloxCoins != null ? u.bloxCoins : (u.blox_coins != null ? u.blox_coins : 0);
+      document.querySelectorAll('[data-bloxcoins]').forEach(function(el){
+        el.textContent = Number(bc).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      });
+    }
+  } catch(e){}
 
   var chatBox = qs('sideChatMessages');
   var chatForm = qs('sideChatForm');
@@ -495,12 +542,9 @@
       img.referrerPolicy = 'no-referrer';
       img.onerror = function(){ wrap.textContent = letter; };
       wrap.appendChild(img);
-    } else {
-      wrap.textContent = letter;
-    }
+    } else { wrap.textContent = letter; }
     return wrap;
   }
-
   function appendChat(msg, opts){
     if(!chatBox) return;
     var id = msg.id || ((msg.user||'') + ':' + (msg.text||'') + ':' + (msg.at||''));
@@ -521,19 +565,12 @@
     var t = document.createElement('span');
     t.className = 'side-chat-text';
     t.textContent = msg.text || msg.message || '';
-    body.appendChild(u);
-    body.appendChild(t);
-    if(mine){
-      row.appendChild(body);
-      row.appendChild(avNode(msg));
-    } else {
-      row.appendChild(avNode(msg));
-      row.appendChild(body);
-    }
-    chatBox.appendChild(row); // top-to-bottom chronological
+    body.appendChild(u); body.appendChild(t);
+    if(mine){ row.appendChild(body); row.appendChild(avNode(msg)); }
+    else { row.appendChild(avNode(msg)); row.appendChild(body); }
+    chatBox.appendChild(row);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
-
   async function loadChat(){
     if(!loggedIn) return;
     try {
@@ -544,17 +581,13 @@
       if(!Array.isArray(msgs)) return;
       chatBox.innerHTML = '';
       seenIds = {};
-      // API may return newest first — render oldest first (top to bottom)
       var list = msgs.slice();
-      if(list.length > 1 && (list[0].created_at||list[0].createdAt||0) > (list[list.length-1].created_at||list[list.length-1].createdAt||0)){
-        list = list.reverse();
-      }
+      if(list.length > 1 && (list[0].created_at||list[0].createdAt||0) > (list[list.length-1].created_at||list[list.length-1].createdAt||0)) list = list.reverse();
       list.forEach(function(m){
         appendChat({ id:m.id, user:m.username||m.user, userId:m.user_id||m.userId, text:m.message||m.text, at:m.created_at||m.createdAt });
       });
     } catch(e){}
   }
-
   if(loggedIn){
     if(chatInput) chatInput.disabled = false;
     if(chatSend) chatSend.disabled = false;
@@ -584,6 +617,7 @@
   }
 })();
 </script>
+
 
 
 
