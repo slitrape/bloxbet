@@ -386,40 +386,92 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
 .av3-table th, .av3-table td { text-align:left; padding:.65rem .5rem; border-bottom:1px solid rgba(255,255,255,.05); font-size:.85rem; }
 .av3-table th { color:#6b7280; font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; }
 </style>
+
+<style id="admin-v4">
+html,body{background:#0b0e14;margin:0}
+.admin-shell{min-height:100vh;display:flex;flex-direction:column}
+.admin-top{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.9rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.06);background:#0e1219;
+}
+.admin-top-brand{display:flex;align-items:center;gap:.55rem;text-decoration:none;color:#fff;font-weight:900;font-size:1.05rem}
+.admin-top-brand img{width:28px;height:28px}
+.admin-top-actions{display:flex;gap:.45rem;align-items:center}
+.admin-body{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:1.25rem 1.25rem 3rem;box-sizing:border-box}
+.admin-body h1{margin:0 0 1rem;font-size:1.65rem;font-weight:900;color:#fff}
+.av3-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.15rem}
+@media(max-width:800px){.av3-stats{grid-template-columns:1fr 1fr}}
+.av3-stat{background:#151a24;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1rem}
+.av3-stat .lbl{font-size:.7rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.06em}
+.av3-stat .val{font-size:1.3rem;font-weight:900;color:#fff;margin-top:.25rem;font-family:'JetBrains Mono',monospace}
+.av3-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.av3-tab{appearance:none;border:1px solid rgba(255,255,255,.08);background:#151a24;color:#9aa3b5;font-family:inherit;font-weight:800;font-size:.85rem;padding:.55rem .9rem;border-radius:10px;cursor:pointer}
+.av3-tab.active{background:linear-gradient(135deg,#ff9f2e,#ff6b00);color:#111;border-color:transparent}
+.av3-panel{display:none}
+.av3-panel.active{display:block}
+.av3-toolbar{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.av3-toolbar input{flex:1;min-width:200px;background:#0e1219;border:1px solid rgba(255,255,255,.1);border-radius:12px;color:#fff;font-family:inherit;font-weight:600;padding:.65rem .9rem;outline:none}
+.av3-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
+.av3-card{background:linear-gradient(145deg,#171c28,#12161f);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:1.05rem}
+.av3-card.is-banned{border-color:rgba(239,68,68,.35)}
+.av3-top{display:grid;grid-template-columns:52px 1fr auto;gap:.7rem;align-items:center;margin-bottom:.7rem}
+.av3-av{width:52px;height:52px;border-radius:50%;object-fit:cover;background:#1e2633;border:2px solid rgba(255,255,255,.1)}
+.av3-name{font-weight:900;color:#fff}
+.av3-handle{color:#6b7280;font-weight:600;font-size:.78rem}
+.av3-flags{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.3rem}
+.av3-badge{font-size:.65rem;font-weight:800;padding:.2rem .45rem;border-radius:6px;background:rgba(255,255,255,.06);color:#9aa3b5}
+.av3-badge.admin{background:rgba(255,138,0,.15);color:#ffb84d}
+.av3-badge.online{background:rgba(34,197,94,.12);color:#4ade80}
+.av3-badge.ban{background:rgba(239,68,68,.15);color:#f87171}
+.av3-bal{text-align:right}
+.av3-bal .lbl{font-size:.62rem;font-weight:800;color:#6b7280;text-transform:uppercase}
+.av3-bal .val{font-weight:900;color:#f5d76e;font-size:1rem;font-family:'JetBrains Mono',monospace}
+.av3-actions{display:flex;flex-wrap:wrap;gap:.35rem}
+.av3-actions .btn{font-size:.72rem!important;font-weight:800!important;padding:.4rem .65rem!important;border-radius:8px!important}
+.av3-empty{padding:2rem;text-align:center;color:#6b7280;font-weight:700}
+.av3-table{width:100%;border-collapse:collapse}
+.av3-table th,.av3-table td{text-align:left;padding:.65rem .5rem;border-bottom:1px solid rgba(255,255,255,.05);font-size:.85rem;color:#c8d0dc}
+.av3-table th{color:#6b7280;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em}
+.av3-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:grid;place-items:center;padding:1rem}
+.av3-modal[hidden]{display:none!important}
+.av3-modal-card{width:min(480px,100%);background:#12161f;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:1.2rem;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.av3-modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem}
+.av3-modal-head h3{margin:0;font-weight:900;color:#fff}
+.aap-user-line{display:flex;gap:.75rem;align-items:center;margin-bottom:1rem}
+.aap-user-line img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#1e2633}
+.aap-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-bottom:1rem}
+.aap-stat{background:#0e1219;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:.65rem .75rem}
+.aap-stat .k{font-size:.65rem;font-weight:800;color:#6b7280;text-transform:uppercase}
+.aap-stat .v{font-weight:900;color:#fff;font-family:'JetBrains Mono',monospace;margin-top:.15rem}
+.aap-section{margin-top:.65rem}
+.aap-section label{display:block;font-size:.7rem;font-weight:800;color:#6b7280;text-transform:uppercase;margin-bottom:.3rem}
+.aap-section input,.aap-section select{
+  width:100%;background:#0e1219;border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  color:#fff;font-family:inherit;font-weight:700;padding:.6rem .75rem;box-sizing:border-box
+}
+.aap-actions{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem}
+.btn{appearance:none;border:1px solid rgba(255,255,255,.1);background:#1a2030;color:#fff;font-family:inherit;font-weight:800;border-radius:10px;padding:.5rem .8rem;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,#ff9f2e,#ff6b00);color:#111;border:none}
+.btn-ghost{background:#151a24}
+.btn-sm{font-size:.78rem;padding:.4rem .65rem}
+.btn-danger{background:rgba(239,68,68,.15);color:#f87171;border-color:rgba(239,68,68,.25)}
+</style>
 </head>
 <body class="bb-ui">
-<nav class="nav">
-  <div class="nav-left">
-    <a href="index.html" class="nav-logo">
-      <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
-      <span class="nav-logo-text">BLOXBET</span>
+<div class="admin-shell">
+  <header class="admin-top">
+    <a class="admin-top-brand" href="index.html">
+      <img src="icons/bloxbet.png" alt="">
+      <span>BLOXBET Admin</span>
     </a>
-  </div>
-  <div class="nav-center-links nav-center-funds">
-    <div class="balance-chip dual-bal" id="navBalanceChip">
-      <div class="value bal-rc"><span data-balance>0</span> <small>RC</small></div>
-      <div class="value bal-bc"><span data-bloxcoins>0.00</span> <small>BC</small></div>
+    <div class="admin-top-actions">
+      <button type="button" class="btn btn-ghost btn-sm" id="btnRefresh">Refresh</button>
+      <a class="btn btn-ghost btn-sm" href="index.html">Exit</a>
     </div>
-    <button class="wallet-btn" type="button" onclick="Modal.open('m-deposit')">Add Funds</button>
-  </div>
-  <div class="nav-right">
-    <a href="leaderboard.html" class="nav-lb-link"><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
-    <div class="dropdown">
-      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar" type="button">?</button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="profile.html">Profile</a>
-        <a class="dropdown-item" href="settings.html">Settings</a>
-        <div class="dropdown-divider"></div>
-        <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
-      </div>
-    </div>
-  </div>
-</nav>
+  </header>
 
-<main class="main" style="margin-left:0;margin-right:0">
-  <div class="admin-v3">
+  <div class="admin-body">
     <h1>Admin Panel</h1>
-    <div class="sub">Manage users, balances, bans, and audit logs.</div>
 
     <div class="av3-stats">
       <div class="av3-stat"><div class="lbl">Users</div><div class="val" id="stUsers">—</div></div>
@@ -430,7 +482,7 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
 
     <div class="av3-tabs">
       <button type="button" class="av3-tab active" data-tab="users">Users</button>
-      <button type="button" class="av3-tab" data-tab="chat">Chat</button>
+      <button type="button" class="av3-tab" data-tab="chat">Chat logs</button>
       <button type="button" class="av3-tab" data-tab="logs">Audit log</button>
     </div>
 
@@ -438,59 +490,77 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
       <div class="av3-toolbar">
         <input type="search" id="userSearch" placeholder="Search username or id…">
         <button type="button" class="btn btn-ghost btn-sm" id="userSearchBtn">Search</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="btnRefresh">Refresh</button>
       </div>
       <div id="userTable" class="av3-grid"><div class="av3-empty">Loading users…</div></div>
     </div>
 
     <div class="av3-panel" id="av3-chat">
+      <div class="av3-toolbar">
+        <button type="button" class="btn btn-ghost btn-sm" id="chatReload">Reload chat</button>
+      </div>
       <div id="chatTable" class="av3-empty">Loading chat…</div>
     </div>
 
     <div class="av3-panel" id="av3-logs">
+      <div class="av3-toolbar">
+        <button type="button" class="btn btn-ghost btn-sm" id="logsReload">Reload logs</button>
+      </div>
       <div id="logsTable" class="av3-empty">Loading logs…</div>
-    </div>
-  </div>
-
-<div class="av3-modal" id="adminActionPanel" hidden>
-  <div class="av3-modal-card">
-    <div class="av3-modal-head">
-      <h3 id="aapTitle">User</h3>
-      <button type="button" class="btn btn-ghost btn-sm" id="aapClose">Close</button>
-    </div>
-    <div class="av3-modal-body">
-      <div class="aap-row"><span>User</span><strong id="aapUser">—</strong></div>
-      <div class="aap-row"><span>RC</span><strong id="aapRc">—</strong></div>
-      <div class="aap-row"><span>BC</span><strong id="aapBc">—</strong></div>
-      <div class="aap-row"><span>Wagered</span><strong id="aapWager">—</strong></div>
-      <div class="aap-row"><span>Rank</span><strong id="aapRank">—</strong></div>
-      <div class="aap-section">
-        <label>Currency</label>
-        <select id="aapCurrency"><option value="rc">RoCoins (RC)</option><option value="bc">BloxCoins (BC)</option></select>
-      </div>
-      <div class="aap-section">
-        <label>Amount</label>
-        <input type="number" id="aapAmount" min="0" value="100">
-      </div>
-      <div class="aap-actions">
-        <button type="button" class="btn btn-primary btn-sm" id="aapAdd">Add</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="aapSet">Set</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="aapTempBan">Temp Ban</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="aapBan">Ban</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="aapUnban">Unban</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="aapAdmin">Toggle Admin</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="aapResetLb">Remove from Leaderboard</button>
-      </div>
     </div>
   </div>
 </div>
 
-</main>
+<div class="av3-modal" id="adminActionPanel" hidden>
+  <div class="av3-modal-card">
+    <div class="av3-modal-head">
+      <h3 id="aapTitle">Manage user</h3>
+      <button type="button" class="btn btn-ghost btn-sm" id="aapClose">Close</button>
+    </div>
+    <div class="aap-user-line">
+      <img id="aapAv" src="" alt="" style="display:none">
+      <div>
+        <div id="aapName" style="font-weight:900;color:#fff">—</div>
+        <div id="aapUser" style="color:#6b7280;font-weight:600;font-size:.85rem">—</div>
+      </div>
+    </div>
+    <div class="aap-grid">
+      <div class="aap-stat"><div class="k">RC</div><div class="v" id="aapRc">—</div></div>
+      <div class="aap-stat"><div class="k">BC</div><div class="v" id="aapBc">—</div></div>
+      <div class="aap-stat"><div class="k">Wagered</div><div class="v" id="aapWager">—</div></div>
+      <div class="aap-stat"><div class="k">Rank / Level</div><div class="v" id="aapRank">—</div></div>
+    </div>
+    <div class="aap-section">
+      <label>Currency</label>
+      <select id="aapCurrency"><option value="rc">RoCoins (RC)</option><option value="bc">BloxCoins (BC)</option></select>
+    </div>
+    <div class="aap-section">
+      <label>Amount</label>
+      <input type="number" id="aapAmount" min="0" value="100">
+    </div>
+    <div class="aap-actions">
+      <button type="button" class="btn btn-primary btn-sm" id="aapAdd">Add funds</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="aapSet">Set balance</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="aapTempBan">Temp ban</button>
+      <button type="button" class="btn btn-danger btn-sm" id="aapBan">Ban</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="aapUnban">Unban</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="aapAdmin">Toggle admin</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="aapResetLb">Remove from leaderboard</button>
+    </div>
+  </div>
+</div>
+
+<div class="av3-modal" id="adminStatsPanel" hidden>
+  <div class="av3-modal-card">
+    <div class="av3-modal-head">
+      <h3 id="aspTitle">Player stats</h3>
+      <button type="button" class="btn btn-ghost btn-sm" id="aspClose">Close</button>
+    </div>
+    <div class="aap-grid" id="aspGrid"></div>
+  </div>
+</div>
 
 <script src="js/toasts.js"></script>
 <script src="js/auth.js"></script>
-<script src="js/icons.js"></script>
-<script src="js/modals.js"></script>
 <script>
 (function(){
   if(typeof Auth === 'undefined'){ location.href = 'login.html'; return; }
@@ -501,7 +571,6 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
     Auth.safeRedirect('index');
     return;
   }
-  if(typeof renderAvatar === 'function') renderAvatar(document.getElementById('navAvatar'), me);
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
   function fmt(n){ return Number(n||0).toLocaleString(); }
@@ -542,77 +611,48 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
     } catch(e){}
   }
 
-  async function loadUsers(q){
-    var el = document.getElementById('userTable');
-    el.innerHTML = '<div class="av3-empty">Loading users…</div>';
-    try {
-      var res = await Auth.api('/admin/users?limit=200' + (q ? ('&q='+encodeURIComponent(q)) : ''));
-      if(!res.ok){
-        el.innerHTML = '<div class="av3-empty">Failed to load users ('+res.status+'). Check admin flag on server.</div>';
-        return;
-      }
-      var d = await res.json();
-      var users = d.users || [];
-      if(!users.length){ el.innerHTML = '<div class="av3-empty">No users found</div>'; return; }
-      el.innerHTML = '';
-      var grid = document.createElement('div');
-      grid.className = 'av3-grid';
-      users.forEach(function(u){
-        var name = u.displayName || u.username || '?';
-        var letter = String(name).slice(0,1).toUpperCase();
-        var avUrl = u.avatar || (u.id ? '/api/avatar/'+encodeURIComponent(u.id) : '');
-        var card = document.createElement('div');
-        card.className = 'av3-card' + (u.banned ? ' is-banned' : '');
-        card.innerHTML =
-          '<div class="av3-top">' +
-            '<div>' + (avUrl ? '<img class="av3-av" src="'+esc(avUrl)+'" alt="" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' : '<div class="av3-av-ph">'+esc(letter)+'</div>') + '</div>' +
-            '<div><div class="av3-name">'+esc(name)+'</div><div class="av3-handle">@'+esc(u.username||'')+'</div>' +
-            '<div class="av3-flags">' +
-              (u.isAdmin?'<span class="av3-badge admin">Admin</span>':'<span class="av3-badge">User</span>') +
-              (u.banned?'<span class="av3-badge ban">Banned</span>':(u.online?'<span class="av3-badge online">Online</span>':'<span class="av3-badge">Offline</span>')) +
-            '</div></div>' +
-            '<div class="av3-bal"><div class="lbl">RC / BC</div><div class="val">'+fmt(u.balance)+'</div><div class="lbl">'+fmt(u.bloxCoins||0)+' BC</div></div>' +
-          '</div>' +
-          '<div class="av3-actions">' +
-            '<button type="button" class="btn btn-sm btn-primary" data-act="manage">Manage</button>' +
-            '<button type="button" class="btn btn-sm btn-ghost" data-act="stats">Stats</button>' +
-            (u.banned?'<button type="button" class="btn btn-sm btn-ghost" data-act="unban">Unban</button>':'') +
-          '</div>';
-        card.querySelectorAll('[data-act]').forEach(function(btn){
-          btn.addEventListener('click', function(){
-            var act = btn.getAttribute('data-act');
-            if(act === 'manage'){ openUserPanel(u); return; }
-            if(act === 'stats'){
-              alert('Stats for @'+(u.username||'')+'\nRC: '+fmt(u.balance)+'\nBC: '+fmt(u.bloxCoins||0)+'\nWagered: '+fmt(u.totalWagered||0)+'\nGames: '+fmt(u.gamesPlayed||0)+'\nRank: '+(u.rank||'—')+'\nLevel: '+(u.level||1));
-              return;
-            }
-            handleAct(act, u);
-          });
-        });
-        grid.appendChild(card);
-      });
-      el.appendChild(grid);
-    } catch(err){
-      el.innerHTML = '<div class="av3-empty">Error loading users</div>';
-      console.error(err);
-    }
-  }
-
-  
   var panelUser = null;
+
   function openUserPanel(u){
     panelUser = u;
     var panel = document.getElementById('adminActionPanel');
-    if(!panel) return;
     panel.hidden = false;
-    document.getElementById('aapTitle').textContent = 'Manage ' + (u.displayName || u.username || 'User');
+    document.getElementById('aapTitle').textContent = 'Manage user';
+    document.getElementById('aapName').textContent = u.displayName || u.username || 'User';
     document.getElementById('aapUser').textContent = '@' + (u.username||'');
     document.getElementById('aapRc').textContent = fmt(u.balance);
     document.getElementById('aapBc').textContent = fmt(u.bloxCoins||0);
     document.getElementById('aapWager').textContent = fmt(u.totalWagered||0);
-    document.getElementById('aapRank').textContent = u.rank || '—';
+    document.getElementById('aapRank').textContent = (u.rank||'—') + ' / L' + (u.level||1);
+    var av = document.getElementById('aapAv');
+    var url = u.avatar || (u.id ? '/api/avatar/'+encodeURIComponent(u.id) : '');
+    if(url){ av.src = url; av.style.display = 'block'; }
+    else av.style.display = 'none';
   }
+
+  function openStatsPanel(u){
+    var panel = document.getElementById('adminStatsPanel');
+    panel.hidden = false;
+    document.getElementById('aspTitle').textContent = (u.displayName || u.username || 'Player') + ' · Stats';
+    var items = [
+      ['RoCoins', fmt(u.balance)],
+      ['BloxCoins', fmt(u.bloxCoins||0)],
+      ['Wagered', fmt(u.totalWagered||0)],
+      ['Games played', fmt(u.gamesPlayed||0)],
+      ['Rank', u.rank || '—'],
+      ['Level', u.level || 1],
+      ['Admin', u.isAdmin ? 'Yes' : 'No'],
+      ['Status', u.banned ? 'Banned' : (u.online ? 'Online' : 'Offline')],
+      ['User ID', u.id || '—'],
+      ['Joined', u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—']
+    ];
+    document.getElementById('aspGrid').innerHTML = items.map(function(it){
+      return '<div class="aap-stat"><div class="k">'+esc(it[0])+'</div><div class="v">'+esc(String(it[1]))+'</div></div>';
+    }).join('');
+  }
+
   document.getElementById('aapClose').addEventListener('click', function(){ document.getElementById('adminActionPanel').hidden = true; });
+  document.getElementById('aspClose').addEventListener('click', function(){ document.getElementById('adminStatsPanel').hidden = true; });
 
   async function panelBalance(action){
     if(!panelUser) return;
@@ -627,85 +667,129 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
   }
   document.getElementById('aapAdd').addEventListener('click', function(){ panelBalance('add'); });
   document.getElementById('aapSet').addEventListener('click', function(){ panelBalance('set'); });
-  document.getElementById('aapTempBan').addEventListener('click', function(){ if(panelUser) handleAct('tempban', panelUser); });
-  document.getElementById('aapBan').addEventListener('click', function(){ if(panelUser) handleAct('ban', panelUser); });
-  document.getElementById('aapUnban').addEventListener('click', function(){ if(panelUser) handleAct('unban', panelUser); });
-  document.getElementById('aapAdmin').addEventListener('click', function(){ if(panelUser) handleAct('admin', panelUser); });
+
+  async function doBan(permanent){
+    if(!panelUser) return;
+    if(permanent){
+      var reason = document.getElementById('aapAmount').value ? 'Banned by admin' : 'Banned by admin';
+      if(!confirm('Permanently ban @'+(panelUser.username||'')+'?')) return;
+      var r = await Auth.api('/admin/users/'+panelUser.id+'/ban', { method:'POST', body: JSON.stringify({ permanent:true, reason:reason }) });
+      if(r.ok){ Toast.success('Banned','Done'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
+      else Toast.error('Failed','Ban rejected');
+    } else {
+      var hours = prompt('Temp ban hours', '24');
+      if(hours==null) return;
+      hours = parseInt(hours,10);
+      if(!Number.isFinite(hours)||hours<1){ Toast.error('Invalid','Hours'); return; }
+      var r = await Auth.api('/admin/users/'+panelUser.id+'/ban', { method:'POST', body: JSON.stringify({ permanent:false, hours:hours, reason:'Temp ban' }) });
+      if(r.ok){ Toast.success('Temp banned', hours+'h'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
+      else Toast.error('Failed','Rejected');
+    }
+  }
+  document.getElementById('aapBan').addEventListener('click', function(){ doBan(true); });
+  document.getElementById('aapTempBan').addEventListener('click', function(){ doBan(false); });
+  document.getElementById('aapUnban').addEventListener('click', async function(){
+    if(!panelUser) return;
+    var r = await Auth.api('/admin/users/'+panelUser.id+'/unban', { method:'POST', body:'{}' });
+    if(r.ok){ Toast.success('Unbanned','Done'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
+    else Toast.error('Failed','Rejected');
+  });
+  document.getElementById('aapAdmin').addEventListener('click', async function(){
+    if(!panelUser) return;
+    var make = !panelUser.isAdmin;
+    if(!confirm(make?'Grant admin?':'Revoke admin?')) return;
+    var r = await Auth.api('/admin/users/'+panelUser.id+'/admin', { method:'POST', body: JSON.stringify({ isAdmin: make }) });
+    if(r.ok){ Toast.success('Saved','Admin updated'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
+    else Toast.error('Failed','Could not update');
+  });
   document.getElementById('aapResetLb').addEventListener('click', async function(){
     if(!panelUser) return;
-    if(!confirm('Remove this player from leaderboard (reset wagered)?')) return;
+    if(!confirm('Reset wagered (remove from leaderboard)?')) return;
     var r = await Auth.api('/admin/users/'+panelUser.id+'/reset-wagered', { method:'POST', body:'{}' });
-    if(r.ok){ Toast.success('Removed','Leaderboard wagered reset'); loadUsers(document.getElementById('userSearch').value.trim()); }
+    if(r.ok){ Toast.success('Removed','Leaderboard reset'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
     else Toast.error('Failed','Could not reset');
   });
 
-  async function handleAct(act, u){
-    var id = u.id;
-    if(act === 'admin'){
-      if(!confirm(u.isAdmin?'Revoke admin?':'Grant admin?')) return;
-      var r = await Auth.api('/admin/users/'+id+'/admin', { method:'POST', body: JSON.stringify({ isAdmin: !u.isAdmin }) });
-      if(r.ok){ Toast.success('Saved','Updated'); loadUsers(document.getElementById('userSearch').value.trim()); }
-      else Toast.error('Failed','Could not update');
-      return;
+  async function loadUsers(q){
+    var el = document.getElementById('userTable');
+    el.innerHTML = '<div class="av3-empty">Loading users…</div>';
+    try {
+      var res = await Auth.api('/admin/users?limit=200' + (q ? ('&q='+encodeURIComponent(q)) : ''));
+      if(!res.ok){ el.innerHTML = '<div class="av3-empty">Failed to load users ('+res.status+')</div>'; return; }
+      var d = await res.json();
+      var users = d.users || [];
+      if(!users.length){ el.innerHTML = '<div class="av3-empty">No users found</div>'; return; }
+      el.innerHTML = '';
+      var grid = document.createElement('div');
+      grid.className = 'av3-grid';
+      users.forEach(function(u){
+        var name = u.displayName || u.username || '?';
+        var letter = String(name).slice(0,1).toUpperCase();
+        var avUrl = u.avatar || (u.id ? '/api/avatar/'+encodeURIComponent(u.id) : '');
+        var card = document.createElement('div');
+        card.className = 'av3-card' + (u.banned ? ' is-banned' : '');
+        card.innerHTML =
+          '<div class="av3-top">' +
+            '<div>'+(avUrl?'<img class="av3-av" src="'+esc(avUrl)+'" alt="" referrerpolicy="no-referrer">':'<div class="av3-av" style="display:grid;place-items:center;font-weight:900">'+esc(letter)+'</div>')+'</div>' +
+            '<div><div class="av3-name">'+esc(name)+'</div><div class="av3-handle">@'+esc(u.username||'')+'</div>' +
+            '<div class="av3-flags">'+(u.isAdmin?'<span class="av3-badge admin">Admin</span>':'<span class="av3-badge">User</span>')+(u.banned?'<span class="av3-badge ban">Banned</span>':(u.online?'<span class="av3-badge online">Online</span>':'<span class="av3-badge">Offline</span>'))+'</div></div>' +
+            '<div class="av3-bal"><div class="lbl">RC</div><div class="val">'+fmt(u.balance)+'</div><div class="lbl">'+fmt(u.bloxCoins||0)+' BC</div></div>' +
+          '</div>' +
+          '<div class="av3-actions">' +
+            '<button type="button" class="btn btn-sm btn-primary" data-act="manage">Manage</button>' +
+            '<button type="button" class="btn btn-sm btn-ghost" data-act="stats">Stats</button>' +
+            (u.banned?'<button type="button" class="btn btn-sm btn-ghost" data-act="unban">Unban</button>':'') +
+          '</div>';
+        card.querySelectorAll('[data-act]').forEach(function(btn){
+          btn.addEventListener('click', function(){
+            var act = btn.getAttribute('data-act');
+            if(act==='manage') openUserPanel(u);
+            else if(act==='stats') openStatsPanel(u);
+            else if(act==='unban'){
+              panelUser = u;
+              document.getElementById('aapUnban').click();
+            }
+          });
+        });
+        grid.appendChild(card);
+      });
+      el.appendChild(grid);
+    } catch(err){
+      el.innerHTML = '<div class="av3-empty">Error loading users</div>';
+      console.error(err);
     }
-    if(act === 'ban'){
-      var reason = prompt('Ban reason:') || 'Banned by admin';
-      if(!confirm('Permanent ban?')) return;
-      var r = await Auth.api('/admin/users/'+id+'/ban', { method:'POST', body: JSON.stringify({ permanent:true, reason:reason }) });
-      if(r.ok){ Toast.success('Banned','Done'); loadUsers(document.getElementById('userSearch').value.trim()); }
-      else Toast.error('Failed','Ban rejected');
-      return;
-    }
-    if(act === 'tempban'){
-      var hours = prompt('Hours:', '24');
-      if(hours==null) return;
-      hours = parseInt(hours,10);
-      if(!Number.isFinite(hours)||hours<1){ Toast.error('Invalid','Hours >= 1'); return; }
-      var reason = prompt('Reason:') || 'Temp ban';
-      var r = await Auth.api('/admin/users/'+id+'/ban', { method:'POST', body: JSON.stringify({ permanent:false, hours:hours, reason:reason }) });
-      if(r.ok){ Toast.success('Temp banned', hours+'h'); loadUsers(document.getElementById('userSearch').value.trim()); }
-      else Toast.error('Failed','Rejected');
-      return;
-    }
-    if(act === 'unban'){
-      if(!confirm('Unban?')) return;
-      var r = await Auth.api('/admin/users/'+id+'/unban', { method:'POST', body:'{}' });
-      if(r.ok){ Toast.success('Unbanned','Done'); loadUsers(document.getElementById('userSearch').value.trim()); }
-      else Toast.error('Failed','Rejected');
-      return;
-    }
-    var cur = prompt('Currency: rc or bc (BloxCoins)', 'rc');
-    if(cur==null) return;
-    cur = String(cur).toLowerCase().trim();
-    if(cur !== 'bc' && cur !== 'blox' && cur !== 'bloxcoins') cur = 'rc';
-    var amount = prompt(act==='add' ? ('Add '+(cur==='rc'?'RC':'BC')) : ('Set '+(cur==='rc'?'RC':'BC')+' to'));
-    if(amount==null) return;
-    amount = parseInt(amount,10);
-    if(!Number.isFinite(amount)||amount<0){ Toast.error('Invalid','Need non-negative integer'); return; }
-    var r = await Auth.api('/admin/users/'+id+'/balance', {
-      method:'POST', body: JSON.stringify({ action: act==='add'?'add':'set', amount: amount, currency: cur })
-    });
-    if(r.ok){ Toast.success('Balance updated','Saved'); loadUsers(document.getElementById('userSearch').value.trim()); loadStats(); }
-    else Toast.error('Failed','Rejected');
   }
 
   async function loadChat(){
     var el = document.getElementById('chatTable');
+    el.innerHTML = '<div class="av3-empty">Loading chat…</div>';
     try {
-      var res = await Auth.api('/admin/chat?limit=50');
-      if(!res.ok){ el.innerHTML = '<div class="av3-empty">Could not load chat</div>'; return; }
+      var res = await Auth.api('/admin/chat/recent?limit=200');
+      if(!res.ok) res = await Auth.api('/chat/global');
+      if(!res.ok){ el.innerHTML = '<div class="av3-empty">Could not load chat ('+res.status+')</div>'; return; }
       var d = await res.json();
-      var rows = d.messages || d.chat || [];
-      if(!rows.length){ el.innerHTML = '<div class="av3-empty">No messages</div>'; return; }
-      el.innerHTML = '<table class="av3-table"><tr><th>User</th><th>Message</th><th>When</th></tr>' +
+      var rows = d.messages || d.chat || d.rows || [];
+      if(!rows.length){ el.innerHTML = '<div class="av3-empty">No messages yet</div>'; return; }
+      el.innerHTML = '<table class="av3-table"><tr><th>When</th><th>User</th><th>Message</th><th></th></tr>' +
         rows.map(function(m){
-          return '<tr><td>@'+esc(m.username||m.user||'')+'</td><td>'+esc(m.message||m.text||'')+'</td><td>'+ago(m.created_at||m.createdAt)+'</td></tr>';
+          var id = m.id || '';
+          return '<tr><td>'+ago(m.created_at||m.createdAt||m.timestamp)+'</td><td>@'+esc(m.username||m.user||'')+'</td><td>'+esc(m.message||m.text||'')+'</td><td>'+(id?'<button type="button" class="btn btn-sm btn-danger" data-del="'+esc(id)+'">Delete</button>':'')+'</td></tr>';
         }).join('') + '</table>';
-    } catch(e){ el.innerHTML = '<div class="av3-empty">Error</div>'; }
+      el.querySelectorAll('[data-del]').forEach(function(btn){
+        btn.addEventListener('click', async function(){
+          var id = btn.getAttribute('data-del');
+          if(!confirm('Delete message?')) return;
+          var r = await Auth.api('/admin/chat/'+id, { method:'DELETE' });
+          if(r.ok){ Toast.success('Deleted','Message removed'); loadChat(); }
+          else Toast.error('Failed','Could not delete');
+        });
+      });
+    } catch(e){ el.innerHTML = '<div class="av3-empty">Error loading chat</div>'; console.error(e); }
   }
 
   async function loadLogs(){
     var el = document.getElementById('logsTable');
+    el.innerHTML = '<div class="av3-empty">Loading logs…</div>';
     try {
       var res = await Auth.api('/admin/logs');
       if(!res.ok){ el.innerHTML = '<div class="av3-empty">Could not load logs</div>'; return; }
@@ -719,16 +803,11 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
     } catch(e){ el.innerHTML = '<div class="av3-empty">Error</div>'; }
   }
 
-  document.getElementById('userSearchBtn').addEventListener('click', function(){
-    loadUsers(document.getElementById('userSearch').value.trim());
-  });
-  document.getElementById('userSearch').addEventListener('keydown', function(e){
-    if(e.key==='Enter') loadUsers(e.target.value.trim());
-  });
-  document.getElementById('btnRefresh').addEventListener('click', function(){
-    loadStats();
-    loadUsers(document.getElementById('userSearch').value.trim());
-  });
+  document.getElementById('userSearchBtn').addEventListener('click', function(){ loadUsers(document.getElementById('userSearch').value.trim()); });
+  document.getElementById('userSearch').addEventListener('keydown', function(e){ if(e.key==='Enter') loadUsers(e.target.value.trim()); });
+  document.getElementById('btnRefresh').addEventListener('click', function(){ loadStats(); loadUsers(document.getElementById('userSearch').value.trim()); });
+  document.getElementById('chatReload').addEventListener('click', loadChat);
+  document.getElementById('logsReload').addEventListener('click', loadLogs);
 
   loadStats();
   loadUsers('');

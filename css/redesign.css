@@ -2719,3 +2719,56 @@ body.bb-ui .side-hamburger {
 .wallet-cur-tabs .wcur.active {
   background:rgba(255,138,0,.12); color:#ffb84d; border-color:rgba(255,138,0,.35);
 }
+
+/* Compact currency chip */
+body.bb-ui .currency-box-btn {
+  min-width: 0 !important;
+  width: auto !important;
+  padding: .4rem .55rem !important;
+  gap: .28rem !important;
+  font-size: .85rem !important;
+}
+body.bb-ui .currency-box-btn .currency-amt {
+  max-width: 7ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body.bb-ui .currency-box-btn .currency-code {
+  font-size: .68rem !important;
+}
+
+/* Collapsed sidebar: hamburger on top, icons stack */
+body.bb-ui .sidebar.collapsed .side-nav-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+}
+body.bb-ui .sidebar.collapsed .side-row-top {
+  flex-direction: column-reverse !important;
+  align-items: center !important;
+  width: 100%;
+  gap: .35rem;
+}
+body.bb-ui .sidebar.collapsed .side-row-top .side-nav-item {
+  justify-content: center;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+body.bb-ui .sidebar.collapsed .side-hamburger {
+  order: -1;
+  margin: .35rem auto .15rem;
+}
+body.bb-ui .sidebar.collapsed .side-nav-item span,
+body.bb-ui .sidebar.collapsed .side-dropdown-toggle span,
+body.bb-ui .sidebar.collapsed .side-dropdown-toggle .chev,
+body.bb-ui .sidebar.collapsed .side-discord span,
+body.bb-ui .sidebar.collapsed .side-pf {
+  display: none !important;
+}
+body.bb-ui .sidebar.collapsed .side-nav-item,
+body.bb-ui .sidebar.collapsed .side-dropdown-toggle {
+  justify-content: center;
+}

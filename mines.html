@@ -45,7 +45,7 @@
     </a>
   </div>
   <div class="nav-center-links nav-center-funds">
-    <div class="currency-box" id="currencyBox">
+        <div class="currency-box" id="currencyBox">
       <button type="button" class="currency-box-btn" id="currencySwitchBtn">
         <span class="currency-amt" id="currencyAmt">0</span>
         <span class="currency-code" id="currencySwitchLabel">RC</span>
@@ -54,7 +54,6 @@
       <div class="currency-switch-menu" id="currencySwitchMenu">
         <button type="button" data-cur="rc">RoCoins (RC)</button>
         <button type="button" data-cur="bc">BloxCoins (BC)</button>
-        <button type="button" data-cur="convert" class="currency-convert">Convert RC → BC</button>
       </div>
     </div>
     <button class="wallet-btn" type="button" onclick="Modal.open('m-deposit')">Wallet</button>
@@ -273,12 +272,13 @@
 
 
 
+
 <div class="modal-overlay" id="m-deposit">
   <div class="modal deposit-modal wallet-pro">
     <div class="modal-head">
       <div>
         <h3>Wallet</h3>
-        <p>Deposit, withdraw, and manage RC &amp; BC</p>
+        <p>Deposit, withdraw, and convert between RC &amp; BC</p>
       </div>
       <button class="modal-close" onclick="Modal.close('m-deposit')" type="button">
         <img src="icons/close.png" alt="" class="ico" draggable="false">
@@ -288,6 +288,7 @@
       <div class="wallet-tabs">
         <button type="button" class="wallet-tab active" data-wtab="deposit">Deposit</button>
         <button type="button" class="wallet-tab" data-wtab="withdraw">Withdraw</button>
+        <button type="button" class="wallet-tab" data-wtab="convert">Convert</button>
       </div>
       <div class="wallet-pane active" id="walletDepositPane">
         <div class="wallet-cur-tabs">
@@ -307,9 +308,8 @@
           <button class="dep-chip" data-deposit="100" type="button">100</button>
           <button class="dep-chip" data-deposit="500" type="button">500</button>
           <button class="dep-chip" data-deposit="1000" type="button">1K</button>
-          <button class="dep-chip" data-deposit="5000" type="button">5K</button>
         </div>
-        <div class="dep-note">Min 7 · BC is the USD deposit currency · RC is for play</div>
+        <div class="dep-note">Min 7 · RC is the playable coin</div>
       </div>
       <div class="wallet-pane" id="walletWithdrawPane">
         <div class="dep-amount-wrap">
@@ -319,13 +319,30 @@
             <span class="dep-unit">BC</span>
           </div>
         </div>
-        <div class="dep-note">Min 7 BC · Sent to linked Roblox</div>
+        <div class="dep-note">Min 7 BC</div>
+      </div>
+      <div class="wallet-pane" id="walletConvertPane">
+        <div class="aap-section" style="margin:0">
+          <label>From</label>
+          <select id="convertFrom">
+            <option value="rc">RoCoins (RC) → BloxCoins</option>
+            <option value="bc">BloxCoins (BC) → RoCoins</option>
+          </select>
+        </div>
+        <div class="dep-amount-wrap" style="margin-top:.75rem">
+          <label>Amount</label>
+          <div class="dep-amount-box">
+            <input type="number" id="convertAmount" value="100" min="1" step="1">
+          </div>
+        </div>
+        <div class="dep-note">1:1 conversion · RC is used for games</div>
       </div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="Modal.close('m-deposit')" type="button">Cancel</button>
       <button class="btn btn-primary btn-orange" id="depositConfirmBtn" type="button">Confirm Deposit</button>
       <button class="btn btn-primary btn-orange" id="withdrawConfirmBtn" type="button" style="display:none">Confirm Withdraw</button>
+      <button class="btn btn-primary btn-orange" id="convertConfirmBtn" type="button" style="display:none">Convert</button>
     </div>
   </div>
 </div>
@@ -512,6 +529,7 @@
 
 
 
+
 <script id="bb-wallet-js">
 (function(){
   var cur = localStorage.getItem('bb_pref_currency') || 'rc';
@@ -541,32 +559,8 @@
   if(btn && menu){
     btn.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('open'); });
     menu.querySelectorAll('[data-cur]').forEach(function(b){
-      b.addEventListener('click', async function(){
-        var c = b.getAttribute('data-cur');
-        if(c === 'convert'){
-          menu.classList.remove('open');
-          var u = user();
-          var rc = Number(u && u.balance || 0);
-          if(rc < 1){ if(window.Toast) Toast.error('Convert','No RC to convert'); return; }
-          var amt = prompt('Convert how much RC to BC? (1 RC = 1 BC)', String(rc));
-          if(amt==null) return;
-          amt = parseInt(amt,10);
-          if(!Number.isFinite(amt)||amt<1){ Toast.error('Invalid','Enter a positive amount'); return; }
-          try {
-            if(typeof Auth !== 'undefined' && Auth.api){
-              var res = await Auth.api('/wallet/convert', { method:'POST', body: JSON.stringify({ amount: amt }) });
-              if(!res.ok){ Toast.error('Convert','Failed'); return; }
-              var d = await res.json();
-              if(d.balance!=null || d.bloxCoins!=null){
-                Auth.updateUser({ balance: d.balance, bloxCoins: d.bloxCoins });
-              }
-              Toast.success('Converted', amt.toLocaleString()+' RC → BC');
-              paintCur();
-            }
-          } catch(e){ Toast.error('Convert','Failed'); }
-          return;
-        }
-        cur = c || 'rc';
+      b.addEventListener('click', function(){
+        cur = b.getAttribute('data-cur') || 'rc';
         localStorage.setItem('bb_pref_currency', cur);
         menu.classList.remove('open');
         paintCur();
@@ -574,34 +568,20 @@
     });
     document.addEventListener('click', function(){ menu.classList.remove('open'); });
   }
-  document.querySelectorAll('.wcur').forEach(function(b){
-    b.addEventListener('click', function(){
-      document.querySelectorAll('.wcur').forEach(function(x){ x.classList.remove('active'); });
-      b.classList.add('active');
-      var unit = document.getElementById('depositUnit');
-      if(unit) unit.textContent = b.getAttribute('data-wcur') === 'rc' ? 'RC' : 'BC';
-    });
-  });
   document.querySelectorAll('.wallet-tab').forEach(function(tab){
     tab.addEventListener('click', function(){
-      document.querySelectorAll('.wcur').forEach(function(b){
-    b.addEventListener('click', function(){
-      document.querySelectorAll('.wcur').forEach(function(x){ x.classList.remove('active'); });
-      b.classList.add('active');
-      var unit = document.getElementById('depositUnit');
-      if(unit) unit.textContent = b.getAttribute('data-wcur') === 'rc' ? 'RC' : 'BC';
-    });
-  });
-  document.querySelectorAll('.wallet-tab').forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.wallet-tab').forEach(function(t){ t.classList.remove('active'); });
       document.querySelectorAll('.wallet-pane').forEach(function(p){ p.classList.remove('active'); });
       tab.classList.add('active');
-      var id = tab.dataset.wtab === 'withdraw' ? 'walletWithdrawPane' : 'walletDepositPane';
-      var pane = document.getElementById(id);
+      var map = { deposit:'walletDepositPane', withdraw:'walletWithdrawPane', convert:'walletConvertPane' };
+      var pane = document.getElementById(map[tab.dataset.wtab] || 'walletDepositPane');
       if(pane) pane.classList.add('active');
       var depBtn = document.getElementById('depositConfirmBtn');
       var wdBtn = document.getElementById('withdrawConfirmBtn');
-      if(depBtn) depBtn.style.display = tab.dataset.wtab === 'withdraw' ? 'none' : '';
+      var cvBtn = document.getElementById('convertConfirmBtn');
+      if(depBtn) depBtn.style.display = tab.dataset.wtab === 'deposit' ? '' : 'none';
       if(wdBtn) wdBtn.style.display = tab.dataset.wtab === 'withdraw' ? '' : 'none';
+      if(cvBtn) cvBtn.style.display = tab.dataset.wtab === 'convert' ? '' : 'none';
     });
   });
   var wdBtn = document.getElementById('withdrawConfirmBtn');
@@ -613,8 +593,35 @@
       if(window.Modal) Modal.close('m-deposit');
     });
   }
+  var cvBtn = document.getElementById('convertConfirmBtn');
+  if(cvBtn){
+    cvBtn.addEventListener('click', async function(){
+      var amt = parseInt((document.getElementById('convertAmount')||{}).value, 10);
+      var from = (document.getElementById('convertFrom')||{}).value || 'rc';
+      var to = from === 'rc' ? 'bc' : 'rc';
+      if(!Number.isFinite(amt) || amt < 1){ Toast.error('Invalid','Enter amount'); return; }
+      try {
+        var res = await Auth.api('/wallet/convert', { method:'POST', body: JSON.stringify({ amount: amt, from: from, to: to }) });
+        if(!res.ok){ Toast.error('Convert','Failed'); return; }
+        var d = await res.json();
+        Auth.updateUser({ balance: d.balance, bloxCoins: d.bloxCoins });
+        Toast.success('Converted', amt + ' ' + from.toUpperCase() + ' → ' + to.toUpperCase());
+        paintCur();
+        if(window.Modal) Modal.close('m-deposit');
+      } catch(e){ Toast.error('Convert','Failed'); }
+    });
+  }
+  document.querySelectorAll('.wcur').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.wcur').forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      var unit = document.getElementById('depositUnit');
+      if(unit) unit.textContent = b.getAttribute('data-wcur') === 'rc' ? 'RC' : 'BC';
+    });
+  });
 })();
 </script>
+
 
 
 </body>

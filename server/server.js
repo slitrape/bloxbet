@@ -1853,14 +1853,26 @@ function serializeGlobalChat(c){
 app.post('/api/wallet/convert', requireAuth, (req, res) => {
   try {
     try { addCol('users', 'blox_coins', 'REAL DEFAULT 0'); } catch(e){}
-    const amt = parseInt((req.body||{}).amount, 10);
+    const body = req.body || {};
+    const amt = parseInt(body.amount, 10);
+    const from = String(body.from || 'rc').toLowerCase();
+    const to = String(body.to || (from === 'rc' ? 'bc' : 'rc')).toLowerCase();
     if(!Number.isFinite(amt) || amt < 1) return res.status(400).json({ error: 'INVALID_AMOUNT' });
+    if(from === to) return res.status(400).json({ error: 'SAME_CURRENCY' });
     const u = db.prepare('SELECT * FROM users WHERE id = ?').get(req.userId);
     if(!u) return res.status(404).json({ error: 'NOT_FOUND' });
-    if((u.balance||0) < amt) return res.status(400).json({ error: 'INSUFFICIENT_BALANCE' });
     const now = Date.now();
-    const newBal = (u.balance||0) - amt;
-    const newBc = Number(u.blox_coins||0) + amt;
+    let newBal = Number(u.balance||0);
+    let newBc = Number(u.blox_coins||0);
+    if(from === 'rc' && to === 'bc'){
+      if(newBal < amt) return res.status(400).json({ error: 'INSUFFICIENT_BALANCE' });
+      newBal -= amt; newBc += amt;
+    } else if(from === 'bc' && to === 'rc'){
+      if(newBc < amt) return res.status(400).json({ error: 'INSUFFICIENT_BALANCE' });
+      newBc -= amt; newBal += amt;
+    } else {
+      return res.status(400).json({ error: 'INVALID_PAIR' });
+    }
     db.prepare('UPDATE users SET balance = ?, blox_coins = ?, updated_at = ? WHERE id = ?').run(newBal, newBc, now, u.id);
     res.json({ ok: true, balance: newBal, bloxCoins: newBc });
   } catch (err) {
