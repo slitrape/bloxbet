@@ -872,132 +872,74 @@
 
 
 <main class="main">
-  <div class="container page">
-
-    <div class="pf-hero">
-      <div class="pf-banner" id="pfBanner">
-        <div class="pf-banner-grid-lines"></div>
-        <div class="pf-banner-actions">
-          <div style="position:relative">
-            <button type="button" class="pf-banner-btn" id="pfBannerEditBtn" title="Add banner">
-              <span>Add Banner</span>
-            </button>
-            <div class="pf-banner-menu" id="pfBannerMenu" style="display:none">
-              <label>Banner image URL</label>
-              <input type="url" id="pfBannerUrl" placeholder="Paste image URL…">
-              <div class="row">
-                <button type="button" class="btn btn-primary btn-sm" id="pfBannerUrlBtn">Use URL</button>
-                <label class="btn btn-ghost btn-sm" style="cursor:pointer;margin:0">
-                  Upload
-                  <input type="file" id="pfBannerFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
-                </label>
-                <button type="button" class="btn btn-ghost btn-sm" id="pfBannerClearBtn">Clear</button>
-              </div>
-              <div class="hint" id="pfBannerStatus"></div>
-            </div>
-          </div>
+  <div class="pf-v2">
+    <section class="pf-v2-hero">
+      <div class="pf-v2-banner" id="pfBanner">
+        <div class="pf-v2-banner-actions">
+          <button type="button" class="pf-v2-banner-btn" id="pfBannerEditBtn">Add banner</button>
         </div>
       </div>
-
-      <div class="pf-hero-body">
-        <div class="pf-avatar-wrap">
-          <div class="pf-avatar" id="pfAvatar">N</div>
-          <div class="pf-avatar-ring" id="pfAvatarRing"></div>
-          <div class="pf-online-dot"></div>
+      <div class="pf-v2-body">
+        <div id="pfAvatarWrap">
+          <div class="pf-v2-av-ph" id="pfAvatar">?</div>
         </div>
-
-        <div class="pf-hero-info">
-          <div class="pf-name-line">
+        <div class="pf-v2-meta">
+          <div class="pf-v2-name">
             <span class="pf-name" id="pfName">—</span>
-            <img src="icons/verified.png" alt="" class="pf-verified" id="pfVerified" style="display:none" draggable="false">
+            <span class="pf-badges-row" id="pfBadges"></span>
           </div>
-          <div class="pf-handle" id="pfHandle">@loading</div>
-          <div class="pf-badges-row" id="pfBadges"></div>
+          <div class="pf-v2-handle" id="pfHandle">@user</div>
+          <div class="pf-badges-row" id="pfBadgeChips" style="margin-top:.4rem"></div>
         </div>
-
-        <div class="pf-hero-actions">
-          <button class="btn btn-ghost btn-sm" onclick="location.href='community.html'">
-            <span>View Activity</span>
-          </button>
-          <button class="btn btn-danger btn-sm" onclick="Auth.logout()">
-            <img src="icons/logout.png" alt="" class="ico" draggable="false">
-            <span>Sign Out</span>
-          </button>
+        <div class="pf-v2-actions">
+          <a class="pf-discord-btn" href="#" id="pfDiscordLink"><img src="icons/discord.png" alt=""> Connect Discord</a>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="location.href='settings.html'">Settings</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="Auth.logout()">Sign out</button>
         </div>
       </div>
+    </section>
 
-      <div class="pf-xp-bar">
-        <div class="pf-xp-head">
-          <span>Progress</span>
-          <span class="cur"><span id="pfXpCur">0</span> / <span id="pfXpMax">500</span> XP · Level <span id="pfXpLevel">1</span></span>
-        </div>
-        <div class="pf-xp-track">
-          <div class="pf-xp-fill" id="pfXpFill" style="width:0%"></div>
-        </div>
+    <div class="pf-v2-stats">
+      <div class="pf-v2-stat" id="pfBalanceWrap" style="display:none">
+        <div class="lbl">Balance</div>
+        <div class="val" id="pfBalance">—</div>
+      </div>
+      <div class="pf-v2-stat">
+        <div class="lbl">Wagered</div>
+        <div class="val" id="pfWagered">—</div>
+      </div>
+      <div class="pf-v2-stat">
+        <div class="lbl">Net profit</div>
+        <div class="val" id="pfNet">—</div>
+      </div>
+      <div class="pf-v2-stat">
+        <div class="lbl">Biggest win</div>
+        <div class="val" id="pfBiggest">—</div>
+      </div>
+      <div class="pf-v2-stat">
+        <div class="lbl">Rank</div>
+        <div class="val" id="pfRank">—</div>
       </div>
     </div>
 
-    <div class="pf-stats">
-      <div class="pf-stat">
-        <div class="pf-stat-label">Balance</div>
-        <div class="pf-stat-value" id="pfBalance">—</div>
-        <div class="pf-stat-sub">RoCoins</div>
+    <div class="pf-v2-grid">
+      <div class="pf-v2-card">
+        <h3>Recent activity</h3>
+        <div id="pfActivity"><div class="pf-empty">Loading…</div></div>
       </div>
-      <div class="pf-stat">
-        <div class="pf-stat-label">Total Wagered</div>
-        <div class="pf-stat-value" id="pfWagered">—</div>
-        <div class="pf-stat-sub">all-time</div>
-      </div>
-      <div class="pf-stat">
-        <div class="pf-stat-label">Net Profit</div>
-        <div class="pf-stat-value" id="pfNet">—</div>
-        <div class="pf-stat-sub">won − lost</div>
-      </div>
-      <div class="pf-stat">
-        <div class="pf-stat-label">Biggest Win</div>
-        <div class="pf-stat-value accent" id="pfBiggest">—</div>
-        <div class="pf-stat-sub">single flip</div>
-      </div>
-      <div class="pf-stat">
-        <div class="pf-stat-label">Global Rank</div>
-        <div class="pf-stat-value" id="pfRank">—</div>
-        <div class="pf-stat-sub" id="pfRankSub">by wagered</div>
+      <div class="pf-v2-card">
+        <h3>Overview</h3>
+        <div class="set-line" style="border:none;padding:.4rem 0"><span>Level</span><strong id="pfXpLevel">1</strong></div>
+        <div class="set-line" style="border:none;padding:.4rem 0"><span>XP</span><strong><span id="pfXpCur">0</span> / <span id="pfXpMax">500</span></strong></div>
+        <div class="pf-xp-track" style="height:8px;background:#1a2030;border-radius:99px;overflow:hidden;margin-top:.5rem">
+          <div class="pf-xp-fill" id="pfXpFill" style="height:100%;width:0%;background:linear-gradient(90deg,#ff9f2e,#ff6b00)"></div>
+        </div>
+        <div style="margin-top:1rem">
+          <div class="lbl" style="font-size:.7rem;font-weight:800;color:#6b7280;text-transform:uppercase">User ID</div>
+          <div class="mono" id="pfUserId" style="color:#9aa3b5;font-size:.82rem;margin-top:.25rem">—</div>
+        </div>
       </div>
     </div>
-
-    <div class="pf-grid">
-
-      <div class="pf-col">
-<div class="pf-card">
-          <div class="pf-card-head">
-            <h3>Recent Activity</h3>
-            <span class="hint" id="pfActivityCount">—</span>
-          </div>
-          <div class="pf-card-body" id="pfActivity">
-            <div class="pf-empty">Loading…</div>
-          </div>
-        </div>
-
-        <div class="pf-card">
-          <div class="pf-card-head">
-            <h3>Coin Flip Streak</h3>
-            <span class="hint" id="pfStreakHint">last 20 flips</span>
-          </div>
-          <div class="pf-streak-strip" id="pfStreakStrip"></div>
-        </div>
-
-        </div>
-
-      <div class="pf-col">
-
-        </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
   </div>
 </main>
 
@@ -1311,6 +1253,7 @@ function bannerClassFromBanner(banner){
 
       document.getElementById('pfBalance').textContent = fmtFull(u.balance) + ' RC';
       document.getElementById('pfWagered').textContent = fmtFull(u.totalWagered) + ' RC';
+      if(window.pfRenderBadges) pfRenderBadges(u);
 
       var net = (u.totalWon || 0) - (u.totalLost || 0);
       var netEl = document.getElementById('pfNet');
@@ -1972,12 +1915,13 @@ function bannerClassFromBanner(banner){
 
 
 
-<div class="modal-overlay" id="bannerModal">
+
+<div class="modal-overlay" id="bannerModal" aria-hidden="true">
   <div class="modal banner-upload-modal">
     <div class="modal-head">
       <div>
         <h3>Profile banner</h3>
-        <p>Drag & drop an image, upload a file, or paste a URL</p>
+        <p>Drag & drop, upload, or paste a URL</p>
       </div>
       <button class="modal-close" type="button" id="bannerModalClose"><img src="icons/close.png" class="ico" alt=""></button>
     </div>
@@ -1986,7 +1930,7 @@ function bannerClassFromBanner(banner){
         <div class="banner-drop-inner">
           <div class="banner-drop-icon">⤒</div>
           <strong>Drop image here</strong>
-          <span>PNG, JPG, WebP · up to ~3MB</span>
+          <span>PNG, JPG, WebP · max ~3MB</span>
           <label class="btn btn-primary btn-sm banner-browse">
             Browse files
             <input type="file" id="pfBannerFile" accept="image/*" hidden>
@@ -1994,18 +1938,16 @@ function bannerClassFromBanner(banner){
         </div>
         <img id="bannerPreview" class="banner-preview" alt="" hidden>
       </div>
-      <div class="banner-or">or use image URL</div>
+      <div class="banner-or">or image URL</div>
       <input type="url" id="pfBannerUrl" class="banner-url" placeholder="https://…">
       <div class="banner-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="pfBannerClearBtn">Remove banner</button>
-        <button type="button" class="btn btn-primary btn-sm" id="pfBannerUrlBtn">Save banner</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="pfBannerClearBtn">Remove</button>
+        <button type="button" class="btn btn-primary btn-sm" id="pfBannerSaveBtn">Save banner</button>
       </div>
       <div class="hint" id="pfBannerStatus"></div>
     </div>
   </div>
 </div>
-
-
 <script id="pf-banner-js">
 (function(){
   function $(id){ return document.getElementById(id); }
@@ -2016,129 +1958,84 @@ function bannerClassFromBanner(banner){
   var preview = $('bannerPreview');
   var status = $('pfBannerStatus');
   var banner = $('pfBanner');
-  var pendingDataUrl = '';
+  var pending = '';
 
   function openModal(){
     if(!overlay) return;
     overlay.classList.add('open');
     overlay.style.display = 'flex';
-    overlay.setAttribute('aria-hidden', 'false');
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.zIndex = '300';
   }
   function closeModal(){
     if(!overlay) return;
     overlay.classList.remove('open');
-    overlay.style.display = '';
-    overlay.setAttribute('aria-hidden', 'true');
+    overlay.style.display = 'none';
   }
   function setStatus(t){ if(status) status.textContent = t || ''; }
-
   function applyBanner(url){
-    if(!banner) return;
-    if(url){
-      banner.style.backgroundImage = 'url(' + JSON.stringify(String(url)) + ')';
-      banner.style.backgroundSize = 'cover';
-      banner.style.backgroundPosition = 'center';
-    } else {
-      banner.style.backgroundImage = '';
+    if(banner){
+      if(url){
+        banner.style.backgroundImage = 'url('+JSON.stringify(String(url))+')';
+        banner.style.backgroundSize = 'cover';
+        banner.style.backgroundPosition = 'center';
+      } else {
+        banner.style.backgroundImage = '';
+      }
     }
     try { localStorage.setItem('bb_profile_banner', url || ''); } catch(e){}
     if(typeof Auth !== 'undefined' && Auth.api){
       Auth.api('/profile/banner', { method:'POST', body: JSON.stringify({ banner: url || '' }) }).catch(function(){});
     }
   }
-
   function showPreview(url){
-    pendingDataUrl = url || '';
-    if(preview && url){
-      preview.src = url;
-      preview.hidden = false;
-      if(drop) drop.classList.add('has-preview');
-    } else if(preview){
-      preview.hidden = true;
-      if(drop) drop.classList.remove('has-preview');
-    }
+    pending = url || '';
+    if(preview && url){ preview.src = url; preview.hidden = false; if(drop) drop.classList.add('has-preview'); }
+    else if(preview){ preview.hidden = true; if(drop) drop.classList.remove('has-preview'); }
   }
-
   function readFile(file){
-    if(!file || !file.type || file.type.indexOf('image/') !== 0){
-      setStatus('Please choose an image file');
-      return;
-    }
-    if(file.size > 3.5 * 1024 * 1024){
-      setStatus('Image is too large (max ~3MB)');
-      return;
-    }
-    var reader = new FileReader();
-    reader.onload = function(){
-      showPreview(String(reader.result || ''));
-      setStatus('Preview ready — click Save banner');
-    };
-    reader.readAsDataURL(file);
+    if(!file || !/^image\//.test(file.type||'')){ setStatus('Choose an image'); return; }
+    if(file.size > 3.5*1024*1024){ setStatus('Max ~3MB'); return; }
+    var r = new FileReader();
+    r.onload = function(){ showPreview(String(r.result||'')); setStatus('Preview ready — Save banner'); };
+    r.readAsDataURL(file);
   }
 
-  var btn = $('pfBannerEditBtn');
-  if(btn){
-    btn.addEventListener('click', function(e){
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(t && (t.id === 'pfBannerEditBtn' || (t.closest && t.closest('#pfBannerEditBtn')))){
       e.preventDefault();
-      e.stopPropagation();
       openModal();
-    });
-  }
+    }
+  });
   var closeBtn = $('bannerModalClose');
   if(closeBtn) closeBtn.addEventListener('click', closeModal);
-  if(overlay){
-    overlay.addEventListener('click', function(e){
-      if(e.target === overlay) closeModal();
-    });
-  }
-
+  if(overlay) overlay.addEventListener('click', function(e){ if(e.target === overlay) closeModal(); });
   if(drop){
-    ;['dragenter','dragover'].forEach(function(ev){
-      drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.add('drag'); });
-    });
-    ;['dragleave','drop'].forEach(function(ev){
-      drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.remove('drag'); });
-    });
-    drop.addEventListener('drop', function(e){
-      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-      if(f) readFile(f);
-    });
+    ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('drag'); }); });
+    ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('drag'); }); });
+    drop.addEventListener('drop', function(e){ var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if(f) readFile(f); });
   }
-  if(fileInput){
-    fileInput.addEventListener('change', function(){
-      var f = fileInput.files && fileInput.files[0];
-      if(f) readFile(f);
-    });
-  }
-  var saveBtn = $('pfBannerUrlBtn');
-  if(saveBtn){
-    saveBtn.addEventListener('click', function(){
-      var url = pendingDataUrl || ((urlInput && urlInput.value) || '').trim();
-      if(!url){ setStatus('Add a file or URL first'); return; }
-      applyBanner(url);
-      setStatus('Banner updated');
-      if(window.Toast) Toast.success('Banner', 'Updated');
-      closeModal();
-    });
-  }
+  if(fileInput) fileInput.addEventListener('change', function(){ var f = fileInput.files && fileInput.files[0]; if(f) readFile(f); });
+  var saveBtn = $('pfBannerSaveBtn');
+  if(saveBtn) saveBtn.addEventListener('click', function(){
+    var url = pending || (urlInput && urlInput.value || '').trim();
+    if(!url){ setStatus('Add a file or URL first'); return; }
+    applyBanner(url);
+    setStatus('Saved');
+    if(window.Toast) Toast.success('Banner','Updated');
+    closeModal();
+  });
   var clearBtn = $('pfBannerClearBtn');
-  if(clearBtn){
-    clearBtn.addEventListener('click', function(){
-      pendingDataUrl = '';
-      if(urlInput) urlInput.value = '';
-      showPreview('');
-      applyBanner('');
-      setStatus('Banner removed');
-      if(window.Toast) Toast.info('Banner', 'Removed');
-      closeModal();
-    });
-  }
-  try {
-    var saved = localStorage.getItem('bb_profile_banner');
-    if(saved) applyBanner(saved);
-  } catch(e){}
+  if(clearBtn) clearBtn.addEventListener('click', function(){
+    pending = ''; if(urlInput) urlInput.value = ''; showPreview(''); applyBanner('');
+    if(window.Toast) Toast.info('Banner','Removed'); closeModal();
+  });
+  try { var saved = localStorage.getItem('bb_profile_banner'); if(saved) applyBanner(saved); } catch(e){}
 })();
 </script>
+
 
 
 <script>
@@ -2155,5 +2052,57 @@ function bannerClassFromBanner(banner){
   } catch(e){}
 })();
 </script>
+
+<script id="pf-badges-js">
+(function(){
+  function renderBadges(u){
+    var row = document.getElementById('pfBadges');
+    var chips = document.getElementById('pfBadgeChips');
+    var nameEl = document.getElementById('pfName');
+    if(!u) return;
+    if(nameEl){
+      nameEl.classList.toggle('is-admin', !!u.isAdmin);
+      if(u.isAdmin) nameEl.setAttribute('data-admin-name','1');
+    }
+    var html = '';
+    if(u.isAdmin) html += '<img class="pf-badge-img" src="icons/badge-admin.png" alt="Admin" title="BloxBet Admin">';
+    if(u.vip) html += '<img class="pf-badge-img vip" src="icons/badge-vip.png" alt="VIP" title="VIP">';
+    if(row) row.innerHTML = html;
+    if(chips){
+      var c = '';
+      if(u.isAdmin) c += '<span class="pf-badge-chip admin"><img class="pf-badge-img" src="icons/badge-admin.png" alt=""> Admin</span>';
+      if(u.vip) c += '<span class="pf-badge-chip vip"><img class="pf-badge-img vip" src="icons/badge-vip.png" alt=""> VIP</span>';
+      if(u.chatBadge) c += '<span class="pf-badge-chip">'+String(u.chatBadge)+'</span>';
+      chips.innerHTML = c;
+    }
+    var av = document.getElementById('pfAvatar');
+    if(av && u.id){
+      av.outerHTML = '<img class="pf-v2-av" id="pfAvatar" src="/api/avatar/'+encodeURIComponent(u.id)+'" alt="" referrerpolicy="no-referrer">';
+    }
+    var idEl = document.getElementById('pfUserId');
+    if(idEl) idEl.textContent = u.id || '—';
+  }
+  window.pfRenderBadges = renderBadges;
+  // After auth user available
+  function tryMe(){
+    try {
+      var u = Auth.getUser();
+      if(u) renderBadges(u);
+    } catch(e){}
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryMe);
+  else tryMe();
+  // Hook existing profile load if it sets pfName
+  var obs = new MutationObserver(function(){
+    var n = document.getElementById('pfName');
+    if(n && n.textContent && n.textContent !== '—'){
+      tryMe();
+    }
+  });
+  var n = document.getElementById('pfName');
+  if(n) obs.observe(n, { childList:true, characterData:true, subtree:true });
+})();
+</script>
+
 </body>
 </html>

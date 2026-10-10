@@ -41,7 +41,9 @@
 
   // Apply body classes
   function apply(){
-    document.body.classList.toggle('reduce-motion', BBPrefs.reduceMotion());
+    var rm = BBPrefs.reduceMotion();
+    document.body.classList.toggle('reduce-motion', rm);
+    document.documentElement.classList.toggle('reduce-motion', rm);
     document.body.classList.toggle('private-profile', BBPrefs.privateProfile());
     document.body.classList.toggle('hide-online', BBPrefs.hideOnline());
     document.documentElement.lang = BBPrefs.lang() || 'en';

@@ -570,6 +570,7 @@ html,body{background:#0b0e14;margin:0}
       <button type="button" class="btn btn-danger btn-sm" id="aapBan">Ban</button>
       <button type="button" class="btn btn-ghost btn-sm" id="aapUnban">Unban</button>
       <button type="button" class="btn btn-ghost btn-sm" id="aapAdmin">Toggle admin</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="aapVip">Toggle VIP</button>
       <button type="button" class="btn btn-ghost btn-sm" id="aapResetLb">Remove from leaderboard</button>
     </div>
   </div>
@@ -652,6 +653,8 @@ html,body{background:#0b0e14;margin:0}
     document.getElementById('aapBc').textContent = fmt(u.bloxCoins||0);
     document.getElementById('aapWager').textContent = fmt(u.totalWagered||0);
     document.getElementById('aapRank').textContent = (u.rank||'—') + ' / L' + (u.level||1);
+    var vipBtn = document.getElementById('aapVip');
+    if(vipBtn) vipBtn.textContent = u.vip ? 'Remove VIP' : 'Grant VIP';
     var av = document.getElementById('aapAv');
     var url = u.avatar || (u.id ? '/api/avatar/'+encodeURIComponent(u.id) : '');
     if(url){ av.src = url; av.style.display = 'block'; }
@@ -780,6 +783,15 @@ html,body{background:#0b0e14;margin:0}
  }
     else Toast.error('Failed','Rejected');
   });
+  document.getElementById('aapVip').addEventListener('click', async function(){
+    if(!panelUser) return;
+    var make = !panelUser.vip;
+    var r = await Auth.api('/admin/users/'+encodeURIComponent(panelUser.id)+'/badges', {
+      method:'POST', body: JSON.stringify({ vip: make })
+    });
+    if(r.ok){ Toast.success('VIP', make?'Granted':'Removed'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
+    else Toast.error('Failed','Could not update VIP');
+  });
   document.getElementById('aapAdmin').addEventListener('click', async function(){
     if(!panelUser) return;
     var make = !panelUser.isAdmin;
@@ -852,7 +864,7 @@ html,body{background:#0b0e14;margin:0}
           '<div class="av3-top">' +
             '<div>'+(avUrl?'<img class="av3-av" src="'+esc(avUrl)+'" alt="" referrerpolicy="no-referrer">':'<div class="av3-av" style="display:grid;place-items:center;font-weight:900">'+esc(letter)+'</div>')+'</div>' +
             '<div><div class="av3-name">'+esc(name)+'</div><div class="av3-handle">@'+esc(u.username||'')+'</div>' +
-            '<div class="av3-flags">'+(u.isAdmin?'<span class="av3-badge admin">Admin</span>':'<span class="av3-badge">User</span>')+(u.banned?'<span class="av3-badge ban">Banned</span>':(u.online?'<span class="av3-badge online">Online</span>':'<span class="av3-badge">Offline</span>'))+'</div></div>' +
+            '<div class="av3-flags">'+(u.isAdmin?'<span class="av3-badge admin">Admin</span>':'<span class="av3-badge">User</span>')+(u.vip?'<span class="av3-badge" style="background:rgba(96,165,250,.15);color:#93c5fd">VIP</span>':'')+(u.banned?'<span class="av3-badge ban">Banned</span>':(u.online?'<span class="av3-badge online">Online</span>':'<span class="av3-badge">Offline</span>'))+'</div></div>' +
             '<div class="av3-bal"><div class="lbl">RC</div><div class="val">'+fmt(u.balance)+'</div><div class="lbl">'+fmt(u.bloxCoins||0)+' BC</div></div>' +
           '</div>' +
           '<div class="av3-actions">' +

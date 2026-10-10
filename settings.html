@@ -263,7 +263,7 @@
           <div class="set-line"><span>User ID</span><span class="mono" id="setUserId">—</span></div>
           <div class="set-line">
             <span>Discord</span>
-            <a class="set-discord-link" href="https://discord.gg/bloxbet" target="_blank" rel="noopener" id="setDiscordLink">Connect Discord</a>
+            <a class="set-discord-link" href="#" id="setDiscordLink"><img src="icons/discord.png" alt=""> Connect Discord</a>
           </div>
         </div>
       </section>
@@ -325,6 +325,21 @@
       <section class="set-panel" id="set-cosmetics">
         <h2>Cosmetics</h2>
         <div class="set-glass">
+          <div class="set-line">
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <img src="icons/badge-admin.png" alt="" style="width:22px;height:22px">
+              <div><div class="set-label">Admin badge</div><div class="set-hint">Assigned by staff only</div></div>
+            </div>
+            <span class="set-soon" id="setAdminBadgeState">Locked</span>
+          </div>
+          <div class="set-line">
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <img src="icons/badge-vip.png" alt="" style="width:22px;height:22px">
+              <div><div class="set-label">VIP badge</div><div class="set-hint">Assigned by staff</div></div>
+            </div>
+            <span class="set-soon" id="setVipBadgeState">Locked</span>
+          </div>
+
           <div class="set-line">
             <div><div class="set-label">Name color</div><div class="set-hint">Unlock from Rewards</div></div>
             <select class="set-select" id="setNameColor"><option value="">Default</option><option value="gold">Gold</option><option value="ice">Ice</option><option value="neon">Neon</option></select>
@@ -484,7 +499,7 @@
   bindToggle('togSound', 'bb_pref_sound', true);
   bindToggle('togCompact', 'bb_pref_compact', false);
   bindToggle('togConfirm', 'bb_pref_confirm', true);
-  bindToggle('togMotion', 'bb_pref_motion', false);
+  
   bindToggle('togStreamer', 'bb_pref_streamer', false);
   bindToggle('togPublicProfile', 'bb_pref_public', true);
   bindToggle('togOnline', 'bb_pref_online', true);
@@ -884,12 +899,12 @@
     var a = document.getElementById('setDiscordLink');
     if(!a) return;
     if(on){
-      a.textContent = 'Linked';
+      a.innerHTML = '<img src="icons/discord.png" alt=""> Linked';
       a.style.background = 'rgba(34,197,94,.15)';
       a.style.color = '#4ade80';
       a.title = 'Click to unlink Discord';
     } else {
-      a.textContent = 'Connect Discord';
+      a.innerHTML = '<img src="icons/discord.png" alt=""> Connect Discord';
       a.style.background = '';
       a.style.color = '';
       a.title = 'Connect Discord';
@@ -950,6 +965,10 @@
   try {
     var u = Auth.getUser();
     if(u){
+      var ab = document.getElementById('setAdminBadgeState');
+      var vb = document.getElementById('setVipBadgeState');
+      if(ab){ ab.textContent = u.isAdmin ? 'Equipped' : 'Locked'; ab.style.color = u.isAdmin ? '#ffb84d' : ''; }
+      if(vb){ vb.textContent = u.vip ? 'Equipped' : 'Locked'; vb.style.color = u.vip ? '#93c5fd' : ''; }
       var name = u.displayName || u.username || 'User';
       var n = document.getElementById('setName'); if(n) n.textContent = name;
       var h = document.getElementById('setHandle'); if(h) h.textContent = '@' + (u.username || 'user');

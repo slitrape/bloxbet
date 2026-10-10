@@ -1147,7 +1147,9 @@ function serializeUser(u){
     avatarRing: u.avatar_ring || null,
     profileBanner: u.profile_banner || null,
     chatBadge: u.chat_badge || null,
-    isAdmin: !!u.is_admin
+    isAdmin: !!u.is_admin,
+    vip: !!u.vip,
+    chatBadge: u.chat_badge || null
   };
 }
 
@@ -2247,8 +2249,8 @@ app.post('/api/users/heartbeat', requireAuth, (req, res) => {
 app.get('/api/users/:id', (req, res) => {
   try {
     const id = req.params.id;
-    let u = db.prepare('SELECT id, username, display_name, avatar, balance, level, rank, total_wagered, created_at FROM users WHERE id = ?').get(id);
-    if(!u) u = db.prepare('SELECT id, username, display_name, avatar, balance, level, rank, total_wagered, created_at FROM users WHERE username = ? COLLATE NOCASE').get(id);
+    let u = db.prepare('SELECT id, username, display_name, avatar, balance, level, rank, total_wagered, created_at, is_admin, vip, chat_badge FROM users WHERE id = ?').get(id);
+    if(!u) u = db.prepare('SELECT id, username, display_name, avatar, balance, level, rank, total_wagered, created_at, is_admin, vip, chat_badge FROM users WHERE username = ? COLLATE NOCASE').get(id);
     if(!u) return res.status(404).json({ error: 'NOT_FOUND' });
     res.json({
       user: {
@@ -2259,7 +2261,10 @@ app.get('/api/users/:id', (req, res) => {
         level: u.level,
         rank: rankFor(u.total_wagered || 0),
         totalWagered: u.total_wagered,
-        createdAt: u.created_at
+        createdAt: u.created_at,
+        isAdmin: !!u.is_admin,
+        vip: !!u.vip,
+        chatBadge: u.chat_badge || null
       }
     });
   } catch (err) {
@@ -4066,6 +4071,8 @@ app.get('/api/admin/users', requireAdmin, (req, res) => {
           level: u.level,
           rank: u.rank,
           isAdmin: !!u.is_admin,
+          vip: !!u.vip,
+          chatBadge: u.chat_badge || null,
           gamesPlayed: u.games_played,
           totalWagered: u.total_wagered,
           referralCode: u.referral_code,
@@ -4169,6 +4176,31 @@ app.post('/api/admin/users/:id/unban', requireAdmin, (req, res) => {
     res.json({ ok: true, banned: false });
   } catch (err) {
     console.error('[admin/unban]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+
+app.post('/api/admin/users/:id/badges', requireAdmin, (req, res) => {
+  try {
+    try { addCol('users', 'vip', 'INTEGER DEFAULT 0'); } catch(e){}
+    try { addCol('users', 'chat_badge', 'TEXT'); } catch(e){}
+    const id = String(req.params.id);
+    const body = req.body || {};
+    const vip = body.vip ? 1 : 0;
+    const chatBadge = body.chatBadge != null ? String(body.chatBadge).slice(0, 32) : null;
+    // isAdmin handled separately; vip is cosmetic rank badge
+    db.prepare('UPDATE users SET vip = ?, chat_badge = COALESCE(?, chat_badge), updated_at = ? WHERE id = ?')
+      .run(vip, chatBadge, Date.now(), id);
+    const u = db.prepare('SELECT id, is_admin, vip, chat_badge FROM users WHERE id = ?').get(id);
+    res.json({
+      ok: true,
+      isAdmin: !!(u && u.is_admin),
+      vip: !!(u && u.vip),
+      chatBadge: u && u.chat_badge || null
+    });
+  } catch (err) {
+    console.error('[admin/badges]', err);
     res.status(500).json({ error: 'SERVER_ERROR' });
   }
 });
@@ -4555,6 +4587,9 @@ app.get('/api/users/:id/public', requireAuth, (req, res) => {
         hasVerifiedBadge: !!u.has_verified_badge,
         level: u.level,
         rank: u.rank,
+        isAdmin: !!u.is_admin,
+        vip: !!u.vip,
+        chatBadge: u.chat_badge || null,
         totalWagered: u.total_wagered,
         totalWon: u.total_won,
         totalLost: u.total_lost,
