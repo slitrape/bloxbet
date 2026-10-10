@@ -515,21 +515,9 @@
 </nav>
 
 
+
 <aside class="sidebar" id="appSidebar">
   <div class="side-nav-block">
-    <div class="side-chat" id="sideChat">
-      <div class="side-chat-head">
-        <span class="side-chat-title">Live Chat</span>
-        <span class="side-chat-lock" id="sideChatLock">Login required</span>
-      </div>
-      <div class="side-chat-messages" id="sideChatMessages">
-        <div class="side-chat-empty">Sign in with Roblox to chat.</div>
-      </div>
-      <form class="side-chat-form" id="sideChatForm">
-        <input type="text" id="sideChatInput" placeholder="Say something…" maxlength="200" autocomplete="off" disabled>
-        <button type="submit" id="sideChatSend" disabled>Send</button>
-      </form>
-    </div>
     <a class="side-nav-item" href="index.html">
       <img src="icons/home.png" alt="" class="ico" draggable="false">
       <span>Home</span>
@@ -559,6 +547,22 @@
     </button>
   </div>
 </aside>
+
+<aside class="chat-rail" id="chatRail">
+  <div class="chat-rail-head">
+    <span class="chat-rail-title">Chat</span>
+  </div>
+  <div class="chat-rail-messages" id="sideChatMessages">
+    <div class="side-chat-empty">Sign in with Roblox to chat.</div>
+  </div>
+  <form class="chat-rail-form" id="sideChatForm">
+    <input type="text" id="sideChatInput" placeholder="Type a message…" maxlength="200" autocomplete="off" disabled>
+    <button type="submit" id="sideChatSend" class="chat-send-btn" disabled title="Send" aria-label="Send">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+    </button>
+  </form>
+</aside>
+
 
 <main class="main">
   <div class="container page">
@@ -656,28 +660,49 @@
   </div>
 </nav>
 
+
 <div class="modal-overlay" id="m-deposit">
-  <div class="modal">
+  <div class="modal deposit-modal">
     <div class="modal-head">
-      <div><h3>Add Funds</h3><p>Top up your RoCoins balance.</p></div>
-      <button class="modal-close" onclick="Modal.close('m-deposit')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
+      <div>
+        <h3>Add Funds</h3>
+        <p>Top up RC using Roblox. 1 RC ≈ 1 Robux value scale.</p>
+      </div>
+      <button class="modal-close" onclick="Modal.close('m-deposit')" type="button">
+        <img src="icons/close.png" alt="" class="ico" draggable="false">
+      </button>
     </div>
-    <div class="modal-body">
-      <div class="field">
-        <label>Amount</label>
-        <input type="number" id="depositAmount" value="1000" min="100" step="100">
+    <div class="modal-body deposit-body">
+      <div class="dep-amount-wrap">
+        <label>Amount (RC)</label>
+        <div class="dep-amount-box">
+          <input type="number" id="depositAmount" value="1000" min="100" step="100">
+          <span class="dep-unit">RC</span>
+        </div>
       </div>
-      <div class="quick-bets" style="margin-top:.5rem">
-        <button class="quick-bet" data-deposit="500">500</button>
-        <button class="quick-bet" data-deposit="1000">1K</button>
-        <button class="quick-bet" data-deposit="5000">5K</button>
-        <button class="quick-bet" data-deposit="10000">10K</button>
-        <button class="quick-bet" data-deposit="50000">50K</button>
+      <div class="dep-quick">
+        <button class="dep-chip" data-deposit="500" type="button">500</button>
+        <button class="dep-chip" data-deposit="1000" type="button">1K</button>
+        <button class="dep-chip" data-deposit="2500" type="button">2.5K</button>
+        <button class="dep-chip" data-deposit="5000" type="button">5K</button>
+        <button class="dep-chip" data-deposit="10000" type="button">10K</button>
+        <button class="dep-chip" data-deposit="50000" type="button">50K</button>
       </div>
+      <div class="dep-methods">
+        <button type="button" class="dep-method active" data-method="gamepass">
+          <span class="dep-method-title">Gamepass</span>
+          <span class="dep-method-sub">Instant credit after purchase</span>
+        </button>
+        <button type="button" class="dep-method" data-method="limited">
+          <span class="dep-method-title">Limiteds</span>
+          <span class="dep-method-sub">Trade limiteds for RC</span>
+        </button>
+      </div>
+      <div class="dep-note">Minimum 100 RC · Balance updates after confirmation</div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')">Cancel</button>
-      <button class="btn btn-primary" id="depositConfirmBtn">Confirm</button>
+      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')" type="button">Cancel</button>
+      <button class="btn btn-primary btn-orange" id="depositConfirmBtn" type="button">Add Funds</button>
     </div>
   </div>
 </div>
@@ -940,6 +965,7 @@
 
 
 
+
 <script id="bb-shell-js">
 (function(){
   function qs(id){ return document.getElementById(id); }
@@ -949,6 +975,7 @@
   function applyCollapsed(on){
     if(!side) return;
     side.classList.toggle('collapsed', !!on);
+    document.body.classList.toggle('sidebar-collapsed', !!on);
     if(main) main.classList.toggle('expanded', !!on);
     try { localStorage.setItem('bb_sidebar_collapsed', on ? '1' : '0'); } catch(e){}
   }
@@ -962,7 +989,6 @@
   var chatForm = qs('sideChatForm');
   var chatInput = qs('sideChatInput');
   var chatSend = qs('sideChatSend');
-  var chatLock = qs('sideChatLock');
   var loggedIn = false;
   try { loggedIn = !!(localStorage.getItem('bb_token') && localStorage.getItem('bb_user')); } catch(e){}
   if(typeof Auth !== 'undefined' && Auth.isLoggedIn) loggedIn = !!Auth.isLoggedIn();
@@ -976,8 +1002,8 @@
     var id = msg.userId || msg.user_id || '';
     var name = String(msg.user || msg.username || '?').replace(/^@/,'');
     var letter = name.slice(0,1).toUpperCase();
+    wrap.href = 'profile.html?user=' + encodeURIComponent(id || name);
     if(id){
-      wrap.href = 'profile.html?user=' + encodeURIComponent(id);
       var img = document.createElement('img');
       img.src = '/api/avatar/' + encodeURIComponent(id);
       img.alt = '';
@@ -985,7 +1011,6 @@
       img.onerror = function(){ wrap.textContent = letter; };
       wrap.appendChild(img);
     } else {
-      wrap.href = 'profile.html?user=' + encodeURIComponent(name);
       wrap.textContent = letter;
     }
     return wrap;
@@ -1008,7 +1033,6 @@
     var u = document.createElement('span');
     u.className = 'side-chat-user';
     u.textContent = '@' + String(msg.user || msg.username || 'user').replace(/^@/,'');
-    if(msg.nameColor) u.style.color = msg.nameColor;
     var t = document.createElement('span');
     t.className = 'side-chat-text';
     t.textContent = msg.text || msg.message || '';
@@ -1021,7 +1045,7 @@
       row.appendChild(avNode(msg));
       row.appendChild(body);
     }
-    chatBox.appendChild(row);
+    chatBox.appendChild(row); // top-to-bottom chronological
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
@@ -1035,15 +1059,20 @@
       if(!Array.isArray(msgs)) return;
       chatBox.innerHTML = '';
       seenIds = {};
-      msgs.slice().reverse().forEach(function(m){
-        appendChat({ id:m.id, user:m.username||m.user, userId:m.user_id||m.userId, text:m.message||m.text, nameColor:m.name_color||m.nameColor, at:m.created_at });
+      // API may return newest first — render oldest first (top to bottom)
+      var list = msgs.slice();
+      if(list.length > 1 && (list[0].created_at||list[0].createdAt||0) > (list[list.length-1].created_at||list[list.length-1].createdAt||0)){
+        list = list.reverse();
+      }
+      list.forEach(function(m){
+        appendChat({ id:m.id, user:m.username||m.user, userId:m.user_id||m.userId, text:m.message||m.text, at:m.created_at||m.createdAt });
       });
     } catch(e){}
   }
+
   if(loggedIn){
     if(chatInput) chatInput.disabled = false;
     if(chatSend) chatSend.disabled = false;
-    if(chatLock){ chatLock.textContent = 'Live'; chatLock.classList.add('live'); }
     if(chatBox) chatBox.innerHTML = '';
     loadChat();
     setInterval(loadChat, 3000);
@@ -1060,8 +1089,17 @@
       try { if(Auth.api) await Auth.api('/chat/global', { method:'POST', body: JSON.stringify({ message: text }) }); setTimeout(loadChat, 400); } catch(err){}
     });
   }
+  if(chatInput){
+    chatInput.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' && !e.shiftKey){
+        e.preventDefault();
+        if(chatForm) chatForm.requestSubmit ? chatForm.requestSubmit() : chatForm.dispatchEvent(new Event('submit', {cancelable:true, bubbles:true}));
+      }
+    });
+  }
 })();
 </script>
+
 
 
 

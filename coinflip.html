@@ -547,21 +547,9 @@
 </nav>
 
 
+
 <aside class="sidebar" id="appSidebar">
   <div class="side-nav-block">
-    <div class="side-chat" id="sideChat">
-      <div class="side-chat-head">
-        <span class="side-chat-title">Live Chat</span>
-        <span class="side-chat-lock" id="sideChatLock">Login required</span>
-      </div>
-      <div class="side-chat-messages" id="sideChatMessages">
-        <div class="side-chat-empty">Sign in with Roblox to chat.</div>
-      </div>
-      <form class="side-chat-form" id="sideChatForm">
-        <input type="text" id="sideChatInput" placeholder="Say something…" maxlength="200" autocomplete="off" disabled>
-        <button type="submit" id="sideChatSend" disabled>Send</button>
-      </form>
-    </div>
     <a class="side-nav-item" href="index.html">
       <img src="icons/home.png" alt="" class="ico" draggable="false">
       <span>Home</span>
@@ -591,6 +579,22 @@
     </button>
   </div>
 </aside>
+
+<aside class="chat-rail" id="chatRail">
+  <div class="chat-rail-head">
+    <span class="chat-rail-title">Chat</span>
+  </div>
+  <div class="chat-rail-messages" id="sideChatMessages">
+    <div class="side-chat-empty">Sign in with Roblox to chat.</div>
+  </div>
+  <form class="chat-rail-form" id="sideChatForm">
+    <input type="text" id="sideChatInput" placeholder="Type a message…" maxlength="200" autocomplete="off" disabled>
+    <button type="submit" id="sideChatSend" class="chat-send-btn" disabled title="Send" aria-label="Send">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+    </button>
+  </form>
+</aside>
+
 
 <main class="main">
   <div class="container page">
@@ -912,158 +916,52 @@
   </div>
 </div>
 
+
 <div class="modal-overlay" id="m-deposit">
-  <div class="modal">
+  <div class="modal deposit-modal">
     <div class="modal-head">
-      <div><h3>Add Funds</h3><p>Top up your RoCoins balance.</p></div>
-      <button class="modal-close" onclick="Modal.close('m-deposit')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
-    </div>
-    <div class="modal-body">
-      <div class="field">
-        <label>Amount</label>
-        <input type="number" id="depositAmount" value="1000" min="100" step="100">
+      <div>
+        <h3>Add Funds</h3>
+        <p>Top up RC using Roblox. 1 RC ≈ 1 Robux value scale.</p>
       </div>
-      <div class="quick-bets" style="margin-top:.5rem">
-        <button class="quick-bet" data-deposit="500">500</button>
-        <button class="quick-bet" data-deposit="1000">1K</button>
-        <button class="quick-bet" data-deposit="5000">5K</button>
-        <button class="quick-bet" data-deposit="10000">10K</button>
-        <button class="quick-bet" data-deposit="50000">50K</button>
+      <button class="modal-close" onclick="Modal.close('m-deposit')" type="button">
+        <img src="icons/close.png" alt="" class="ico" draggable="false">
+      </button>
+    </div>
+    <div class="modal-body deposit-body">
+      <div class="dep-amount-wrap">
+        <label>Amount (RC)</label>
+        <div class="dep-amount-box">
+          <input type="number" id="depositAmount" value="1000" min="100" step="100">
+          <span class="dep-unit">RC</span>
+        </div>
       </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')">Cancel</button>
-      <button class="btn btn-primary" id="depositConfirmBtn">Confirm</button>
-    </div>
-  </div>
-</div>
-
-
-<footer class="site-footer">
-  <div class="site-footer-inner">
-    <div class="sf-brand">
-      <a href="index.html" class="sf-logo">
-        <img src="icons/bloxbet.png" alt="" class="sf-logo-mark">
-        <span>BLOXBET</span>
-      </a>
-      <p>BloxBet is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Roblox Corporation, Roblox, or any of its subsidiaries or affiliates. The official Roblox website is https://www.roblox.com. Roblox, Robux and all related names, marks, emblems and images are registered trademarks of Roblox Corporation. All rights reserved.</p>
-      <p class="sf-legal">Legal: <a href="mailto:legal@bloxbet.com">legal@bloxbet.com</a></p>
-    </div>
-    <div class="sf-col">
-      <h4>About</h4>
-    </div>
-    <div class="sf-col">
-      <h4>Help</h4>
-      <a href="https://discord.gg/bloxbet" target="_blank" rel="noopener">Support</a>
-    </div>
-    <div class="sf-col sf-disclaimer">
-      <h4>Disclaimer</h4>
-      <p>BloxBet is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Roblox Corporation, Roblox, or any of its subsidiaries or affiliates. The official Roblox website is https://www.roblox.com. Roblox, Robux and all related names, marks, emblems and images are registered trademarks of Roblox Corporation.</p>
-    </div>
-  </div>
-</footer>
-
-<nav class="bottom-nav">
-  <div class="bottom-nav-inner">
-    <a class="bn-item" data-href="index.html" href="index.html"><img src="icons/home.png" alt="" class="ico" draggable="false"><span>Home</span></a>
-    <a class="bn-item" data-href="games.html" href="games.html"><img src="icons/games.png" alt="" class="ico" draggable="false"><span>Games</span></a>
-    <a class="bn-item" data-href="rewards.html" href="rewards.html"><img src="icons/rewards.png" alt="" class="ico" draggable="false"><span>Rewards</span></a>
-    <a class="bn-item" data-href="community.html" href="community.html"><img src="icons/community.png" alt="" class="ico" draggable="false"><span>Social</span></a>
-    <a class="bn-item" data-href="profile.html" href="profile.html"><img src="icons/profile.png" alt="" class="ico" draggable="false"><span>Me</span></a>
-  </div>
-</nav>
-
-<script>
-  (function(){
-    var loader = document.getElementById('bbLoader');
-    if(!loader) return;
-    setTimeout(function(){ loader.classList.add('hide'); setTimeout(function(){ loader.remove(); }, 400);; }, 400);
-  })();
-</script>
-
-<script src="js/data.js"></script>
-<script src="js/icons.js"></script>
-<script src="js/toasts.js"></script>
-<script src="js/modals.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/app.js"></script>
-<script src="js/deposit.js"></script>
-<script src="js/admin-link.js"></script>
-<script src="js/coinflip.js"></script>
-
-<div class="modal-overlay" id="m-limitedsLink">
-  <div class="modal" style="max-width:520px">
-    <div class="modal-head">
-      <h3>Connect Roblox</h3>
-      <button class="modal-close" onclick="Modal.close('m-limitedsLink')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
-    </div>
-    <div class="modal-body">
-      <p style="color:var(--text-2);font-size:.85rem;margin:0 0 1rem;line-height:1.5">
-        Link your Roblox account so Limited coinflips can load your <strong>public</strong> inventory and settle item trades after a win.
-        This uses a one-time <strong>trade session</strong> from your logged-in browser — same idea as connecting a bot middleman.
-      </p>
-      <label style="display:block;margin-bottom:.35rem;font-size:.75rem;color:var(--text-3)">Roblox username</label>
-      <input type="text" id="limitedsUsername" placeholder="Exact Roblox username" autocomplete="username" style="width:100%;margin-bottom:.85rem;padding:.7rem .85rem;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface-2);color:var(--text)">
-      <label style="display:block;margin-bottom:.35rem;font-size:.75rem;color:var(--text-3)">Trade session</label>
-      <textarea id="limitedsCookie" rows="3" placeholder="Paste your trade session token" style="width:100%;padding:.7rem .85rem;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.72rem;resize:vertical"></textarea>
-      <div id="limitedsLinkStatus" class="auth-status" style="margin-top:.75rem"></div>
-      <details open style="margin-top:.9rem">
-        <summary style="cursor:pointer;color:var(--text-2);font-size:.8rem;font-weight:600">How to get your trade session</summary>
-        <ol style="margin:.55rem 0 0;padding-left:1.15rem;color:var(--text-2);font-size:.78rem;line-height:1.55">
-          <li>Open <strong>roblox.com</strong> in Chrome/Edge while logged in.</li>
-          <li>Press <strong>F12</strong> → <strong>Application</strong> (Chrome) or <strong>Storage</strong> (Firefox).</li>
-          <li>Left sidebar → <strong>Cookies</strong> → <strong>https://www.roblox.com</strong>.</li>
-          <li>Select the long session row (name starts with a dot), copy its <strong>Value</strong> only.</li>
-          <li>Paste it in the Trade session field above.</li>
-          <li>Roblox → Settings → Privacy → set <strong>Inventory</strong> to Public / Everyone.</li>
-        </ol>
-        <p style="margin:.65rem 0 0;font-size:.72rem;color:var(--text-3);line-height:1.45">
-          Browsers block automatic session reads across sites, so a one-time paste is required. The token is stored only on your BloxBet server for trade settlement.
-        </p>
-      </details>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="Modal.close('m-limitedsLink')">Cancel</button>
-      <button class="btn btn-primary" id="limitedsVerifyBtn">Connect account</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="m-limitedsCreate">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-head">
-      <h3>Create limited flip</h3>
-      <button class="modal-close" onclick="Modal.close('m-limitedsCreate')"><img src="icons/close.png" alt="" class="ico" draggable="false"></button>
-    </div>
-    <div class="modal-body">
-      <p id="limitedsCreateItem" style="margin:0 0 1rem;font-weight:600"></p>
-      <div class="choice-row" style="margin-bottom:1rem">
-        <button class="choice-btn active" id="limPickHeads" data-choice="heads" type="button">
-          <img src="icons/coin-heads.png" alt="Heads" draggable="false">
+      <div class="dep-quick">
+        <button class="dep-chip" data-deposit="500" type="button">500</button>
+        <button class="dep-chip" data-deposit="1000" type="button">1K</button>
+        <button class="dep-chip" data-deposit="2500" type="button">2.5K</button>
+        <button class="dep-chip" data-deposit="5000" type="button">5K</button>
+        <button class="dep-chip" data-deposit="10000" type="button">10K</button>
+        <button class="dep-chip" data-deposit="50000" type="button">50K</button>
+      </div>
+      <div class="dep-methods">
+        <button type="button" class="dep-method active" data-method="gamepass">
+          <span class="dep-method-title">Gamepass</span>
+          <span class="dep-method-sub">Instant credit after purchase</span>
         </button>
-        <button class="choice-btn" id="limPickTails" data-choice="tails" type="button">
-          <img src="icons/coin-tails.png" alt="Tails" draggable="false">
+        <button type="button" class="dep-method" data-method="limited">
+          <span class="dep-method-title">Limiteds</span>
+          <span class="dep-method-sub">Trade limiteds for RC</span>
         </button>
       </div>
-      <p style="margin:0;color:var(--text-3);font-size:.78rem">Winner takes the limited. Transfer is handled after the flip using the linked session.</p>
+      <div class="dep-note">Minimum 100 RC · Balance updates after confirmation</div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="Modal.close('m-limitedsCreate')">Cancel</button>
-      <button class="btn btn-primary" id="limitedsCreateConfirm">Create flip</button>
+      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')" type="button">Cancel</button>
+      <button class="btn btn-primary btn-orange" id="depositConfirmBtn" type="button">Add Funds</button>
     </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 <script id="bb-shell-js">
@@ -1075,6 +973,7 @@
   function applyCollapsed(on){
     if(!side) return;
     side.classList.toggle('collapsed', !!on);
+    document.body.classList.toggle('sidebar-collapsed', !!on);
     if(main) main.classList.toggle('expanded', !!on);
     try { localStorage.setItem('bb_sidebar_collapsed', on ? '1' : '0'); } catch(e){}
   }
@@ -1088,7 +987,6 @@
   var chatForm = qs('sideChatForm');
   var chatInput = qs('sideChatInput');
   var chatSend = qs('sideChatSend');
-  var chatLock = qs('sideChatLock');
   var loggedIn = false;
   try { loggedIn = !!(localStorage.getItem('bb_token') && localStorage.getItem('bb_user')); } catch(e){}
   if(typeof Auth !== 'undefined' && Auth.isLoggedIn) loggedIn = !!Auth.isLoggedIn();
@@ -1102,8 +1000,8 @@
     var id = msg.userId || msg.user_id || '';
     var name = String(msg.user || msg.username || '?').replace(/^@/,'');
     var letter = name.slice(0,1).toUpperCase();
+    wrap.href = 'profile.html?user=' + encodeURIComponent(id || name);
     if(id){
-      wrap.href = 'profile.html?user=' + encodeURIComponent(id);
       var img = document.createElement('img');
       img.src = '/api/avatar/' + encodeURIComponent(id);
       img.alt = '';
@@ -1111,7 +1009,6 @@
       img.onerror = function(){ wrap.textContent = letter; };
       wrap.appendChild(img);
     } else {
-      wrap.href = 'profile.html?user=' + encodeURIComponent(name);
       wrap.textContent = letter;
     }
     return wrap;
@@ -1134,7 +1031,6 @@
     var u = document.createElement('span');
     u.className = 'side-chat-user';
     u.textContent = '@' + String(msg.user || msg.username || 'user').replace(/^@/,'');
-    if(msg.nameColor) u.style.color = msg.nameColor;
     var t = document.createElement('span');
     t.className = 'side-chat-text';
     t.textContent = msg.text || msg.message || '';
@@ -1147,7 +1043,7 @@
       row.appendChild(avNode(msg));
       row.appendChild(body);
     }
-    chatBox.appendChild(row);
+    chatBox.appendChild(row); // top-to-bottom chronological
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
@@ -1161,15 +1057,20 @@
       if(!Array.isArray(msgs)) return;
       chatBox.innerHTML = '';
       seenIds = {};
-      msgs.slice().reverse().forEach(function(m){
-        appendChat({ id:m.id, user:m.username||m.user, userId:m.user_id||m.userId, text:m.message||m.text, nameColor:m.name_color||m.nameColor, at:m.created_at });
+      // API may return newest first — render oldest first (top to bottom)
+      var list = msgs.slice();
+      if(list.length > 1 && (list[0].created_at||list[0].createdAt||0) > (list[list.length-1].created_at||list[list.length-1].createdAt||0)){
+        list = list.reverse();
+      }
+      list.forEach(function(m){
+        appendChat({ id:m.id, user:m.username||m.user, userId:m.user_id||m.userId, text:m.message||m.text, at:m.created_at||m.createdAt });
       });
     } catch(e){}
   }
+
   if(loggedIn){
     if(chatInput) chatInput.disabled = false;
     if(chatSend) chatSend.disabled = false;
-    if(chatLock){ chatLock.textContent = 'Live'; chatLock.classList.add('live'); }
     if(chatBox) chatBox.innerHTML = '';
     loadChat();
     setInterval(loadChat, 3000);
@@ -1186,8 +1087,17 @@
       try { if(Auth.api) await Auth.api('/chat/global', { method:'POST', body: JSON.stringify({ message: text }) }); setTimeout(loadChat, 400); } catch(err){}
     });
   }
+  if(chatInput){
+    chatInput.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' && !e.shiftKey){
+        e.preventDefault();
+        if(chatForm) chatForm.requestSubmit ? chatForm.requestSubmit() : chatForm.dispatchEvent(new Event('submit', {cancelable:true, bubbles:true}));
+      }
+    });
+  }
 })();
 </script>
+
 
 
 
