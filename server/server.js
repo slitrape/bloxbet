@@ -1180,6 +1180,15 @@ function requireAuth(req, res, next){
     const payload = jwt.verify(auth.slice(7), JWT_SECRET);
     req.userId = String(payload.sub);
     req.username = payload.username;
+    try {
+      const u = db.prepare('SELECT banned, ban_until FROM users WHERE id = ?').get(req.userId);
+      if(u){
+        const now = Date.now();
+        if(u.banned || (u.ban_until && u.ban_until > now)){
+          return res.status(403).json({ error: 'BANNED', banUntil: u.ban_until || null });
+        }
+      }
+    } catch(e){}
     next();
   } catch {
     res.status(401).json({ error: 'INVALID_TOKEN' });
@@ -2550,6 +2559,11 @@ app.get('/api/mines/history', requireAuth, (req, res) => {
 });
 
 /* ============================================================
+
+  try { addCol('users', 'banned', 'INTEGER DEFAULT 0'); } catch(e){}
+  try { addCol('users', 'ban_until', 'INTEGER'); } catch(e){}
+  try { addCol('users', 'ban_reason', 'TEXT'); } catch(e){}
+
    CRASH ENGINE — PASSIVE
    ============================================================ */
 const CRASH_STATE = {
@@ -3757,6 +3771,7 @@ app.get('/api/admin/users', requireAdmin, (req, res) => {
       rows = db.prepare(`
         SELECT id, username, display_name, avatar, balance, level, rank, is_admin,
                games_played, total_wagered, referral_code, created_at, updated_at,
+               banned, ban_until, ban_reason,
                last_ip, last_user_agent, last_login_at
         FROM users
         WHERE username LIKE ? OR display_name LIKE ? OR id = ? OR IFNULL(last_ip,'') LIKE ?
@@ -3766,31 +3781,40 @@ app.get('/api/admin/users', requireAdmin, (req, res) => {
       rows = db.prepare(`
         SELECT id, username, display_name, avatar, balance, level, rank, is_admin,
                games_played, total_wagered, referral_code, created_at, updated_at,
+               banned, ban_until, ban_reason,
                last_ip, last_user_agent, last_login_at
         FROM users
-        ORDER BY updated_at DESC LIMIT ?
+        ORDER BY created_at DESC LIMIT ?
       `).all(limit);
     }
 
+    const now = Date.now();
     res.json({
-      users: rows.map(u => ({
-        id: u.id,
-        username: u.username,
-        displayName: u.display_name || u.username,
-        avatar: avatarForUser(u),
-        balance: u.balance,
-        level: u.level,
-        rank: u.rank,
-        isAdmin: !!u.is_admin,
-        gamesPlayed: u.games_played,
-        totalWagered: u.total_wagered,
-        referralCode: u.referral_code,
-        createdAt: u.created_at,
-        updatedAt: u.updated_at,
-        lastIp: u.last_ip || null,
-        lastUserAgent: u.last_user_agent || null,
-        lastLoginAt: u.last_login_at || null
-      }))
+      users: rows.map(u => {
+        const banned = !!u.banned || (u.ban_until && u.ban_until > now);
+        return {
+          id: u.id,
+          username: u.username,
+          displayName: u.display_name || u.username,
+          avatar: avatarForUser(u) || ('/api/avatar/' + u.id),
+          balance: u.balance,
+          level: u.level,
+          rank: u.rank,
+          isAdmin: !!u.is_admin,
+          gamesPlayed: u.games_played,
+          totalWagered: u.total_wagered,
+          referralCode: u.referral_code,
+          createdAt: u.created_at,
+          updatedAt: u.updated_at,
+          online: u.updated_at && (now - u.updated_at) < 120000,
+          banned: banned,
+          banUntil: u.ban_until || null,
+          banReason: u.ban_reason || null,
+          lastIp: u.last_ip || null,
+          lastUserAgent: u.last_user_agent || null,
+          lastLoginAt: u.last_login_at || null
+        };
+      })
     });
   } catch (err) {
     console.error('[admin/users]', err);
@@ -3830,6 +3854,41 @@ app.post('/api/admin/users/:id/balance', requireAdmin, (req, res) => {
     res.json({ ok: true, balance: newBalance, delta: newBalance - target.balance });
   } catch (err) {
     console.error('[admin/balance]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+
+app.post('/api/admin/users/:id/ban', requireAdmin, (req, res) => {
+  try {
+    const id = req.params.id;
+    const { permanent, hours, reason } = req.body || {};
+    const now = Date.now();
+    let banUntil = null;
+    let banned = 1;
+    if(permanent){
+      banUntil = null; // permanent
+    } else {
+      const h = Math.max(1, parseInt(hours, 10) || 24);
+      banUntil = now + h * 3600 * 1000;
+    }
+    db.prepare('UPDATE users SET banned = ?, ban_until = ?, ban_reason = ?, updated_at = ? WHERE id = ?')
+      .run(banned, banUntil, String(reason || '').slice(0, 200), now, id);
+    res.json({ ok: true, banned: true, banUntil, reason: reason || null });
+  } catch (err) {
+    console.error('[admin/ban]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+app.post('/api/admin/users/:id/unban', requireAdmin, (req, res) => {
+  try {
+    const id = req.params.id;
+    db.prepare('UPDATE users SET banned = 0, ban_until = NULL, ban_reason = NULL, updated_at = ? WHERE id = ?')
+      .run(Date.now(), id);
+    res.json({ ok: true, banned: false });
+  } catch (err) {
+    console.error('[admin/unban]', err);
     res.status(500).json({ error: 'SERVER_ERROR' });
   }
 });

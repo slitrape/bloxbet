@@ -557,46 +557,59 @@ body.bb-ui .ad-empty {
       }).join('');
   }
 
+  
   async function loadUsers(q){
     var url = '/admin/users?limit=200' + (q ? ('&q='+encodeURIComponent(q)) : '');
     var res = await Auth.api(url);
-    if(!res.ok){ document.getElementById('userTable').innerHTML = '<div class="ad-empty">Failed to load</div>'; return; }
+    var el = document.getElementById('userTable');
+    if(!res.ok){ el.innerHTML = '<div class="ad-empty">Failed to load users</div>'; return; }
     var d = await res.json();
     var users = d.users || [];
-    var el = document.getElementById('userTable');
     if(!users.length){ el.innerHTML = '<div class="ad-empty">No users found</div>'; return; }
-    el.innerHTML = '<div class="ad-row head"><span></span><span>User</span><span class="hide-sm">Balance</span><span class="hide-sm">IP</span><span class="hide-sm">Device</span><span>Role</span><span></span></div>' +
-      users.map(function(u){
-        var name = u.displayName || u.username || '?';
-        var handle = u.username || '';
-        var letter = String(name).slice(0,1).toUpperCase();
-        var avUrl = u.avatar || (u.id ? ('/api/avatar/' + encodeURIComponent(u.id)) : '');
-        var av = avUrl
-          ? '<img class="ad-avatar" src="'+esc(avUrl)+'" alt="" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';var n=this.nextElementSibling;if(n)n.style.display=\'grid\';">' +
-            '<div class="ad-avatar-ph" style="display:none">'+esc(letter)+'</div>'
-          : '<div class="ad-avatar-ph">'+esc(letter)+'</div>';
-        var isOn = u.online || u.isOnline || (u.updatedAt && (Date.now()-u.updatedAt)<120000) || (u.updated_at && (Date.now()-u.updated_at)<120000);
-        var online = isOn ? '<span class="ad-badge online">Online</span>' : '<span class="ad-badge">Offline</span>';
-        return '<div class="ad-row">' +
-          '<div>'+av+'</div>' +
-          '<div><div class="ad-user-name">'+esc(name)+'</div><div class="ad-user-handle">@'+esc(handle)+'</div></div>' +
-          '<div class="ad-mono" style="color:var(--bb-gold,#f5d76e)">'+fmt(u.balance)+'</div>' +
-          '<div class="ad-mono">'+fmt(u.totalWagered||u.wagered||0)+'</div>' +
-          '<div>'+esc(u.rank||'—')+'</div>' +
-          '<div>'+(u.isAdmin?'<span class="ad-badge admin">Admin</span>':'<span class="ad-badge">User</span>')+online+'</div>' +
-          '<div class="ad-actions">' +
-            '<button class="btn btn-ghost btn-sm" data-act="add" data-id="'+esc(u.id)+'">+ Funds</button>' +
-            '<button class="btn btn-ghost btn-sm" data-act="set" data-id="'+esc(u.id)+'">Set</button>' +
-            '<button class="btn btn-ghost btn-sm" data-act="sessions" data-id="'+esc(u.id)+'">Logs</button>' +
-            '<button class="btn btn-ghost btn-sm" data-act="admin" data-id="'+esc(u.id)+'" data-admin="'+(u.isAdmin?1:0)+'">'+(u.isAdmin?'Revoke':'Make Admin')+'</button>' +
-          '</div></div>';
-      }).join('');
+
+    el.innerHTML = '<div class="ad-user-grid">' + users.map(function(u){
+      var name = u.displayName || u.username || '?';
+      var handle = u.username || '';
+      var letter = String(name).slice(0,1).toUpperCase();
+      var avUrl = u.avatar || (u.id ? ('/api/avatar/' + encodeURIComponent(u.id)) : '');
+      var status = u.banned
+        ? '<span class="ad-badge ban">Banned</span>'
+        : (u.online ? '<span class="ad-badge online">Online</span>' : '<span class="ad-badge">Offline</span>');
+      var role = u.isAdmin ? '<span class="ad-badge admin">Admin</span>' : '<span class="ad-badge">User</span>';
+      return (
+        '<div class="ad-user-card'+(u.banned?' is-banned':'')+'">' +
+          '<div class="ad-user-top">' +
+            '<img class="ad-avatar-lg" src="'+esc(avUrl)+'" alt="" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\'">' +
+            '<div class="ad-avatar-ph ad-avatar-lg" style="display:none">'+esc(letter)+'</div>' +
+            '<div class="ad-user-meta">' +
+              '<div class="ad-user-name">'+esc(name)+'</div>' +
+              '<div class="ad-user-handle">@'+esc(handle)+'</div>' +
+              '<div class="ad-user-flags">'+role+status+'</div>' +
+            '</div>' +
+            '<div class="ad-user-bal">' +
+              '<div class="ad-bal-label">Balance</div>' +
+              '<div class="ad-bal-val">'+fmt(u.balance)+'</div>' +
+              '<div class="ad-bal-sub">Wagered '+fmt(u.totalWagered||0)+'</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="ad-user-actions">' +
+            '<button class="btn btn-sm btn-primary" data-act="add" data-id="'+esc(u.id)+'">+ Funds</button>' +
+            '<button class="btn btn-sm btn-ghost" data-act="set" data-id="'+esc(u.id)+'">Set Balance</button>' +
+            '<button class="btn btn-sm btn-ghost" data-act="tempban" data-id="'+esc(u.id)+'">Temp Ban</button>' +
+            '<button class="btn btn-sm btn-ghost" data-act="ban" data-id="'+esc(u.id)+'">Ban</button>' +
+            (u.banned ? '<button class="btn btn-sm btn-ghost" data-act="unban" data-id="'+esc(u.id)+'">Unban</button>' : '') +
+            '<button class="btn btn-sm btn-ghost" data-act="admin" data-id="'+esc(u.id)+'" data-admin="'+(u.isAdmin?1:0)+'">'+(u.isAdmin?'Revoke Admin':'Make Admin')+'</button>' +
+            '<button class="btn btn-sm btn-ghost" data-act="sessions" data-id="'+esc(u.id)+'">Logs</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('') + '</div>';
 
     el.querySelectorAll('[data-act]').forEach(function(btn){
       btn.addEventListener('click', async function(){
         var id = btn.getAttribute('data-id');
         var act = btn.getAttribute('data-act');
-        
+
         if(act === 'sessions'){
           var r = await Auth.api('/admin/users/'+id+'/sessions');
           if(!r.ok){ Toast.error('Failed','Could not load sessions'); return; }
@@ -604,7 +617,7 @@ body.bb-ui .ad-empty {
           var lines = (d.sessions||[]).map(function(s){
             return (s.ip||'?') + ' · ' + shortUa(s.userAgent) + ' · ' + ago(s.createdAt);
           });
-          alert((lines.length?lines.join('\n'):'No login events yet'));
+          alert(lines.length?lines.join('\\n'):'No login events yet');
           return;
         }
         if(act === 'admin'){
@@ -613,6 +626,32 @@ body.bb-ui .ad-empty {
           var r = await Auth.api('/admin/users/'+id+'/admin', { method:'POST', body: JSON.stringify({ isAdmin: make }) });
           if(r.ok){ Toast.success('Saved','Admin flag updated'); loadUsers(document.getElementById('userSearch').value.trim()); }
           else Toast.error('Failed','Could not update admin');
+          return;
+        }
+        if(act === 'ban'){
+          var reason = prompt('Ban reason (permanent):') || 'Banned by admin';
+          if(!confirm('Permanently ban this user?')) return;
+          var r = await Auth.api('/admin/users/'+id+'/ban', { method:'POST', body: JSON.stringify({ permanent: true, reason: reason }) });
+          if(r.ok){ Toast.success('Banned','User permanently banned'); loadUsers(document.getElementById('userSearch').value.trim()); }
+          else Toast.error('Failed','Ban rejected');
+          return;
+        }
+        if(act === 'tempban'){
+          var hours = prompt('Temp ban hours (e.g. 24):', '24');
+          if(hours == null) return;
+          hours = parseInt(hours, 10);
+          if(!Number.isFinite(hours) || hours < 1){ Toast.error('Invalid','Need hours >= 1'); return; }
+          var reason = prompt('Reason:') || 'Temporary ban';
+          var r = await Auth.api('/admin/users/'+id+'/ban', { method:'POST', body: JSON.stringify({ permanent: false, hours: hours, reason: reason }) });
+          if(r.ok){ Toast.success('Temp banned', hours + 'h ban applied'); loadUsers(document.getElementById('userSearch').value.trim()); }
+          else Toast.error('Failed','Temp ban rejected');
+          return;
+        }
+        if(act === 'unban'){
+          if(!confirm('Unban this user?')) return;
+          var r = await Auth.api('/admin/users/'+id+'/unban', { method:'POST', body: '{}' });
+          if(r.ok){ Toast.success('Unbanned','User can play again'); loadUsers(document.getElementById('userSearch').value.trim()); }
+          else Toast.error('Failed','Unban rejected');
           return;
         }
         var amount = prompt(act === 'add' ? 'RoCoins to add' : 'Set balance to');

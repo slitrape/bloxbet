@@ -1875,3 +1875,45 @@ body.bb-ui .mines-wrap,
 body.bb-ui .pvp-layout {
   max-width: 1200px;
 }
+
+/* Bare originals cards — no outer section box */
+.originals-grid-bare .orig-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.originals-grid-bare .orig-card-art {
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+.originals-grid-bare .orig-card:hover .orig-card-art {
+  border-color: rgba(255,138,0,0.4);
+  box-shadow: 0 0 28px rgba(255,138,0,0.2);
+}
+
+/* Bigger sidebar chat */
+.side-chat {
+  max-height: 340px !important;
+}
+.side-chat-messages {
+  min-height: 180px !important;
+  max-height: 220px !important;
+  font-size: .82rem !important;
+}
+.side-chat-msg {
+  font-size: .82rem !important;
+  margin-bottom: .5rem !important;
+}
+.side-chat-user { font-size: .82rem !important; }
+.side-chat-form input {
+  font-size: .82rem !important;
+  padding: .5rem .65rem !important;
+}
+.side-chat-form button {
+  font-size: .78rem !important;
+  padding: .5rem .75rem !important;
+}
+.side-chat-title {
+  font-size: .78rem !important;
+}

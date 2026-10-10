@@ -10,6 +10,118 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/redesign.css">
+
+<style>
+.weekly-race-panel {
+  background: linear-gradient(145deg, #151a24, #12141c);
+  border: 1px solid rgba(255,180,40,0.15);
+  border-radius: 18px;
+  padding: 1.35rem 1.5rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.weekly-race-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.weekly-race-tag {
+  font-size: .7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #f5d76e;
+  margin-bottom: .25rem;
+}
+.weekly-race-head h2 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin: 0 0 .25rem;
+  color: #fff;
+}
+.weekly-race-head p {
+  margin: 0;
+  color: #8b95a8;
+  font-weight: 600;
+  font-size: .9rem;
+}
+.weekly-race-timer {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #fff;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: .65rem 1rem;
+  white-space: nowrap;
+}
+.weekly-race-podium {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+@media(max-width:700px){ .weekly-race-podium { grid-template-columns: 1fr; } }
+.race-pod-card {
+  background: #0e1219;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+}
+.race-pod-card.gold { border-color: rgba(245,215,110,0.35); box-shadow: 0 0 24px rgba(245,215,110,0.08); }
+.race-pod-card.silver { border-color: rgba(200,210,220,0.25); }
+.race-pod-card.bronze { border-color: rgba(205,127,50,0.3); }
+.race-pod-place {
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #8b95a8;
+  margin-bottom: .5rem;
+}
+.race-pod-card.gold .race-pod-place { color: #f5d76e; }
+.race-pod-av {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto .5rem;
+  border: 2px solid rgba(255,255,255,0.12);
+  background: #1e2633;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: #fff;
+  overflow: hidden;
+}
+.race-pod-av img { width: 100%; height: 100%; object-fit: cover; }
+.race-pod-name { font-weight: 800; color: #fff; font-size: .95rem; }
+.race-pod-score { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: #f5d76e; margin-top: .25rem; }
+.weekly-race-list { display: flex; flex-direction: column; gap: .4rem; }
+.race-row {
+  display: grid;
+  grid-template-columns: 48px 48px 1fr auto;
+  gap: .75rem;
+  align-items: center;
+  padding: .65rem .85rem;
+  background: #0e1219;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+}
+.race-row-rank { font-weight: 800; color: #8b95a8; font-variant-numeric: tabular-nums; }
+.race-row-av {
+  width: 40px; height: 40px; border-radius: 50%; overflow: hidden;
+  background: #1e2633; display: grid; place-items: center; font-weight: 800; color: #fff;
+}
+.race-row-av img { width: 100%; height: 100%; object-fit: cover; }
+.race-row-name { font-weight: 700; color: #fff; }
+.race-row-score { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: #f5d76e; }
+</style>
 </head>
 <body class="bb-ui">
 
@@ -117,6 +229,21 @@
 
 <main class="main">
   <div class="container page">
+    <section class="weekly-race-panel">
+      <div class="weekly-race-head">
+        <div>
+          <div class="weekly-race-tag">Weekly Race</div>
+          <h2>Leaderboard Race</h2>
+          <p>Climb the ranks this week. Top players win prizes.</p>
+        </div>
+        <div class="weekly-race-timer" id="weeklyRaceTimer">—</div>
+      </div>
+      <div class="weekly-race-podium" id="weeklyPodium">
+        <div class="side-empty">Loading race…</div>
+      </div>
+      <div class="weekly-race-list" id="weeklyRaceList"></div>
+    </section>
+
 
     <div class="page-head">
       <div>
@@ -364,6 +491,95 @@
 })();
 </script>
 
+
+
+<script>
+(function(){
+  function esc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+  function fmt(n){ return Number(n||0).toLocaleString(); }
+  function avHtml(id, name){
+    var letter = String(name||'?').slice(0,1).toUpperCase();
+    var url = id ? ('/api/avatar/' + encodeURIComponent(id)) : '';
+    if(!url) return '<div class="race-pod-av">'+esc(letter)+'</div>';
+    return '<div class="race-pod-av"><img src="'+url+'" alt="" referrerpolicy="no-referrer" onerror="this.remove();this.parentNode.textContent=\''+letter+'\'"></div>';
+  }
+  function avRow(id, name){
+    var letter = String(name||'?').slice(0,1).toUpperCase();
+    var url = id ? ('/api/avatar/' + encodeURIComponent(id)) : '';
+    if(!url) return '<div class="race-row-av">'+esc(letter)+'</div>';
+    return '<div class="race-row-av"><img src="'+url+'" alt="" referrerpolicy="no-referrer" onerror="this.remove();this.parentNode.textContent=\''+letter+'\'"></div>';
+  }
+  // Countdown to next Monday 00:00
+  function nextMonday(){
+    var d = new Date();
+    var day = d.getDay();
+    var diff = (8 - day) % 7;
+    if(diff === 0) diff = 7;
+    d.setDate(d.getDate() + diff);
+    d.setHours(0,0,0,0);
+    return d.getTime();
+  }
+  var end = nextMonday();
+  function tick(){
+    var el = document.getElementById('weeklyRaceTimer');
+    if(!el) return;
+    var diff = Math.max(0, end - Date.now());
+    var d = Math.floor(diff/86400000);
+    var h = Math.floor((diff%86400000)/3600000);
+    var m = Math.floor((diff%3600000)/60000);
+    var s = Math.floor((diff%60000)/1000);
+    el.textContent = d+'d '+h+'h '+m+'m '+s+'s';
+  }
+  tick(); setInterval(tick, 1000);
+
+  async function loadRace(){
+    var podium = document.getElementById('weeklyPodium');
+    var list = document.getElementById('weeklyRaceList');
+    if(!podium) return;
+    try {
+      var res = await Auth.api('/leaderboard?sort=wagered');
+      if(!res.ok) res = await Auth.api('/leaderboard');
+      if(!res.ok){ podium.innerHTML = '<div class="side-empty">Could not load race.</div>'; return; }
+      var data = await res.json();
+      var entries = data.entries || data.leaderboard || [];
+      var top = entries.slice(0, 3);
+      var places = ['gold','silver','bronze'];
+      var labels = ['1st','2nd','3rd'];
+      // reorder display 2nd, 1st, 3rd for podium feel on desktop
+      var order = top.length >= 3 ? [top[1], top[0], top[2]] : top;
+      var placeIdx = top.length >= 3 ? [1,0,2] : top.map(function(_,i){return i;});
+      podium.innerHTML = order.map(function(e, i){
+        var idx = placeIdx[i];
+        var name = e.displayName || e.username || e.name || '?';
+        var score = e.totalWagered != null ? e.totalWagered : (e.wagered != null ? e.wagered : (e.balance || 0));
+        return '<div class="race-pod-card '+(places[idx]||'')+'">' +
+          '<div class="race-pod-place">'+labels[idx]+'</div>' +
+          avHtml(e.id || e.userId, name) +
+          '<div class="race-pod-name">'+esc(name)+'</div>' +
+          '<div class="race-pod-score">'+fmt(score)+'</div>' +
+        '</div>';
+      }).join('') || '<div class="side-empty">No racers yet.</div>';
+
+      if(list){
+        list.innerHTML = entries.slice(3, 15).map(function(e, i){
+          var name = e.displayName || e.username || e.name || '?';
+          var score = e.totalWagered != null ? e.totalWagered : (e.wagered != null ? e.wagered : (e.balance || 0));
+          return '<div class="race-row">' +
+            '<div class="race-row-rank">#'+(i+4)+'</div>' +
+            avRow(e.id || e.userId, name) +
+            '<div class="race-row-name">'+esc(name)+'</div>' +
+            '<div class="race-row-score">'+fmt(score)+'</div>' +
+          '</div>';
+        }).join('');
+      }
+    } catch(e){
+      podium.innerHTML = '<div class="side-empty">Could not load race.</div>';
+    }
+  }
+  if(typeof Auth !== 'undefined') loadRace();
+  else window.addEventListener('load', loadRace);
+})();
+</script>
 
 </body>
 </html>

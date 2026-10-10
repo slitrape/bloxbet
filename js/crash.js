@@ -121,7 +121,7 @@
   function drawRocket(x, y, crashed){
     ctx.save();
     ctx.translate(x, y);
-    ctx.scale(1.35, 1.35);
+    ctx.scale(1.5, 1.5);
 
     // Exhaust beam
     if(!crashed){
@@ -215,7 +215,7 @@
 
   function drawCurve(w, h, progress, mult, crashed){
     var expectedMaxSeconds = 50;
-    var points = 100;
+    var points = 120;
     var curvePts = [];
     var maxElapsed = Math.max(progress * expectedMaxSeconds, 0.001);
 
@@ -227,11 +227,13 @@
       if(m >= mult) break;
     }
 
-    var xMax = Math.max(maxElapsed, 3) * 1.12;
-    var yMax = Math.max(mult * 1.2, 2.2);
+    // Diagonal path: bottom-left (1x) -> top-right (high mult)
+    var padL = 40, padR = 50, padB = 40, padT = 50;
+    var xMax = Math.max(maxElapsed, 4) * 1.05;
+    var yMax = Math.max(mult * 1.15, 2.5);
 
-    function px(t){ return 48 + (t / xMax) * (w - 100); }
-    function py(m){ return (h - 48) - ((m - 1) / (yMax - 1)) * (h - 100); }
+    function px(t){ return padL + (t / xMax) * (w - padL - padR); }
+    function py(m){ return (h - padB) - ((m - 1) / (yMax - 1)) * (h - padB - padT); }
 
     // Trail glow under path
     var grad = ctx.createLinearGradient(0, 0, 0, h);

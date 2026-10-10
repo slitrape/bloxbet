@@ -23,7 +23,7 @@
   var barBet          = document.getElementById('barBet');
   var barMultiplier   = document.getElementById('barMultiplier');
   var barPayout       = document.getElementById('barPayout');
-  function setBarPayout(v){ if(!barPayout) return; if(barPayout.tagName==='INPUT') barPayout.value=v; else setBarPayout(v); }
+  function setBarPayout(v){ if(!barPayout) return; if(barPayout.tagName==='INPUT') barPayout.value=v; else barPayout.textContent=v; }
 
   var banner          = document.getElementById('minesBanner');
   var setupPanel      = document.getElementById('setupPanel');
@@ -44,6 +44,7 @@
 
   /* ---------- Setup UI ---------- */
   function buildCountGrid(){
+    if(!countGrid) return;
     countGrid.innerHTML = '';
     MINE_OPTIONS.forEach(function(n){
       var btn = document.createElement('button');
@@ -75,6 +76,7 @@
   });
 
   function setBanner(text, type){
+    if(!banner) return;
     banner.className = 'mines-banner show ' + type;
     banner.textContent = text;
     setTimeout(function(){
@@ -85,13 +87,13 @@
   /* ---------- Bar ---------- */
   function updateBar(){
     if(!activeGame){
-      barBet.textContent = '—';
-      barMultiplier.textContent = '1.00x';
-      setBarPayout('—');
+      if(barBet) if(barBet) barBet.textContent = '—';
+      if(barMultiplier) if(barMultiplier) barMultiplier.textContent = '1.00';
+      setBarPayout('0.00');
       return;
     }
-    barBet.textContent = activeGame.bet.toLocaleString() + ' RC';
-    barMultiplier.textContent = activeGame.multiplier.toFixed(2) + 'x';
+    if(barBet) barBet.textContent = activeGame.bet.toLocaleString() + ' RC';
+    if(barMultiplier) barMultiplier.textContent = activeGame.multiplier.toFixed(2) + 'x';
     var potential = Math.floor(activeGame.bet * activeGame.multiplier);
     setBarPayout(potential.toLocaleString() + ' RC');
 
@@ -249,8 +251,8 @@
     setTimeout(function(){ grid.classList.remove('shake'); }, 450);
 
     // Update bar
-    barMultiplier.textContent = '0.00x';
-    barMultiplier.className = 'value lose';
+    if(barMultiplier) barMultiplier.textContent = '0.00x';
+    
     setBarPayout('-' + activeGame.bet.toLocaleString() + ' RC');
     
 
@@ -283,19 +285,19 @@
   function resetAfterLoss(){
     activeGame = null;
     gameActive = false;
-    setupPanel.style.opacity = '1';
-    setupPanel.style.pointerEvents = 'auto';
+    if(setupPanel) setupPanel.style.opacity = '1';
+    if(setupPanel) setupPanel.style.pointerEvents = 'auto';
     playBtn.disabled = false;
-    playBtn.innerHTML = '<img src="icons/bomb.png" alt="" class="ico" draggable="false"><span>Start Game</span>';
+    playBtn.innerHTML = '<img src="icons/bomb.png" alt="" class="ico" draggable="false"><span>Play</span>';
     cashoutBtn.disabled = true;
-    seedHashEl.textContent = '—';
-    barBet.textContent = '—';
-    barMultiplier.textContent = '1.00x';
-    barMultiplier.className = 'value';
+    if(seedHashEl) seedHashEl.textContent = '—';
+    if(barBet) barBet.textContent = '—';
+    if(barMultiplier) barMultiplier.textContent = '1.00x';
+    if(barMultiplier && barMultiplier.classList) { /* skip */ }
     setBarPayout('—');
     
-    ladder.innerHTML = '<div class="mines-empty">Start a game to see the ladder.</div>';
-    ladderCount.textContent = '—';
+    if(ladder) ladder.innerHTML = '<div class="mines-empty">Start a game to see the ladder.</div>';
+    if(ladderCount) ladderCount.textContent = '—';
     buildGrid();
     markGridDisabled();
   }
@@ -342,8 +344,8 @@
       });
 
       // Update bar
-      barMultiplier.textContent = data.multiplier.toFixed(2) + 'x';
-      barMultiplier.className = 'value win';
+      if(barMultiplier) barMultiplier.textContent = data.multiplier.toFixed(2) + 'x';
+      
       setBarPayout('+' + data.net.toLocaleString() + ' RC');
       
 
@@ -479,7 +481,7 @@
       updateBar();
 
       // Seed hash
-      seedHashEl.textContent = data.game.serverSeedHash.slice(0, 16) + '…';
+      if(seedHashEl) seedHashEl.textContent = data.game.serverSeedHash.slice(0, 16) + '…';
       seedHashEl.title = data.game.serverSeedHash;
 
       // Ladder
@@ -491,15 +493,15 @@
       cashoutBtn.disabled = true;
 
       // Dim setup
-      setupPanel.style.opacity = '.5';
-      setupPanel.style.pointerEvents = 'none';
+      if(setupPanel) setupPanel.style.opacity = '.5';
+      if(setupPanel) setupPanel.style.pointerEvents = 'none';
 
       setBanner('Game started — pick a tile', 'win');
 
     } catch(err){
       Toast.error('Could not start', err.message || 'Try again.');
       playBtn.disabled = false;
-      playBtn.innerHTML = '<img src="icons/bomb.png" alt="" class="ico" draggable="false"><span>Start Game</span>';
+      playBtn.innerHTML = '<img src="icons/bomb.png" alt="" class="ico" draggable="false"><span>Play</span>';
     }
   });
 
@@ -509,8 +511,8 @@
     var t = table || activeGame.multiplierTable;
     if(!t) return;
 
-    ladder.innerHTML = '';
-    ladderCount.textContent = (t.length - 1) + ' tiers';
+    if(ladder) ladder.innerHTML = '';
+    if(ladderCount) ladderCount.textContent = (t.length - 1) + ' tiers';
 
     for(var i = 1; i < t.length; i++){
       var row = document.createElement('div');
@@ -575,14 +577,14 @@
       });
 
       // Bar
-      barBet.textContent = activeGame.bet.toLocaleString() + ' RC';
-      barMultiplier.textContent = activeGame.multiplier.toFixed(2) + 'x';
+      if(barBet) barBet.textContent = activeGame.bet.toLocaleString() + ' RC';
+      if(barMultiplier) barMultiplier.textContent = activeGame.multiplier.toFixed(2) + 'x';
       barMultiplier.className = 'value ' + (activeGame.picks > 0 ? 'accent' : '');
       var potential = Math.floor(activeGame.bet * activeGame.multiplier);
       setBarPayout(potential.toLocaleString() + ' RC');
 
       // Seed
-      seedHashEl.textContent = g.serverSeedHash.slice(0, 16) + '…';
+      if(seedHashEl) seedHashEl.textContent = g.serverSeedHash.slice(0, 16) + '…';
       seedHashEl.title = g.serverSeedHash;
 
       // Ladder
@@ -594,8 +596,8 @@
       cashoutBtn.disabled = (activeGame.picks === 0);
 
       // Dim setup
-      setupPanel.style.opacity = '.5';
-      setupPanel.style.pointerEvents = 'none';
+      if(setupPanel) setupPanel.style.opacity = '.5';
+      if(setupPanel) setupPanel.style.pointerEvents = 'none';
 
       Toast.info('Game resumed', 'You have an active game.');
 
@@ -622,7 +624,7 @@
   /* ---------- Init ---------- */
   buildGrid();
   markGridDisabled();
-  buildCountGrid();
-  ladder.innerHTML = '<div class="mines-empty">Start a game to see the ladder.</div>';
+  if(countGrid) buildCountGrid();
+  if(ladder) ladder.innerHTML = '<div class="mines-empty">Start a game to see the ladder.</div>';
 
 })();
