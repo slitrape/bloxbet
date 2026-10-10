@@ -85,74 +85,161 @@
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
 
-  function drawGrid(w, h){
-    ctx.clearRect(0, 0, w, h);
+  
+  function drawSky(w, h){
+    // Night sky gradient
+    var sky = ctx.createLinearGradient(0, 0, 0, h);
+    sky.addColorStop(0, '#0a1628');
+    sky.addColorStop(0.45, '#12243a');
+    sky.addColorStop(0.75, '#1a3050');
+    sky.addColorStop(1, '#0d1a28');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, w, h);
 
-    // Faint grid
-    ctx.strokeStyle = 'rgba(255,255,255,.04)';
+    // Soft stars
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    var seed = 7;
+    for(var i = 0; i < 48; i++){
+      seed = (seed * 16807 + 11) % 2147483647;
+      var sx = (seed % 1000) / 1000 * w;
+      seed = (seed * 16807 + 11) % 2147483647;
+      var sy = (seed % 1000) / 1000 * h * 0.7;
+      var r = 0.6 + (seed % 3) * 0.4;
+      ctx.beginPath();
+      ctx.arc(sx, sy, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Horizon glow
+    var hg = ctx.createLinearGradient(0, h * 0.7, 0, h);
+    hg.addColorStop(0, 'rgba(255,140,40,0)');
+    hg.addColorStop(1, 'rgba(255,100,20,0.12)');
+    ctx.fillStyle = hg;
+    ctx.fillRect(0, h * 0.65, w, h * 0.35);
+  }
+
+  function drawRocket(x, y, crashed){
+    ctx.save();
+    ctx.translate(x, y);
+
+    // Exhaust beam
+    if(!crashed){
+      var beam = ctx.createLinearGradient(0, 8, 0, 70);
+      beam.addColorStop(0, 'rgba(255,200,80,0.95)');
+      beam.addColorStop(0.35, 'rgba(255,120,30,0.55)');
+      beam.addColorStop(1, 'rgba(255,60,0,0)');
+      ctx.fillStyle = beam;
+      ctx.beginPath();
+      ctx.moveTo(-6, 10);
+      ctx.lineTo(6, 10);
+      ctx.lineTo(14, 70);
+      ctx.lineTo(-14, 70);
+      ctx.closePath();
+      ctx.fill();
+
+      // Core beam
+      var core = ctx.createLinearGradient(0, 8, 0, 55);
+      core.addColorStop(0, 'rgba(255,255,220,0.95)');
+      core.addColorStop(1, 'rgba(255,180,50,0)');
+      ctx.fillStyle = core;
+      ctx.beginPath();
+      ctx.moveTo(-2.5, 10);
+      ctx.lineTo(2.5, 10);
+      ctx.lineTo(5, 50);
+      ctx.lineTo(-5, 50);
+      ctx.closePath();
+      ctx.fill();
+    } else {
+      // Explosion puff
+      ctx.fillStyle = 'rgba(239,68,68,0.45)';
+      ctx.beginPath();
+      ctx.arc(0, 6, 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(251,146,60,0.5)';
+      ctx.beginPath();
+      ctx.arc(-8, 4, 10, 0, Math.PI * 2);
+      ctx.arc(8, 8, 12, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Body
+    ctx.fillStyle = crashed ? '#64748b' : '#e8eef7';
+    ctx.beginPath();
+    ctx.moveTo(0, -28);
+    ctx.quadraticCurveTo(12, -10, 11, 12);
+    ctx.lineTo(-11, 12);
+    ctx.quadraticCurveTo(-12, -10, 0, -28);
+    ctx.closePath();
+    ctx.fill();
+
+    // Nose tip
+    ctx.fillStyle = crashed ? '#ef4444' : '#ff8a00';
+    ctx.beginPath();
+    ctx.moveTo(0, -28);
+    ctx.lineTo(6, -14);
+    ctx.lineTo(-6, -14);
+    ctx.closePath();
+    ctx.fill();
+
+    // Window
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(0, -6, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
     ctx.lineWidth = 1;
-    var cols = 8;
-    var rows = 5;
-    for(var i = 1; i < cols; i++){
-      var x = (w / cols) * i;
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, h);
-      ctx.stroke();
-    }
-    for(var j = 1; j < rows; j++){
-      var y = (h / rows) * j;
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y);
-      ctx.stroke();
-    }
+    ctx.stroke();
+
+    // Fins
+    ctx.fillStyle = crashed ? '#94a3b8' : '#ff6b00';
+    ctx.beginPath();
+    ctx.moveTo(-11, 4);
+    ctx.lineTo(-20, 16);
+    ctx.lineTo(-11, 12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(11, 4);
+    ctx.lineTo(20, 16);
+    ctx.lineTo(11, 12);
+    ctx.closePath();
+    ctx.fill();
+
+    // Engine ring
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(-8, 12, 16, 5);
+
+    ctx.restore();
   }
 
   function drawCurve(w, h, progress, mult, crashed){
-    // The curve occupies the full canvas and grows from bottom-left
-    // progress = 0..1 (elapsed since round start, normalized by an
-    // expected max duration — we don't know when it'll crash so we use
-    // a soft cap around 30s for full width)
-    var expectedMaxSeconds = 30;
-    var expectedMaxMult = Math.exp(0.15 * expectedMaxSeconds); // ≈ 90x
-
-    // Compute points along the curve
-    var points = 80;
+    var expectedMaxSeconds = 50;
+    var points = 100;
     var curvePts = [];
     var maxElapsed = Math.max(progress * expectedMaxSeconds, 0.001);
 
     for(var i = 0; i <= points; i++){
       var t = (i / points) * maxElapsed;
-      var m = Math.exp(0.15 * t);
-      if(m > mult && i > 0){
-        m = mult;
-      }
+      var m = Math.exp(0.06 * t);
+      if(m > mult && i > 0) m = mult;
       curvePts.push({ t: t, m: m });
       if(m >= mult) break;
     }
 
-    // Normalize to canvas
-    // X axis: time (0 → expectedMaxSeconds capped at actual elapsed * 1.1)
-    // Y axis: multiplier (1 → max(expectedMaxMult, mult))
-    var xMax = Math.max(maxElapsed, 2) * 1.15;
-    var yMax = Math.max(mult * 1.15, 2);
+    var xMax = Math.max(maxElapsed, 3) * 1.12;
+    var yMax = Math.max(mult * 1.2, 2.2);
 
-    function px(t){
-      return (t / xMax) * (w - 40) + 30;
-    }
-    function py(m){
-      return h - 30 - ((m - 1) / (yMax - 1)) * (h - 60);
-    }
+    function px(t){ return (t / xMax) * (w - 50) + 36; }
+    function py(m){ return h - 36 - ((m - 1) / (yMax - 1)) * (h - 72); }
 
-    // Gradient fill under the curve
+    // Trail glow under path
     var grad = ctx.createLinearGradient(0, 0, 0, h);
     if(crashed){
-      grad.addColorStop(0, 'rgba(239,68,68,.35)');
+      grad.addColorStop(0, 'rgba(239,68,68,0.28)');
       grad.addColorStop(1, 'rgba(239,68,68,0)');
     } else {
-      grad.addColorStop(0, 'rgba(34,197,94,.35)');
-      grad.addColorStop(1, 'rgba(34,197,94,0)');
+      grad.addColorStop(0, 'rgba(56,189,248,0.22)');
+      grad.addColorStop(1, 'rgba(56,189,248,0)');
     }
 
     ctx.beginPath();
@@ -160,47 +247,40 @@
     for(var k = 0; k < curvePts.length; k++){
       ctx.lineTo(px(curvePts[k].t), py(curvePts[k].m));
     }
-    ctx.lineTo(px(curvePts[curvePts.length-1].t), h - 30);
-    ctx.lineTo(px(0), h - 30);
+    var last = curvePts[curvePts.length - 1];
+    ctx.lineTo(px(last.t), h - 36);
+    ctx.lineTo(px(0), h - 36);
     ctx.closePath();
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // Curve line
+    // Path line
     ctx.beginPath();
     ctx.moveTo(px(0), py(1));
     for(var k2 = 0; k2 < curvePts.length; k2++){
       ctx.lineTo(px(curvePts[k2].t), py(curvePts[k2].m));
     }
-    ctx.strokeStyle = crashed ? '#ef4444' : '#22c55e';
+    ctx.strokeStyle = crashed ? '#ef4444' : '#7dd3fc';
     ctx.lineWidth = 2.5;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
-    ctx.shadowColor = crashed ? 'rgba(239,68,68,.6)' : 'rgba(34,197,94,.6)';
-    ctx.shadowBlur = 12;
+    ctx.shadowColor = crashed ? 'rgba(239,68,68,0.55)' : 'rgba(125,211,252,0.55)';
+    ctx.shadowBlur = 14;
     ctx.stroke();
     ctx.shadowBlur = 0;
 
-    // Head dot
-    var last = curvePts[curvePts.length-1];
-    if(last){
-      ctx.beginPath();
-      ctx.arc(px(last.t), py(last.m), 6, 0, Math.PI * 2);
-      ctx.fillStyle = crashed ? '#ef4444' : '#22c55e';
-      ctx.shadowColor = crashed ? 'rgba(239,68,68,.9)' : 'rgba(34,197,94,.9)';
-      ctx.shadowBlur = 20;
-      ctx.fill();
-      ctx.shadowBlur = 0;
-
-      ctx.beginPath();
-      ctx.arc(px(last.t), py(last.m), 12, 0, Math.PI * 2);
-      ctx.strokeStyle = crashed ? 'rgba(239,68,68,.4)' : 'rgba(34,197,94,.4)';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-    }
+    // Rocket at tip
+    var tipX = px(last.t);
+    var tipY = py(last.m);
+    drawRocket(tipX, tipY, crashed);
   }
 
-  function animate(){
+  function drawGrid(w, h){
+    // Kept for compatibility — sky drawn in animate instead
+    drawSky(w, h);
+  }
+
+function animate(){
     var rect = canvas.getBoundingClientRect();
     var w = rect.width;
     var h = rect.height;
@@ -218,7 +298,7 @@
 
     if(state.phase === 'running'){
       var elapsed = (now - localStartMs);
-      displayMult = Math.exp(0.15 * (elapsed / 1000));
+      displayMult = Math.exp(0.06 * (elapsed / 1000));
       // Cap at crashed point if we've crashed
       if(crashedMult !== null){
         displayMult = crashedMult;

@@ -24,14 +24,14 @@ const CONFIG = {
     { min: 50,   max: Infinity,  fee: 0.03 }
   ],
 
-  waitingMs:       7000,
-  startingMs:      500,
+  waitingMs:       10000,
+  startingMs:      2000,
   crashedMs:       4000,
 
   // Grace period after last viewer leaves before pausing the loop
   idleGraceMs:     15000,
 
-  growthPerSecond: 0.15,
+  growthPerSecond: 0.06,
   tickMs: 100,
 
   minBet: 10,

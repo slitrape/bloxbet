@@ -551,11 +551,6 @@
       </div>
     </div>
   </div>
-  <div class="side-promo side-promo-hw">
-    <div class="side-promo-label">Halloween Event</div>
-    <div class="side-promo-title" id="hwCountdown">—</div>
-    <div class="side-promo-sub">Ends Oct 31, 2026 · Complete missions &amp; earn exclusive rewards!</div>
-  </div>
   <div class="sidebar-collapse-bar">
     <button type="button" id="sidebarCollapseBtn" title="Collapse sidebar">
       <img src="icons/chevron-left.png" alt="" class="ico">
@@ -1007,11 +1002,12 @@
 
 
 
+
+
+
 <script id="bb-shell-js">
 (function(){
   function qs(id){ return document.getElementById(id); }
-
-  /* Collapse */
   var side = qs('appSidebar');
   var main = document.querySelector('main.main');
   var colBtn = qs('sidebarCollapseBtn');
@@ -1021,28 +1017,17 @@
     if(main) main.classList.toggle('expanded', !!on);
     try { localStorage.setItem('bb_sidebar_collapsed', on ? '1' : '0'); } catch(e){}
   }
-  try {
-    if(localStorage.getItem('bb_sidebar_collapsed') === '1') applyCollapsed(true);
-  } catch(e){}
+  try { if(localStorage.getItem('bb_sidebar_collapsed') === '1') applyCollapsed(true); } catch(e){}
   if(colBtn){
     colBtn.addEventListener('click', function(e){
       e.preventDefault();
-      e.stopPropagation();
       applyCollapsed(!(side && side.classList.contains('collapsed')));
     });
   }
-
-  /* Originals dropdown */
   var dd = qs('originalsDropdown');
   var btn = qs('originalsToggle');
-  if(btn && dd){
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      dd.classList.toggle('open');
-    });
-  }
+  if(btn && dd) btn.addEventListener('click', function(e){ e.preventDefault(); dd.classList.toggle('open'); });
 
-  /* Online */
   function setOnline(n){
     var el = qs('onlineCount');
     if(el) el.textContent = Number(n).toLocaleString();
@@ -1061,24 +1046,9 @@
     setOnline(1200 + Math.floor((Date.now()/60000)%80) + Math.floor(Math.random()*12));
   }
   refreshOnline();
-  setInterval(refreshOnline, 20000);
+  setInterval(refreshOnline, 15000);
 
-  /* Halloween countdown ends Oct 31 2026 */
-  var end = new Date(2026, 9, 31, 23, 59, 59).getTime();
-  function tickHw(){
-    var el = qs('hwCountdown');
-    if(!el) return;
-    var diff = Math.max(0, end - Date.now());
-    var d = Math.floor(diff/86400000);
-    var h = Math.floor((diff%86400000)/3600000);
-    var m = Math.floor((diff%3600000)/60000);
-    var s = Math.floor((diff%60000)/1000);
-    el.textContent = d + 'd ' + h + 'h ' + m + 'm ' + s + 's';
-  }
-  tickHw();
-  setInterval(tickHw, 1000);
-
-  /* Chat */
+  /* ===== Live global chat ===== */
   var chatBox = qs('sideChatMessages');
   var chatForm = qs('sideChatForm');
   var chatInput = qs('sideChatInput');
@@ -1087,43 +1057,101 @@
   var loggedIn = false;
   try { loggedIn = !!(localStorage.getItem('bb_token') && localStorage.getItem('bb_user')); } catch(e){}
   if(typeof Auth !== 'undefined' && Auth.isLoggedIn) loggedIn = !!Auth.isLoggedIn();
+  var seenIds = {};
 
-  function appendChat(msg){
+  function appendChat(msg, opts){
     if(!chatBox) return;
+    var id = msg.id || (msg.user + ':' + msg.text + ':' + (msg.at||''));
+    if(seenIds[id]) return;
+    seenIds[id] = true;
     var empty = chatBox.querySelector('.side-chat-empty');
     if(empty) empty.remove();
     var row = document.createElement('div');
     row.className = 'side-chat-msg';
+    if(opts && opts.mine) row.classList.add('mine');
     var u = document.createElement('span');
     u.className = 'side-chat-user';
-    u.textContent = '@' + (msg.user||'user');
+    u.textContent = '@' + (msg.user || msg.username || 'user');
+    if(msg.nameColor) u.style.color = msg.nameColor;
     var t = document.createElement('span');
     t.className = 'side-chat-text';
-    t.textContent = ' ' + (msg.text||'');
+    t.textContent = ' ' + (msg.text || msg.message || '');
     row.appendChild(u);
     row.appendChild(t);
     chatBox.appendChild(row);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
+
+  async function loadChat(){
+    if(!loggedIn || typeof Auth === 'undefined' || !Auth.api) return;
+    try {
+      var res = await Auth.api('/chat/global');
+      if(!res || !res.ok) return;
+      var data = await res.json();
+      var msgs = data.messages || data.chat || data || [];
+      if(!Array.isArray(msgs)) return;
+      chatBox.innerHTML = '';
+      seenIds = {};
+      msgs.slice().reverse().forEach(function(m){
+        appendChat({
+          id: m.id,
+          user: m.username || m.user,
+          text: m.message || m.text,
+          nameColor: m.name_color || m.nameColor,
+          at: m.created_at || m.createdAt
+        });
+      });
+    } catch(e){}
+  }
+
   if(loggedIn){
     if(chatInput) chatInput.disabled = false;
     if(chatSend) chatSend.disabled = false;
     if(chatLock){ chatLock.textContent = 'Live'; chatLock.classList.add('live'); }
     if(chatBox) chatBox.innerHTML = '';
-    appendChat({ user: 'System', text: 'Welcome to Live Chat.' });
+    loadChat();
+    setInterval(loadChat, 4000);
   }
+
   if(chatForm){
-    chatForm.addEventListener('submit', function(e){
+    chatForm.addEventListener('submit', async function(e){
       e.preventDefault();
       if(!loggedIn) return;
       var text = (chatInput && chatInput.value || '').trim();
       if(!text) return;
       var me = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
-      appendChat({ user: (me && me.username) || 'You', text: text });
+      var name = (me && me.username) || 'You';
+      appendChat({ user: name, text: text, id: 'local-' + Date.now() }, { mine: true });
       if(chatInput) chatInput.value = '';
-      try { if(Auth.api) Auth.api('/chat', { method:'POST', body: JSON.stringify({ message: text }) }).catch(function(){}); } catch(err){}
+      try {
+        if(Auth.api){
+          var res = await Auth.api('/chat/global', { method:'POST', body: JSON.stringify({ message: text }) });
+          if(res && res.ok){
+            var d = await res.json();
+            if(d.chat || d.message) loadChat();
+          }
+        }
+      } catch(err){}
     });
   }
+
+  /* Websocket live updates if available */
+  try {
+    if(typeof Auth !== 'undefined' && Auth.onMessage){
+      Auth.onMessage(function(msg){
+        if(!msg) return;
+        if(msg.type === 'global_chat' && msg.chat){
+          appendChat({
+            id: msg.chat.id,
+            user: msg.chat.username,
+            text: msg.chat.message,
+            nameColor: msg.chat.name_color || msg.chat.nameColor
+          });
+        }
+        if(msg.type === 'users_online' && msg.count != null) setOnline(msg.count);
+      });
+    }
+  } catch(e){}
 })();
 </script>
 

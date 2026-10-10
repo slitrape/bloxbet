@@ -2657,6 +2657,26 @@ function startNewRound(){
 
   crashEngineState.phaseTimer = setTimeout(() => {
     if(crashEngineState.currentRoundId !== roundId) return;
+    // Don't start the round unless at least one player has bet
+    if(crashEngineState.bets.size < 1){
+      broadcastAll({
+        type: 'crash_waiting_players',
+        roundId,
+        message: 'Waiting for players to join…'
+      });
+      // Keep waiting — re-check every few seconds
+      const recheck = () => {
+        if(crashEngineState.currentRoundId !== roundId) return;
+        if(crashEngineState.state !== CRASH_STATE.WAITING) return;
+        if(crashEngineState.bets.size >= 1){
+          beginStartingPhase(roundId);
+        } else {
+          crashEngineState.phaseTimer = setTimeout(recheck, 3000);
+        }
+      };
+      crashEngineState.phaseTimer = setTimeout(recheck, 3000);
+      return;
+    }
     beginStartingPhase(roundId);
   }, crashEngine.CONFIG.waitingMs);
 }

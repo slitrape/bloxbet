@@ -572,3 +572,26 @@ body.bb-ui .crash-multiplier {
   font-weight: 900;
   letter-spacing: -0.02em;
 }
+
+/* Professional crash stage */
+body.bb-ui .crash-canvas-wrap {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #0a1628;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+}
+body.bb-ui .crash-big-mult .value {
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+body.bb-ui .crash-big-mult .value.state-running { color: #7dd3fc; }
+body.bb-ui .crash-big-mult .value.state-crashed { color: #f87171; }
+body.bb-ui .crash-state-badge { display: none !important; }
+body.bb-ui .crash-panel {
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: #12141c;
+}

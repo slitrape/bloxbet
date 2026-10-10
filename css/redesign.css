@@ -1752,3 +1752,73 @@ body.bb-ui .sidebar.collapsed .side-dropdown-toggle {
 /* Hide residual Settings ghost from old bottom chrome */
 body.bb-ui .sidebar ~ .settings-fab,
 body.bb-ui aside + .settings-link { display: none !important; }
+
+/* Discord promo card */
+.promo-card.discord {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  border-color: rgba(88, 101, 242, 0.35) !important;
+}
+.promo-card.discord .promo-banner {
+  background-size: cover !important;
+  background-position: center center !important;
+}
+.promo-card.discord .promo-banner::after {
+  background: linear-gradient(90deg, rgba(8,10,16,0.92) 0%, rgba(8,10,16,0.7) 48%, rgba(8,10,16,0.2) 100%) !important;
+}
+.promo-card.discord .promo-tag {
+  color: #a5b4fc !important;
+}
+.promo-card.discord:hover {
+  border-color: rgba(88, 101, 242, 0.55) !important;
+  box-shadow: 0 0 28px rgba(88, 101, 242, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Hover glow on homepage boxes */
+body.bb-ui .promo-card {
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+body.bb-ui .promo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 32px rgba(255, 140, 0, 0.18);
+}
+body.bb-ui .orig-card {
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+body.bb-ui .orig-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 0 36px rgba(255, 140, 0, 0.28);
+  border-color: rgba(255, 138, 0, 0.45);
+}
+body.bb-ui .home-hero {
+  transition: box-shadow .2s ease;
+}
+body.bb-ui .home-hero:hover {
+  box-shadow: 0 0 40px rgba(255, 120, 0, 0.15);
+}
+
+/* Coinflip recent = same layout as open matches */
+body.bb-ui .pvp-recent {
+  display: flex !important;
+  flex-direction: column;
+  gap: .65rem;
+}
+body.bb-ui .pvp-recent-item,
+body.bb-ui .pvp-recent .pvp-match {
+  display: grid !important;
+  grid-template-columns: 1.2fr auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.15rem !important;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: #12141c;
+  min-height: 96px;
+}
+body.bb-ui .pvp-recent-item:hover,
+body.bb-ui .pvp-recent .pvp-match:hover {
+  border-color: rgba(255,138,0,0.35);
+  box-shadow: 0 0 24px rgba(255,138,0,0.12);
+}

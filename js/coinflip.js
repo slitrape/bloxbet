@@ -805,16 +805,38 @@
 
       pvpRecentEl.innerHTML = '';
       rows.forEach(m => {
-        const winner = m.winnerId === m.creatorId ? m.creatorUsername : (m.joinerUsername || '?');
-        const loser  = m.winnerId === m.creatorId ? (m.joinerUsername || '?') : m.creatorUsername;
+        const result = m.result || 'heads';
+        const bet = Number(m.bet) || 0;
         const item = document.createElement('div');
-        item.className = 'pvp-recent-item pvp-recent-clickable';
+        item.className = 'pvp-match pvp-recent-clickable';
         item.style.cursor = 'pointer';
         item.title = 'View match';
+        const cSide = m.creatorChoice || 'heads';
+        const jSide = m.joinerChoice || (cSide === 'heads' ? 'tails' : 'heads');
         item.innerHTML =
-          '<img src="icons/coin-' + (m.result || 'heads') + '.png" alt="" draggable="false">' +
-          '<span class="pvp-recent-name">' + escapeHtml(winner) + ' beat ' + escapeHtml(loser) + '</span>' +
-          '<span class="pvp-recent-net">+' + fmtFull(Math.floor(m.bet * 0.96)) + '</span>';
+          '<div class="pvp-row-players">' +
+            '<div class="pvp-player">' +
+              '<div class="pvp-player-av">' +
+                '<span class="pvp-side-badge ' + cSide + '"><img src="icons/coin-' + cSide + '.png" alt="" draggable="false"></span>' +
+              '</div>' +
+              '<div class="pvp-player-name">' + escapeHtml(m.creatorUsername || '?') + '</div>' +
+            '</div>' +
+            '<div class="pvp-vs">VS</div>' +
+            '<div class="pvp-player">' +
+              '<div class="pvp-player-av">' +
+                '<span class="pvp-side-badge ' + jSide + '"><img src="icons/coin-' + jSide + '.png" alt="" draggable="false"></span>' +
+              '</div>' +
+              '<div class="pvp-player-name">' + escapeHtml(m.joinerUsername || '?') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="pvp-row-coin">' +
+            '<img src="icons/coin-' + result + '.png" alt="' + result + '" class="pvp-coin-lg" draggable="false">' +
+          '</div>' +
+          '<div class="pvp-row-value">' +
+            '<div class="pvp-pot"><img src="icons/coin.png" alt="" class="pvp-gem" draggable="false">' + fmtFull(bet) + '</div>' +
+            '<div class="pvp-range">' + (result === 'heads' ? 'Heads' : 'Tails') + ' wins</div>' +
+          '</div>' +
+          '<div class="pvp-row-actions"><button type="button" class="pvp-view-btn">View</button></div>';
         item.addEventListener('click', function(){
           if(typeof window.openMatchView === 'function') window.openMatchView(m);
           else showFinishedMatchModal(m);
