@@ -1947,23 +1947,27 @@ app.post('/api/wallet/convert', requireAuth, (req, res) => {
 
 app.post('/api/wallet/deposit', requireAuth, (req, res) => {
   try {
+    try { addCol('users', 'blox_coins', 'REAL DEFAULT 0'); } catch(e){}
     const amount = parseInt(req.body.amount, 10);
     if(!Number.isFinite(amount) || amount <= 0 || !Number.isInteger(amount))
       return res.status(400).json({ error: 'INVALID_AMOUNT' });
     if(amount < 7)
-      return res.status(400).json({ error: 'AMOUNT_OUT_OF_RANGE', min: 100 });
+      return res.status(400).json({ error: 'AMOUNT_OUT_OF_RANGE', min: 7 });
 
     const user = ensureUser(req.userId, req.username);
-    const newBalance = user.balance + amount;
-    updateBalance(user.id, newBalance);
+    const row = db.prepare('SELECT balance, blox_coins FROM users WHERE id = ?').get(user.id) || user;
+    const newBc = Number(row.blox_coins || 0) + amount;
+    db.prepare('UPDATE users SET blox_coins = ?, updated_at = ? WHERE id = ?').run(newBc, Date.now(), user.id);
 
-    stmts.insertTx.run(uuidv4(), user.id, 'deposit', amount, newBalance, null, Date.now());
-    broadcastToUser(user.id, { type: 'balance', balance: newBalance });
+    try {
+      stmts.insertTx.run(uuidv4(), user.id, 'deposit_bc', amount, Number(row.balance || 0), JSON.stringify({ bloxCoins: newBc }), Date.now());
+    } catch(e){}
+    try { broadcastToUser(user.id, { type: 'balance', balance: row.balance, bloxCoins: newBc }); } catch(e){}
 
-    res.json({ ok: true, balance: newBalance, amount });
+    res.json({ ok: true, balance: Number(row.balance || 0), bloxCoins: newBc, amount });
   } catch (err) {
     console.error('[deposit]', err);
-    res.status(500).json({ error: 'SERVER_ERROR' });
+    res.status(500).json({ error: 'SERVER_ERROR', message: String(err && err.message || err) });
   }
 });
 

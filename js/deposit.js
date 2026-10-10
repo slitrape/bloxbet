@@ -68,7 +68,7 @@
       confirmBtn.addEventListener('click', async function(){
         var amount = parseInt(amountInput && amountInput.value, 10);
         if(!Number.isFinite(amount) || amount < 7){
-          if(window.Toast) Toast.error('Invalid amount', 'Minimum is 7 RC.');
+          if(window.Toast) Toast.error('Invalid amount', 'Minimum is 7 BC.');
           return;
         }
 
@@ -89,11 +89,11 @@
           }
 
           var data = await res.json();
-          Auth.updateUser({ balance: data.balance });
-          if(typeof window.paintBalance === 'function') window.paintBalance(data.balance);
+          Auth.updateUser({ balance: data.balance, bloxCoins: data.bloxCoins });
+          if(typeof window.paintBalance === 'function' && data.balance != null) window.paintBalance(data.balance);
 
           if(window.Modal) Modal.close('m-deposit');
-          if(window.Toast) Toast.success('Funds added', '+' + amount.toLocaleString() + ' RC');
+          if(window.Toast) Toast.success('Deposit', '+' + amount.toLocaleString() + ' BC');
           updatePreview();
         } catch (err) {
           if(window.Toast) Toast.error('Deposit failed', err.message || 'Try again.');

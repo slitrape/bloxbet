@@ -85,6 +85,38 @@
 .rw-btn.dark{background:#1a2030;color:#e5e7eb;border:1px solid rgba(255,255,255,.06)}
 .rw-quest-row{display:flex;justify-content:space-between;align-items:center;background:#0d1118;border-radius:12px;padding:.7rem .85rem;font-size:.85rem;font-weight:700;color:#c8d0dc}
 .rw-linked{color:#4ade80;font-size:.78rem}
+
+.rw-cosmetics{margin-top:1.15rem}
+.rw-cos-head{margin-bottom:.85rem}
+.rw-cos-head h2{margin:0;font-size:1rem;font-weight:900;letter-spacing:.06em;color:#fff}
+.rw-cos-head p{margin:.3rem 0 0;color:#8b95a8;font-size:.85rem}
+.rw-cos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+@media(max-width:900px){.rw-cos-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.rw-cos-grid{grid-template-columns:1fr}}
+.rw-cos-card{
+  background:linear-gradient(180deg,#141a24,#10151d);
+  border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:1rem;
+  display:flex;flex-direction:column;gap:.4rem;
+}
+.rw-cos-preview{
+  height:64px;border-radius:12px;display:grid;place-items:center;
+  background:#0d1118;font-weight:900;margin-bottom:.25rem;
+}
+.rw-cos-preview.name-gold{color:#fbbf24;text-shadow:0 0 12px rgba(251,191,36,.35)}
+.rw-cos-preview.name-ice{color:#7dd3fc;text-shadow:0 0 12px rgba(125,211,252,.35)}
+.rw-cos-preview.name-neon{background:linear-gradient(90deg,#f0abfc,#22d3ee);-webkit-background-clip:text;color:transparent}
+.rw-cos-preview.badge{color:#ffb84d;border:1px solid rgba(255,184,77,.25)}
+.rw-cos-preview.ring{position:relative}
+.rw-cos-preview.ring::before{
+  content:'';width:40px;height:40px;border-radius:50%;
+  border:3px solid #ff9f2e;box-shadow:0 0 16px rgba(255,159,46,.45);
+}
+.rw-cos-card h4{margin:0;color:#fff;font-weight:900;font-size:.95rem}
+.rw-cos-card p{margin:0;color:#8b95a8;font-size:.8rem;line-height:1.4;flex:1}
+.rw-cos-meta{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-top:.35rem}
+.rw-cos-meta span{font-size:.72rem;font-weight:800;color:#6b7280}
+.rw-cos-btn{padding:.45rem .7rem!important;font-size:.75rem!important}
+
 </style>
 
 </head>
@@ -294,6 +326,54 @@
         <a class="rw-btn dark" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">View All Quests</a>
       </article>
     </section>
+  
+    <section class="rw-cosmetics">
+      <div class="rw-cos-head">
+        <div>
+          <h2>COSMETICS</h2>
+          <p>Unlock name colors, chat badges, and avatar rings. Equip them from Settings later.</p>
+        </div>
+      </div>
+      <div class="rw-cos-grid">
+        <article class="rw-cos-card">
+          <div class="rw-cos-preview name-gold">Gold Name</div>
+          <h4>Gold Name Color</h4>
+          <p>Shiny gold username in chat &amp; leaderboard.</p>
+          <div class="rw-cos-meta"><span>Level 5</span><button type="button" class="rw-btn dark rw-cos-btn" data-cos="name_gold">Unlock</button></div>
+        </article>
+        <article class="rw-cos-card">
+          <div class="rw-cos-preview name-ice">Ice Name</div>
+          <h4>Ice Name Color</h4>
+          <p>Cool blue name glow for your profile.</p>
+          <div class="rw-cos-meta"><span>Level 10</span><button type="button" class="rw-btn dark rw-cos-btn" data-cos="name_ice">Unlock</button></div>
+        </article>
+        <article class="rw-cos-card">
+          <div class="rw-cos-preview badge">VIP</div>
+          <h4>VIP Chat Badge</h4>
+          <p>Show a VIP badge next to your messages.</p>
+          <div class="rw-cos-meta"><span>500 wagered</span><button type="button" class="rw-btn dark rw-cos-btn" data-cos="badge_vip">Unlock</button></div>
+        </article>
+        <article class="rw-cos-card">
+          <div class="rw-cos-preview ring"></div>
+          <h4>Ember Avatar Ring</h4>
+          <p>Orange animated ring around your avatar.</p>
+          <div class="rw-cos-meta"><span>Day 7 streak</span><button type="button" class="rw-btn dark rw-cos-btn" data-cos="ring_ember">Unlock</button></div>
+        </article>
+        <article class="rw-cos-card">
+          <div class="rw-cos-preview name-neon">Neon</div>
+          <h4>Neon Name Color</h4>
+          <p>Electric neon gradient for your username.</p>
+          <div class="rw-cos-meta"><span>Level 15</span><button type="button" class="rw-btn dark rw-cos-btn" data-cos="name_neon">Unlock</button></div>
+        </article>
+        <article class="rw-cos-card">
+          <div class="rw-cos-preview badge">OG</div>
+          <h4>OG Chat Badge</h4>
+          <p>Early supporter badge in live chat.</p>
+          <div class="rw-cos-meta"><span>Promo / claim</span><button type="button" class="rw-btn dark rw-cos-btn" data-cos="badge_og">Unlock</button></div>
+        </article>
+      </div>
+    </section>
+
   </div>
 </main>
 
@@ -743,6 +823,16 @@
         } else Toast.error('Invalid', 'Code not found');
       } else Toast.error('Login','Sign in first');
     } catch(e){ Toast.error('Failed','Try again'); }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  document.querySelectorAll('.rw-cos-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(window.Toast) Toast.info('Cosmetics', 'Requirement not met yet — keep playing!');
+    });
   });
 })();
 </script>

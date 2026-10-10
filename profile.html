@@ -1961,90 +1961,178 @@ function bannerClassFromBanner(banner){
 
 
 
-<script>
+
+
+
+
+
+<div class="modal-overlay" id="bannerModal">
+  <div class="modal banner-upload-modal">
+    <div class="modal-head">
+      <div>
+        <h3>Profile banner</h3>
+        <p>Drag & drop an image, upload a file, or paste a URL</p>
+      </div>
+      <button class="modal-close" type="button" id="bannerModalClose"><img src="icons/close.png" class="ico" alt=""></button>
+    </div>
+    <div class="modal-body">
+      <div class="banner-drop" id="bannerDrop">
+        <div class="banner-drop-inner">
+          <div class="banner-drop-icon">⤒</div>
+          <strong>Drop image here</strong>
+          <span>PNG, JPG, WebP · up to ~3MB</span>
+          <label class="btn btn-primary btn-sm banner-browse">
+            Browse files
+            <input type="file" id="pfBannerFile" accept="image/*" hidden>
+          </label>
+        </div>
+        <img id="bannerPreview" class="banner-preview" alt="" hidden>
+      </div>
+      <div class="banner-or">or use image URL</div>
+      <input type="url" id="pfBannerUrl" class="banner-url" placeholder="https://…">
+      <div class="banner-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="pfBannerClearBtn">Remove banner</button>
+        <button type="button" class="btn btn-primary btn-sm" id="pfBannerUrlBtn">Save banner</button>
+      </div>
+      <div class="hint" id="pfBannerStatus"></div>
+    </div>
+  </div>
+</div>
+
+
+<script id="pf-banner-js">
 (function(){
-  var btn = document.getElementById('pfBannerEditBtn');
-  if(btn){
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      if(window.Modal) Modal.open('bannerModal');
-      else {
-        var m = document.getElementById('bannerModal');
-        if(m){ m.classList.add('open'); m.style.display='flex'; }
-      }
-    });
+  function $(id){ return document.getElementById(id); }
+  var overlay = $('bannerModal');
+  var drop = $('bannerDrop');
+  var fileInput = $('pfBannerFile');
+  var urlInput = $('pfBannerUrl');
+  var preview = $('bannerPreview');
+  var status = $('pfBannerStatus');
+  var banner = $('pfBanner');
+  var pendingDataUrl = '';
+
+  function openModal(){
+    if(!overlay) return;
+    overlay.classList.add('open');
+    overlay.style.display = 'flex';
+    overlay.setAttribute('aria-hidden', 'false');
   }
-  var urlBtn = document.getElementById('pfBannerUrlBtn');
-  var urlInput = document.getElementById('pfBannerUrl');
-  var fileInput = document.getElementById('pfBannerFile');
-  var clearBtn = document.getElementById('pfBannerClearBtn');
-  var banner = document.getElementById('pfBanner');
-  function setBannerUrl(url){
+  function closeModal(){
+    if(!overlay) return;
+    overlay.classList.remove('open');
+    overlay.style.display = '';
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+  function setStatus(t){ if(status) status.textContent = t || ''; }
+
+  function applyBanner(url){
     if(!banner) return;
     if(url){
-      banner.style.backgroundImage = 'url('+JSON.stringify(url)+')';
+      banner.style.backgroundImage = 'url(' + JSON.stringify(String(url)) + ')';
       banner.style.backgroundSize = 'cover';
       banner.style.backgroundPosition = 'center';
     } else {
       banner.style.backgroundImage = '';
     }
-    try { localStorage.setItem('bb_profile_banner', url||''); } catch(e){}
+    try { localStorage.setItem('bb_profile_banner', url || ''); } catch(e){}
+    if(typeof Auth !== 'undefined' && Auth.api){
+      Auth.api('/profile/banner', { method:'POST', body: JSON.stringify({ banner: url || '' }) }).catch(function(){});
+    }
   }
-  if(urlBtn && urlInput){
-    urlBtn.addEventListener('click', function(){
-      var v = (urlInput.value||'').trim();
-      if(!v) return;
-      setBannerUrl(v);
-      if(window.Modal) Modal.close('bannerModal');
-      if(window.Toast) Toast.success('Banner','Updated');
+
+  function showPreview(url){
+    pendingDataUrl = url || '';
+    if(preview && url){
+      preview.src = url;
+      preview.hidden = false;
+      if(drop) drop.classList.add('has-preview');
+    } else if(preview){
+      preview.hidden = true;
+      if(drop) drop.classList.remove('has-preview');
+    }
+  }
+
+  function readFile(file){
+    if(!file || !file.type || file.type.indexOf('image/') !== 0){
+      setStatus('Please choose an image file');
+      return;
+    }
+    if(file.size > 3.5 * 1024 * 1024){
+      setStatus('Image is too large (max ~3MB)');
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(){
+      showPreview(String(reader.result || ''));
+      setStatus('Preview ready — click Save banner');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  var btn = $('pfBannerEditBtn');
+  if(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      openModal();
+    });
+  }
+  var closeBtn = $('bannerModalClose');
+  if(closeBtn) closeBtn.addEventListener('click', closeModal);
+  if(overlay){
+    overlay.addEventListener('click', function(e){
+      if(e.target === overlay) closeModal();
+    });
+  }
+
+  if(drop){
+    ;['dragenter','dragover'].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.add('drag'); });
+    });
+    ;['dragleave','drop'].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.remove('drag'); });
+    });
+    drop.addEventListener('drop', function(e){
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if(f) readFile(f);
     });
   }
   if(fileInput){
     fileInput.addEventListener('change', function(){
       var f = fileInput.files && fileInput.files[0];
-      if(!f) return;
-      var reader = new FileReader();
-      reader.onload = function(){
-        setBannerUrl(String(reader.result||''));
-        if(window.Modal) Modal.close('bannerModal');
-        if(window.Toast) Toast.success('Banner','Uploaded');
-      };
-      reader.readAsDataURL(f);
+      if(f) readFile(f);
     });
   }
+  var saveBtn = $('pfBannerUrlBtn');
+  if(saveBtn){
+    saveBtn.addEventListener('click', function(){
+      var url = pendingDataUrl || ((urlInput && urlInput.value) || '').trim();
+      if(!url){ setStatus('Add a file or URL first'); return; }
+      applyBanner(url);
+      setStatus('Banner updated');
+      if(window.Toast) Toast.success('Banner', 'Updated');
+      closeModal();
+    });
+  }
+  var clearBtn = $('pfBannerClearBtn');
   if(clearBtn){
     clearBtn.addEventListener('click', function(){
-      setBannerUrl('');
-      if(window.Modal) Modal.close('bannerModal');
+      pendingDataUrl = '';
+      if(urlInput) urlInput.value = '';
+      showPreview('');
+      applyBanner('');
+      setStatus('Banner removed');
+      if(window.Toast) Toast.info('Banner', 'Removed');
+      closeModal();
     });
   }
   try {
     var saved = localStorage.getItem('bb_profile_banner');
-    if(saved) setBannerUrl(saved);
+    if(saved) applyBanner(saved);
   } catch(e){}
 })();
 </script>
-
-
-
-<div class="modal-overlay" id="bannerModal">
-  <div class="modal" style="max-width:420px">
-    <div class="modal-head">
-      <div><h3>Profile banner</h3><p>Add an image URL or upload a file</p></div>
-      <button class="modal-close" type="button" onclick="Modal.close('bannerModal')"><img src="icons/close.png" class="ico" alt=""></button>
-    </div>
-    <div class="modal-body">
-      <label style="font-size:.75rem;font-weight:800;color:#8b95a8;display:block;margin-bottom:.35rem">Image URL</label>
-      <input type="url" id="pfBannerUrl" placeholder="https://…" style="width:100%;box-sizing:border-box;background:#0e1219;border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;padding:.65rem .75rem;font-family:inherit;margin-bottom:.75rem">
-      <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-        <button type="button" class="btn btn-primary btn-sm" id="pfBannerUrlBtn">Use URL</button>
-        <label class="btn btn-ghost btn-sm" style="cursor:pointer;margin:0">Upload<input type="file" id="pfBannerFile" accept="image/*" hidden></label>
-        <button type="button" class="btn btn-ghost btn-sm" id="pfBannerClearBtn">Clear</button>
-      </div>
-      <div class="hint" id="pfBannerStatus" style="margin-top:.5rem;font-size:.75rem;color:#6b7280"></div>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
