@@ -438,6 +438,7 @@
 <script src="js/toasts.js"></script>
 <script src="js/modals.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/prefs.js"></script>
 <script src="js/app.js"></script>
 <script src="js/deposit.js"></script>
 <script src="js/admin-link.js"></script>
@@ -810,6 +811,8 @@
 
 
 
+
+<script src="js/prefs.js"></script>
 <script id="set-page-js">
 (function(){
   document.querySelectorAll('.set-nav-item').forEach(function(btn){
@@ -831,6 +834,12 @@
       var next = !el.classList.contains('on');
       el.classList.toggle('on', next);
       localStorage.setItem(key, next ? '1' : '0');
+      if(window.BBPrefs){
+        document.body.classList.toggle('reduce-motion', localStorage.getItem('bb_pref_reduce_motion')==='1');
+        document.body.classList.toggle('private-profile', localStorage.getItem('bb_pref_private')==='1');
+        document.body.classList.toggle('hide-online', localStorage.getItem('bb_pref_hide_online')==='1');
+      }
+      if(window.Toast) Toast.success('Saved', 'Preference updated');
     });
   }
   bindToggle('togSound', 'bb_pref_sound', true);
@@ -842,38 +851,95 @@
   bindToggle('togRewardNotif', 'bb_pref_notif_reward', true);
   bindToggle('togChatNotif', 'bb_pref_notif_chat', true);
 
-  var discordBtn = document.getElementById('setDiscordLink');
-  if(discordBtn){
-    discordBtn.addEventListener('click', function(){
-      try { localStorage.setItem('bb_discord_linked', '1'); } catch(e){}
-      discordBtn.textContent = 'Linked';
-      discordBtn.style.background = 'rgba(34,197,94,.15)';
-      discordBtn.style.color = '#4ade80';
-    });
-    try {
-      if(localStorage.getItem('bb_discord_linked') === '1'){
-        discordBtn.textContent = 'Linked';
-        discordBtn.style.background = 'rgba(34,197,94,.15)';
-        discordBtn.style.color = '#4ade80';
+  function bindSelect(id, key){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.value = localStorage.getItem(key) || '';
+    el.addEventListener('change', function(){
+      localStorage.setItem(key, el.value);
+      if(window.BBPrefs){
+        // re-apply cosmetics
+        document.body.dispatchEvent(new Event('storage'));
+        location.reload();
       }
-    } catch(e){}
+      if(window.Toast) Toast.success('Saved', 'Updated');
+    });
+  }
+  bindSelect('setNameColor', 'bb_pref_name_color');
+  bindSelect('setBadge', 'bb_pref_badge_style');
+  bindSelect('setRing', 'bb_pref_ring');
+  var lang = document.getElementById('setLang');
+  if(lang){
+    lang.value = localStorage.getItem('bb_pref_lang') || 'en';
+    lang.addEventListener('change', function(){
+      localStorage.setItem('bb_pref_lang', lang.value);
+      if(window.BBPrefs && BBPrefs.applyLang) BBPrefs.applyLang();
+      if(window.Toast) Toast.success('Language', lang.options[lang.selectedIndex].text);
+    });
   }
 
+  async function startDiscord(){
+    try {
+      if(typeof Auth === 'undefined' || !Auth.api){
+        window.open('https://discord.gg/bloxbet', '_blank');
+        return;
+      }
+      var res = await Auth.api('/discord/oauth-url');
+      var data = await res.json();
+      if(data && data.url){
+        location.href = data.url;
+        return;
+      }
+      // Fallback invite if app not configured
+      window.open(data.invite || 'https://discord.gg/bloxbet', '_blank');
+      localStorage.setItem('bb_discord_linked', '1');
+      markDiscordLinked();
+      if(window.Toast) Toast.info('Discord', data.message || 'Opened Discord invite');
+    } catch(e){
+      window.open('https://discord.gg/bloxbet', '_blank');
+    }
+  }
+  function markDiscordLinked(){
+    var a = document.getElementById('setDiscordLink');
+    if(!a) return;
+    a.textContent = 'Linked';
+    a.style.background = 'rgba(34,197,94,.15)';
+    a.style.color = '#4ade80';
+  }
+  var discordBtn = document.getElementById('setDiscordLink');
+  if(discordBtn){
+    discordBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      startDiscord();
+    });
+  }
+  // status from server
+  (async function(){
+    try {
+      if(!Auth.isLoggedIn()) return;
+      var res = await Auth.api('/discord/status');
+      if(res.ok){
+        var d = await res.json();
+        if(d.linked){ localStorage.setItem('bb_discord_linked','1'); markDiscordLinked(); }
+      }
+    } catch(e){}
+    if(localStorage.getItem('bb_discord_linked')==='1') markDiscordLinked();
+  })();
+
   try {
-    var u = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
+    var u = Auth.getUser();
     if(u){
       var name = u.displayName || u.username || 'User';
       var n = document.getElementById('setName'); if(n) n.textContent = name;
       var h = document.getElementById('setHandle'); if(h) h.textContent = '@' + (u.username || 'user');
       var id = document.getElementById('setUserId'); if(id) id.textContent = u.id || '—';
       var av = document.getElementById('setAvatar');
-      if(av && u.id){
-        av.innerHTML = '<img src="/api/avatar/'+encodeURIComponent(u.id)+'" alt="" referrerpolicy="no-referrer">';
-      }
+      if(av && u.id) av.innerHTML = '<img src="/api/avatar/'+encodeURIComponent(u.id)+'" alt="" referrerpolicy="no-referrer">';
     }
   } catch(e){}
 })();
 </script>
+
 
 </body>
 </html>

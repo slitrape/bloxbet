@@ -16,7 +16,7 @@
   };
   Object.values(AUDIO).forEach(a => { a.preload='auto'; a.volume=0.5; });
   function playSound(name){
-    try { const a = AUDIO[name]; if(!a) return; a.currentTime = 0; a.play().catch(()=>{}); } catch {}
+    try { const a = AUDIO[name]; if(!a) return; if(window.BBPrefs && !BBPrefs.soundEnabled()) return; a.currentTime = 0; a.play().catch(()=>{}); } catch {}
   }
 
   const $  = (s) => document.querySelector(s);

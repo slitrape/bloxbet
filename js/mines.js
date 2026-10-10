@@ -398,6 +398,9 @@
   }
 
   playBtn.addEventListener('click', async function(){
+    var betEl = document.getElementById('minesBet') || document.querySelector('[data-bet], #betAmount, input[name=bet]');
+    var betVal = betEl ? parseInt(betEl.value,10) : 0;
+    if(window.BBPrefs && !BBPrefs.shouldConfirmBet(betVal)) return;
     if(gameActive) return;
 
     var bet = parseInt(betInput.value, 10);

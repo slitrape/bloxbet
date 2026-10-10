@@ -29,6 +29,7 @@ const shop = require('./shop');
 const social = require('./social');
 
 const app = express();
+app.set('trust proxy', 1);
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'change-this-in-production-bloxbet';
@@ -44,6 +45,114 @@ const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'bloxbet.db');
 
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
+
+/* Discord OAuth + guild join */
+const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || '';
+const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || '';
+const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN || '';
+const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID || '';
+const DISCORD_REDIRECT = process.env.DISCORD_REDIRECT || '';
+
+function discordRedirectUri(req){
+  // Always absolute site-root callback — never relative to /settings.html etc.
+  if(DISCORD_REDIRECT && /^https?:\/\//i.test(DISCORD_REDIRECT) && DISCORD_REDIRECT.indexOf('/settings.html') === -1){
+    return DISCORD_REDIRECT.replace(/\/$/, '');
+  }
+  const host = req.get('x-forwarded-host') || req.get('host') || 'localhost:3000';
+  const proto = (req.get('x-forwarded-proto') || req.protocol || 'https').split(',')[0].trim();
+  return proto + '://' + host + '/api/discord/callback';
+}
+
+app.get('/api/discord/oauth-url', requireAuth, (req, res) => {
+  if(!DISCORD_CLIENT_ID){
+    return res.json({
+      ok: false,
+      configured: false,
+      invite: 'https://discord.gg/bloxbet',
+      message: 'Discord app not configured. Set DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_BOT_TOKEN, DISCORD_GUILD_ID.'
+    });
+  }
+  const redirect = discordRedirectUri(req);
+  const state = Buffer.from(JSON.stringify({ uid: req.userId, t: Date.now() })).toString('base64url');
+  const url = 'https://discord.com/api/oauth2/authorize?client_id=' + encodeURIComponent(DISCORD_CLIENT_ID)
+    + '&redirect_uri=' + encodeURIComponent(redirect)
+    + '&response_type=code&scope=' + encodeURIComponent('identify guilds.join')
+    + '&state=' + encodeURIComponent(state);
+  res.json({ ok: true, configured: true, url, redirect });
+});
+
+app.get('/api/discord/callback', async (req, res) => {
+  try {
+    const code = String(req.query.code || '');
+    const stateRaw = String(req.query.state || '');
+    if(!code || !DISCORD_CLIENT_ID || !DISCORD_CLIENT_SECRET){
+      return res.redirect('/profile.html?discord=error');
+    }
+    let uid = null;
+    try { uid = JSON.parse(Buffer.from(stateRaw, 'base64url').toString()).uid; } catch(e){}
+    const redirect = discordRedirectUri(req);
+    const body = new URLSearchParams({
+      client_id: DISCORD_CLIENT_ID,
+      client_secret: DISCORD_CLIENT_SECRET,
+      grant_type: 'authorization_code',
+      code,
+      redirect_uri: redirect
+    });
+    const tokenRes = await fetch('https://discord.com/api/oauth2/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body
+    });
+    if(!tokenRes.ok) return res.redirect('/profile.html?discord=token_fail');
+    const tokenData = await tokenRes.json();
+    const access = tokenData.access_token;
+    const meRes = await fetch('https://discord.com/api/users/@me', {
+      headers: { Authorization: 'Bearer ' + access }
+    });
+    if(!meRes.ok) return res.redirect('/profile.html?discord=user_fail');
+    const me = await meRes.json();
+    try { addCol('users', 'discord_id', 'TEXT'); } catch(e){}
+    try { addCol('users', 'discord_username', 'TEXT'); } catch(e){}
+    if(uid){
+      db.prepare('UPDATE users SET discord_id = ?, discord_username = ?, updated_at = ? WHERE id = ?')
+        .run(String(me.id), me.username || me.global_name || '', Date.now(), String(uid));
+    }
+    // Auto-add to guild
+    if(DISCORD_BOT_TOKEN && DISCORD_GUILD_ID && access){
+      try {
+        await fetch('https://discord.com/api/guilds/' + DISCORD_GUILD_ID + '/members/' + me.id, {
+          method: 'PUT',
+          headers: {
+            Authorization: 'Bot ' + DISCORD_BOT_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ access_token: access })
+        });
+      } catch(e){ console.error('[discord join]', e); }
+    }
+    res.redirect('/profile.html?discord=linked');
+  } catch (err) {
+    console.error('[discord/callback]', err);
+    res.redirect('/profile.html?discord=error');
+  }
+});
+
+app.get('/api/discord/status', requireAuth, (req, res) => {
+  try {
+    try { addCol('users', 'discord_id', 'TEXT'); } catch(e){}
+    try { addCol('users', 'discord_username', 'TEXT'); } catch(e){}
+    const u = db.prepare('SELECT discord_id, discord_username FROM users WHERE id = ?').get(String(req.userId));
+    res.json({
+      linked: !!(u && u.discord_id),
+      discordId: u && u.discord_id || null,
+      discordUsername: u && u.discord_username || null,
+      configured: !!(DISCORD_CLIENT_ID && DISCORD_BOT_TOKEN && DISCORD_GUILD_ID)
+    });
+  } catch (err) {
+    res.json({ linked: false, configured: false });
+  }
+});
+
 
 app.get('/api/auth/ban-status', (req, res) => {
   try {

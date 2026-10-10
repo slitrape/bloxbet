@@ -1149,6 +1149,7 @@
 <script src="js/toasts.js"></script>
 <script src="js/modals.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/prefs.js"></script>
 <script src="js/app.js"></script>
 <script src="js/deposit.js"></script>
 <script src="js/admin-link.js"></script>
@@ -2139,5 +2140,20 @@ function bannerClassFromBanner(banner){
 })();
 </script>
 
+
+<script>
+(function(){
+  try {
+    var params = new URLSearchParams(location.search);
+    var viewUser = params.get('user');
+    var me = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
+    var isSelf = !viewUser || (me && String(me.id) === String(viewUser));
+    if(!isSelf && localStorage.getItem('bb_pref_private') === '1'){
+      // viewing someone else who may be private - server should enforce; client hide extra stats
+      document.querySelectorAll('[data-public-stat], .pf-stat-wagered').forEach(function(el){ el.style.display='none'; });
+    }
+  } catch(e){}
+})();
+</script>
 </body>
 </html>

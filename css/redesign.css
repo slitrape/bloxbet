@@ -2950,3 +2950,23 @@ body.bb-ui .sidebar.collapsed .side-row-top .side-hamburger{
 body.bb-ui .sidebar.collapsed .side-row-top .side-nav-item{
   grid-column:1;grid-row:2;
 }
+
+body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after{
+  animation-duration:.01ms !important;
+  animation-iteration-count:1 !important;
+  transition-duration:.01ms !important;
+  scroll-behavior:auto !important;
+}
+.name-gold{color:#fbbf24 !important;text-shadow:0 0 10px rgba(251,191,36,.35)}
+.name-ice{color:#7dd3fc !important;text-shadow:0 0 10px rgba(125,211,252,.3)}
+.name-neon{
+  background:linear-gradient(90deg,#f0abfc,#22d3ee);
+  -webkit-background-clip:text;background-clip:text;color:transparent !important;
+}
+#navAvatar.ring-ember, #setAvatar.ring-ember, #pfAvatar.ring-ember,
+.ring-ember{
+  box-shadow:0 0 0 2px #ff9f2e, 0 0 14px rgba(255,159,46,.55) !important;
+  border-radius:50%;
+}
+body.private-profile .pf-stat-wagered,
+body.private-profile [data-public-stat]{display:none !important}
