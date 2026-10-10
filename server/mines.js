@@ -6,7 +6,7 @@
 const crypto = require('crypto');
 
 const GRID_SIZE = 25;         // 5x5
-const HOUSE_EDGE = 0.82;      // real ~18% edge; UI shows 3%
+const HOUSE_EDGE = 0.35;      // real ~65% edge; UI shows 3%
 const DISPLAY_HOUSE_EDGE = 0.03; // shown to players
 
 /* ------------------------------------------------------------

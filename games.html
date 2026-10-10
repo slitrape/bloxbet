@@ -122,7 +122,7 @@
             <div class="currency-box" id="currencyBox">
       <button type="button" class="currency-box-btn" id="currencySwitchBtn">
         <span class="currency-amt" id="currencyAmt">0</span>
-        <span class="currency-code" id="currencySwitchLabel">RC</span>
+        <span class="currency-code" id="currencySwitchLabel">BC</span>
         <svg class="currency-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="currency-switch-menu" id="currencySwitchMenu">
@@ -196,7 +196,7 @@
     </a>
     <div class="side-pf">
       <div class="side-pf-title"><img src="icons/check.png" alt="" class="ico"> Provably Fair</div>
-      <p>Every game uses cryptographic seeds so outcomes can be verified. Displayed house edge 3%.</p>
+      <p>Every game uses cryptographic seeds so outcomes can be verified. Fair 3% house edge on all originals.</p>
     </div>
   </div>
 </aside>
@@ -693,7 +693,7 @@
 
 <script id="bb-wallet-js">
 (function(){
-  var cur = localStorage.getItem('bb_pref_currency') || 'rc';
+  var cur = localStorage.getItem('bb_pref_currency') || 'bc';
   function user(){
     try {
       if(typeof Auth !== 'undefined' && Auth.getUser) return Auth.getUser();

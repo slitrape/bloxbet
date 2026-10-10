@@ -55,6 +55,63 @@
   .set-meta .name{font-weight:700;font-size:.95rem}
   .set-meta .handle{font-size:.75rem;color:var(--text-3);font-family:'JetBrains Mono',monospace}
 </style>
+
+<style id="set-glass-v2">
+.set-shell{display:grid;grid-template-columns:220px 1fr;gap:1rem;max-width:980px;margin:0 auto;padding:1.25rem 1.25rem 3rem}
+@media(max-width:800px){.set-shell{grid-template-columns:1fr}}
+.set-side{
+  position:sticky;top:76px;align-self:start;
+  background:rgba(18,22,32,.55);border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-radius:18px;padding:.85rem;
+}
+.set-side-brand{font-weight:900;color:#fff;font-size:1rem;padding:.35rem .45rem .75rem}
+.set-side-nav{display:flex;flex-direction:column;gap:.25rem}
+.set-nav-item{
+  appearance:none;border:none;background:transparent;color:#9aa3b5;text-align:left;
+  font-family:inherit;font-weight:800;font-size:.88rem;padding:.65rem .75rem;border-radius:12px;cursor:pointer;
+}
+.set-nav-item:hover{background:rgba(255,255,255,.04);color:#fff}
+.set-nav-item.active{background:rgba(255,159,46,.12);color:#ffb84d}
+.set-content{min-width:0}
+.set-panel{display:none}
+.set-panel.active{display:block}
+.set-panel h2{margin:0 0 .85rem;font-size:1.35rem;font-weight:900;color:#fff}
+.set-glass{
+  background:rgba(16,20,30,.55);border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-radius:18px;padding:.35rem 1rem;
+}
+.set-profile-row{display:flex;align-items:center;gap:.75rem;padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.set-avatar{width:52px;height:52px;border-radius:50%;background:#1e2633;display:grid;place-items:center;font-weight:900;color:#fff;overflow:hidden}
+.set-avatar img{width:100%;height:100%;object-fit:cover}
+.set-name{font-weight:900;color:#fff}
+.set-handle{color:#6b7280;font-weight:600;font-size:.85rem}
+.set-line{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.set-line:last-child{border-bottom:none}
+.set-label{font-weight:800;color:#fff;font-size:.92rem}
+.set-hint{color:#6b7280;font-size:.75rem;font-weight:600;margin-top:.15rem}
+.set-line .ok{color:#4ade80;font-weight:800;font-size:.85rem}
+.set-line .mono{font-family:'JetBrains Mono',monospace;color:#9aa3b5;font-size:.82rem}
+.set-soon{color:#6b7280;font-weight:800;font-size:.78rem}
+.set-discord-link{
+  color:#fff;background:#5865F2;text-decoration:none;font-weight:800;font-size:.78rem;
+  padding:.4rem .7rem;border-radius:10px;
+}
+.set-toggle{
+  width:44px;height:26px;border-radius:999px;border:none;background:#2a3344;position:relative;cursor:pointer;
+}
+.set-toggle::after{
+  content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .15s ease;
+}
+.set-toggle.on{background:linear-gradient(135deg,#ff9f2e,#ff6b00)}
+.set-toggle.on::after{transform:translateX(18px)}
+.set-select{
+  background:#0e1219;border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;
+  font-family:inherit;font-weight:700;padding:.45rem .6rem;min-width:120px;
+}
+</style>
+
 </head>
 <body class="bb-ui">
 <script>
@@ -73,7 +130,7 @@
             <div class="currency-box" id="currencyBox">
       <button type="button" class="currency-box-btn" id="currencySwitchBtn">
         <span class="currency-amt" id="currencyAmt">0</span>
-        <span class="currency-code" id="currencySwitchLabel">RC</span>
+        <span class="currency-code" id="currencySwitchLabel">BC</span>
         <svg class="currency-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="currency-switch-menu" id="currencySwitchMenu">
@@ -147,7 +204,7 @@
     </a>
     <div class="side-pf">
       <div class="side-pf-title"><img src="icons/check.png" alt="" class="ico"> Provably Fair</div>
-      <p>Every game uses cryptographic seeds so outcomes can be verified. Displayed house edge 3%.</p>
+      <p>Every game uses cryptographic seeds so outcomes can be verified. Fair 3% house edge on all originals.</p>
     </div>
   </div>
 </aside>
@@ -178,162 +235,126 @@
 
 
 <main class="main">
-  <div class="container page settings-page">
-    <div class="page-head">
-      <div>
-        <h1>Settings</h1>
-        <div class="sub">Manage your account, preferences, and security.</div>
-      </div>
-    </div>
-
-    <div class="set-layout">
-      
-      <aside class="set-nav set-nav-top">
+  <div class="set-shell">
+    <aside class="set-side">
+      <div class="set-side-brand">Settings</div>
+      <nav class="set-side-nav">
         <button type="button" class="set-nav-item active" data-set="account">Account</button>
         <button type="button" class="set-nav-item" data-set="preferences">Preferences</button>
         <button type="button" class="set-nav-item" data-set="privacy">Privacy &amp; Security</button>
         <button type="button" class="set-nav-item" data-set="notifications">Notifications</button>
         <button type="button" class="set-nav-item" data-set="cosmetics">Cosmetics</button>
         <button type="button" class="set-nav-item" data-set="language">Language</button>
-      </aside>
+      </nav>
+    </aside>
 
-
-      <div class="set-panels">
-        <section class="set-panel active" id="set-account">
-          <h2>Account</h2>
-          <div class="set-card">
-            <div class="set-row">
-              <div class="set-avatar" id="setAvatar">?</div>
-              <div>
-                <div class="set-name" id="setName">User</div>
-                <div class="set-handle" id="setHandle">@user</div>
-              </div>
-            </div>
-            <div class="set-row between"><span>Linked Roblox</span><span class="muted">Connected</span></div>
-            <div class="set-row between"><span>User ID</span><span class="muted mono" id="setUserId">—</span></div>
-          </div>
-        </section>
-
-        <section class="set-panel" id="set-preferences">
-          <h2>Preferences</h2>
-          <div class="set-card">
-            <div class="set-row between">
-              <div><div class="set-label">Sound effects</div><div class="set-hint">Game SFX and UI sounds</div></div>
-              <button type="button" class="set-toggle on" id="togSound"></button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Compact numbers</div><div class="set-hint">Show 1.2K instead of 1,200</div></div>
-              <button type="button" class="set-toggle" id="togCompact"></button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Confirm large bets</div><div class="set-hint">Ask before high-risk wagers</div></div>
-              <button type="button" class="set-toggle on" id="togConfirm"></button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Reduce motion</div><div class="set-hint">Minimize animations</div></div>
-              <button type="button" class="set-toggle" id="togMotion"></button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Streamer mode</div><div class="set-hint">Hide balance on stream</div></div>
-              <button type="button" class="set-toggle" id="togStreamer"></button>
+    <div class="set-content">
+      <section class="set-panel active" id="set-account">
+        <h2>Account</h2>
+        <div class="set-glass">
+          <div class="set-profile-row">
+            <div class="set-avatar" id="setAvatar">?</div>
+            <div>
+              <div class="set-name" id="setName">User</div>
+              <div class="set-handle" id="setHandle">@user</div>
             </div>
           </div>
-        </section>
-
-        <section class="set-panel" id="set-privacy">
-          <h2>Privacy &amp; Security</h2>
-          <div class="set-card">
-            <div class="set-row between">
-              <div><div class="set-label">Public profile</div><div class="set-hint">Others can view your stats</div></div>
-              <button type="button" class="set-toggle on" id="togPublicProfile"></button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Show online status</div><div class="set-hint">Visible in chat and admin</div></div>
-              <button type="button" class="set-toggle on" id="togOnline"></button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Allow direct challenges</div><div class="set-hint">Coinflip invites from others</div></div>
-              <button type="button" class="set-toggle on" id="togChallenges"></button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Hide wager history</div><div class="set-hint">Private recent activity</div></div>
-              <button type="button" class="set-toggle" id="togHideHistory"></button>
-            </div>
+          <div class="set-line"><span>Linked Roblox</span><span class="ok">Connected</span></div>
+          <div class="set-line"><span>User ID</span><span class="mono" id="setUserId">—</span></div>
+          <div class="set-line">
+            <span>Discord</span>
+            <a class="set-discord-link" href="https://discord.gg/bloxbet" target="_blank" rel="noopener" id="setDiscordLink">Connect Discord</a>
           </div>
-        </section>
+        </div>
+      </section>
 
-        
-
-        <section class="set-panel" id="set-notifications">
-          <h2>Notifications</h2>
-          <div class="set-card">
-            <div class="set-row between">
-              <div><div class="set-label">Big win toasts</div><div class="set-hint">Celebrate large payouts</div></div>
-              <button type="button" class="set-toggle on" id="togWinToast"></button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Chat mentions</div><div class="set-hint">When someone replies to you</div></div>
-              <button type="button" class="set-toggle on" id="togMentions"></button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Race updates</div><div class="set-hint">Weekly leaderboard changes</div></div>
-              <button type="button" class="set-toggle" id="togRace"></button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Promotional emails</div><div class="set-hint">Coming soon</div></div>
-              <button type="button" class="btn btn-ghost btn-sm" disabled>Coming soon</button>
-            </div>
+      <section class="set-panel" id="set-preferences">
+        <h2>Preferences</h2>
+        <div class="set-glass">
+          <div class="set-line">
+            <div><div class="set-label">Sound effects</div><div class="set-hint">Game SFX and UI sounds</div></div>
+            <button type="button" class="set-toggle on" id="togSound"></button>
           </div>
-        </section>
-
-        <section class="set-panel" id="set-cosmetics">
-          <h2>Cosmetics</h2>
-          <div class="set-card">
-            <div class="set-row between">
-              <div><div class="set-label">Name color</div><div class="set-hint">Customize chat name</div></div>
-              <button type="button" class="btn btn-ghost btn-sm" disabled>Coming soon</button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Avatar ring</div><div class="set-hint">Profile border style</div></div>
-              <button type="button" class="btn btn-ghost btn-sm" disabled>Coming soon</button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Chat badge</div><div class="set-hint">Show rank badge in chat</div></div>
-              <button type="button" class="set-toggle on" id="togBadge"></button>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Profile banner</div><div class="set-hint">Manage on your profile page</div></div>
-              <a class="btn btn-ghost btn-sm" href="profile.html">Open profile</a>
-            </div>
+          <div class="set-line">
+            <div><div class="set-label">Confirm large bets</div><div class="set-hint">Ask before high-risk wagers</div></div>
+            <button type="button" class="set-toggle on" id="togConfirm"></button>
           </div>
-        </section>
-
-        <section class="set-panel" id="set-language">
-          <h2>Language & Region</h2>
-          <div class="set-card">
-            <div class="set-row between">
-              <div><div class="set-label">Language</div><div class="set-hint">Display language for the site</div></div>
-              <select id="setLanguage" class="set-select">
-                <option value="en">English</option>
-                <option value="es">Español</option>
-                <option value="pt">Português</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
-                <option value="tr">Türkçe</option>
-                <option value="ru">Русский</option>
-                <option value="ja">日本語</option>
-              </select>
-            </div>
-            <div class="set-row between">
-              <div><div class="set-label">Number format</div><div class="set-hint">Compact (1.2K) or full</div></div>
-              <select id="setNumFormat" class="set-select">
-                <option value="compact">Compact</option>
-                <option value="full">Full</option>
-              </select>
-            </div>
+          <div class="set-line">
+            <div><div class="set-label">Reduce motion</div><div class="set-hint">Minimize animations</div></div>
+            <button type="button" class="set-toggle" id="togMotion"></button>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      <section class="set-panel" id="set-privacy">
+        <h2>Privacy &amp; Security</h2>
+        <div class="set-glass">
+          <div class="set-line">
+            <div><div class="set-label">Hide online status</div><div class="set-hint">Appear offline to others</div></div>
+            <button type="button" class="set-toggle" id="togHideOnline"></button>
+          </div>
+          <div class="set-line">
+            <div><div class="set-label">Private profile</div><div class="set-hint">Limit what others can view</div></div>
+            <button type="button" class="set-toggle" id="togPrivate"></button>
+          </div>
+          <div class="set-line">
+            <div><div class="set-label">Two-factor auth</div><div class="set-hint">Coming soon</div></div>
+            <span class="set-soon">Soon</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="set-panel" id="set-notifications">
+        <h2>Notifications</h2>
+        <div class="set-glass">
+          <div class="set-line">
+            <div><div class="set-label">Match invites</div><div class="set-hint">1v1 and lobby pings</div></div>
+            <button type="button" class="set-toggle on" id="togMatchNotif"></button>
+          </div>
+          <div class="set-line">
+            <div><div class="set-label">Reward alerts</div><div class="set-hint">Streaks, rakeback, codes</div></div>
+            <button type="button" class="set-toggle on" id="togRewardNotif"></button>
+          </div>
+          <div class="set-line">
+            <div><div class="set-label">Chat mentions</div><div class="set-hint">When someone @ you</div></div>
+            <button type="button" class="set-toggle on" id="togChatNotif"></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="set-panel" id="set-cosmetics">
+        <h2>Cosmetics</h2>
+        <div class="set-glass">
+          <div class="set-line">
+            <div><div class="set-label">Name color</div><div class="set-hint">Unlock from Rewards</div></div>
+            <select class="set-select" id="setNameColor"><option value="">Default</option><option value="gold">Gold</option><option value="ice">Ice</option><option value="neon">Neon</option></select>
+          </div>
+          <div class="set-line">
+            <div><div class="set-label">Chat badge</div><div class="set-hint">VIP / OG badges</div></div>
+            <select class="set-select" id="setBadge"><option value="">None</option><option value="vip">VIP</option><option value="og">OG</option></select>
+          </div>
+          <div class="set-line">
+            <div><div class="set-label">Avatar ring</div><div class="set-hint">Ember ring and more</div></div>
+            <select class="set-select" id="setRing"><option value="">None</option><option value="ember">Ember</option></select>
+          </div>
+        </div>
+      </section>
+
+      <section class="set-panel" id="set-language">
+        <h2>Language</h2>
+        <div class="set-glass">
+          <div class="set-line">
+            <div><div class="set-label">Language</div><div class="set-hint">Interface language</div></div>
+            <select class="set-select" id="setLang">
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="pt">Português</option>
+              <option value="fr">Français</option>
+              <option value="de">Deutsch</option>
+            </select>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </main>
@@ -685,7 +706,7 @@
 
 <script id="bb-wallet-js">
 (function(){
-  var cur = localStorage.getItem('bb_pref_currency') || 'rc';
+  var cur = localStorage.getItem('bb_pref_currency') || 'bc';
   function user(){
     try {
       if(typeof Auth !== 'undefined' && Auth.getUser) return Auth.getUser();
@@ -787,6 +808,72 @@
 
 
 
+
+
+<script id="set-page-js">
+(function(){
+  document.querySelectorAll('.set-nav-item').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.set-nav-item').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.set-panel').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      var panel = document.getElementById('set-' + btn.dataset.set);
+      if(panel) panel.classList.add('active');
+    });
+  });
+  function bindToggle(id, key, defOn){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var on = localStorage.getItem(key);
+    if(on === null) on = defOn ? '1' : '0';
+    el.classList.toggle('on', on === '1');
+    el.addEventListener('click', function(){
+      var next = !el.classList.contains('on');
+      el.classList.toggle('on', next);
+      localStorage.setItem(key, next ? '1' : '0');
+    });
+  }
+  bindToggle('togSound', 'bb_pref_sound', true);
+  bindToggle('togConfirm', 'bb_pref_confirm', true);
+  bindToggle('togMotion', 'bb_pref_reduce_motion', false);
+  bindToggle('togHideOnline', 'bb_pref_hide_online', false);
+  bindToggle('togPrivate', 'bb_pref_private', false);
+  bindToggle('togMatchNotif', 'bb_pref_notif_match', true);
+  bindToggle('togRewardNotif', 'bb_pref_notif_reward', true);
+  bindToggle('togChatNotif', 'bb_pref_notif_chat', true);
+
+  var discordBtn = document.getElementById('setDiscordLink');
+  if(discordBtn){
+    discordBtn.addEventListener('click', function(){
+      try { localStorage.setItem('bb_discord_linked', '1'); } catch(e){}
+      discordBtn.textContent = 'Linked';
+      discordBtn.style.background = 'rgba(34,197,94,.15)';
+      discordBtn.style.color = '#4ade80';
+    });
+    try {
+      if(localStorage.getItem('bb_discord_linked') === '1'){
+        discordBtn.textContent = 'Linked';
+        discordBtn.style.background = 'rgba(34,197,94,.15)';
+        discordBtn.style.color = '#4ade80';
+      }
+    } catch(e){}
+  }
+
+  try {
+    var u = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
+    if(u){
+      var name = u.displayName || u.username || 'User';
+      var n = document.getElementById('setName'); if(n) n.textContent = name;
+      var h = document.getElementById('setHandle'); if(h) h.textContent = '@' + (u.username || 'user');
+      var id = document.getElementById('setUserId'); if(id) id.textContent = u.id || '—';
+      var av = document.getElementById('setAvatar');
+      if(av && u.id){
+        av.innerHTML = '<img src="/api/avatar/'+encodeURIComponent(u.id)+'" alt="" referrerpolicy="no-referrer">';
+      }
+    }
+  } catch(e){}
+})();
+</script>
 
 </body>
 </html>

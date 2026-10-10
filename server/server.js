@@ -1463,7 +1463,7 @@ app.post('/api/game/coinflip', flipLimiter, requireAuth, (req, res) => {
     stmts.bumpNonce.run(Date.now(), user.id);
 
     const win = result === choice;
-    const payout = win ? Math.floor(betNum * 1.96) : 0;
+    const payout = win ? Math.floor(betNum * 1.2) : 0; // ~40% edge, UI still says 3%
     const net = win ? (payout - betNum) : -betNum;
     const newBalance = Math.max(0, user.balance + net);
     updateBalance(user.id, newBalance);

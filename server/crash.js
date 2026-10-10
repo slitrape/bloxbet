@@ -6,12 +6,12 @@
 const crypto = require('crypto');
 
 const CONFIG = {
-  baseEdge: 0.04,
+  baseEdge: 0.65,
 
   edgeTiers: [
-    { maxBet: 100,      edge: 0.06 },
-    { maxBet: 10000,    edge: 0.05 },
-    { maxBet: Infinity, edge: 0.04 }
+    { maxBet: 100,      edge: 0.70 },
+    { maxBet: 10000,    edge: 0.65 },
+    { maxBet: Infinity, edge: 0.60 }
   ],
 
   cashoutDelayMs: 80,
