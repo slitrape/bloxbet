@@ -9,8 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/home-redesign.css">
 </head>
-<body>
+<body class="home-redesign">
 <script>
 (function(){
   try {
@@ -21,278 +22,372 @@
 })();
 </script>
 
-
 <div id="bbLoader" class="bb-loader">
   <div class="bb-loader-bg"></div>
   <div class="bb-loader-veil"></div>
   <div class="bb-loader-vignette"></div>
   <div class="bb-loader-glow"></div>
-
   <div class="bb-leaves">
-    <div class="bb-leaf amber">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
-    <div class="bb-leaf rust">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
-    <div class="bb-leaf crimson">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
-    <div class="bb-leaf gold">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
-    <div class="bb-leaf copper">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
-    <div class="bb-leaf deep">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
-    <div class="bb-leaf amber">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
-    <div class="bb-leaf rust">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
-    <div class="bb-leaf crimson">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
-    <div class="bb-leaf gold">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
-    <div class="bb-leaf copper">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
-    <div class="bb-leaf deep">
-      <svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg>
-    </div>
+    <div class="bb-leaf amber"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf rust"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf crimson"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
+    <div class="bb-leaf gold"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
   </div>
-
   <div class="bb-loader-inner">
     <div class="bb-loader-lockup">
-      <div class="bb-loader-mark">
-        <img src="icons/bloxbet.png" alt="BloxBet" draggable="false">
-      </div>
-      <div class="bb-loader-text">
-        <span class="bb-blox">Blox</span><span class="bb-bet">Bet</span>
-      </div>
+      <div class="bb-loader-mark"><img src="icons/bloxbet.png" alt="BloxBet" draggable="false"></div>
+      <div class="bb-loader-text"><span class="bb-blox">Blox</span><span class="bb-bet">Bet</span></div>
     </div>
-    <div class="bb-loader-bar">
-      <div class="bb-loader-fill"></div>
-    </div>
+    <div class="bb-loader-bar"><div class="bb-loader-fill"></div></div>
   </div>
 </div>
 
+<!-- TOP NAV -->
 <nav class="nav">
   <div class="nav-left">
-    <button class="menu-btn" data-tip="Menu"><img src="icons/menu.png" alt="" class="ico" draggable="false"></button>
     <a href="index.html" class="nav-logo">
       <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
-      <span class="nav-logo-text">BloxBet</span>
+      <span class="nav-logo-text">BLOXBET</span>
     </a>
   </div>
-  <div class="nav-center" id="navCenter">
-    <div class="balance-chip" id="navBalanceChip">
-      <div>
-        <div class="label">Balance</div>
-        <div class="value"><span data-balance data-balance="0">0</span><span class="unit">RC</span></div>
-      </div>
-      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')">
-        <img src="icons/plus.png" alt="" class="ico" draggable="false">
-      </button>
-    </div>
+
+  <div class="nav-center-links">
+    <a href="index.html" class="active">🏠 Home</a>
+    <a href="games.html">🎮 Originals</a>
+    <a href="games.html">🎰 Slots</a>
+    <a href="rewards.html">🎁 Rewards</a>
+    <a href="leaderboard.html">🏆 Leaderboard</a>
   </div>
+
   <div class="nav-right">
-    <div class="nav-auth-guest" id="navAuthGuest">
-      <a href="login.html" class="btn btn-primary btn-sm nav-auth-login">Log in</a>
+    <div class="balance-chip" id="navBalanceChip">
+      <div class="value">$ <span data-balance data-balance="0">0.00</span></div>
     </div>
-    <div class="nav-auth-user" id="navAuthUser" hidden>
-      <div class="dropdown">
-        <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications">
-          <img src="icons/bell.png" alt="" class="ico" draggable="false">
-        </button>
-        <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
-      </div>
-      <div class="dropdown">
-        <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">?</button>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="profile.html">Profile</a>
-          <a class="dropdown-item" href="settings.html">Settings</a>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
-        </div>
+    <button class="wallet-btn" onclick="Modal.open('m-deposit')">Wallet</button>
+    <div class="dropdown">
+      <button class="nav-icon-btn" data-dropdown data-tip="Notifications">
+        <img src="icons/bell.png" alt="" class="ico" style="width:16px;height:16px" draggable="false">
+      </button>
+      <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
+    </div>
+    <div class="dropdown">
+      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">?</button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="profile.html">Profile</a>
+        <a class="dropdown-item" href="settings.html">Settings</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
       </div>
     </div>
   </div>
 </nav>
 
+<!-- SIDEBAR -->
 <aside class="sidebar" id="appSidebar">
-  <div class="side-group open" data-group="overview">
-    <button type="button" class="side-group-toggle" aria-expanded="true">
-      <span>Overview</span>
-      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div class="side-group-body">
-      <a class="side-item" data-href="index.html" href="index.html">
-        <span class="icon"><img src="icons/home.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Home</span>
-      </a>
-      <a class="side-item" data-href="rewards.html" href="rewards.html">
-        <span class="icon"><img src="icons/rewards.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Rewards</span>
-      </a>
+  <div class="live-drops">
+    <div class="live-drops-head">
+      <h3>Live Drops</h3>
+      <a href="#">View All</a>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb">🐉</div>
+      <div class="drop-info">
+        <div class="drop-name">Dragon Lore</div>
+        <div class="drop-user">@ShadowKing</div>
+      </div>
+      <div>
+        <div class="drop-price">$127.50</div>
+        <div class="drop-time">3m ago</div>
+      </div>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb">👑</div>
+      <div class="drop-info">
+        <div class="drop-name">Neon Crown</div>
+        <div class="drop-user">@LuckyTaco</div>
+      </div>
+      <div>
+        <div class="drop-price">$84.32</div>
+        <div class="drop-time">3m ago</div>
+      </div>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb">🎩</div>
+      <div class="drop-info">
+        <div class="drop-name">Blue Top Hat</div>
+        <div class="drop-user">@Zyna</div>
+      </div>
+      <div>
+        <div class="drop-price">$42.17</div>
+        <div class="drop-time">5m ago</div>
+      </div>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb">🗡️</div>
+      <div class="drop-info">
+        <div class="drop-name">Golden Blade</div>
+        <div class="drop-user">@PixelFreak</div>
+      </div>
+      <div>
+        <div class="drop-price">$96.00</div>
+        <div class="drop-time">6m ago</div>
+      </div>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb">🦋</div>
+      <div class="drop-info">
+        <div class="drop-name">Cyber Wings</div>
+        <div class="drop-user">@Rogue</div>
+      </div>
+      <div>
+        <div class="drop-price">$73.25</div>
+        <div class="drop-time">8m ago</div>
+      </div>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb">💀</div>
+      <div class="drop-info">
+        <div class="drop-name">Void Helmet</div>
+        <div class="drop-user">@Luna</div>
+      </div>
+      <div>
+        <div class="drop-price">$58.90</div>
+        <div class="drop-time">10m ago</div>
+      </div>
     </div>
   </div>
 
-  <div class="side-group open" data-group="casino">
-    <button type="button" class="side-group-toggle" aria-expanded="true">
-      <span>Casino</span>
-      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div class="side-group-body">
-      <a class="side-item" data-href="coinflip.html" href="coinflip.html">
-        <span class="icon"><img src="icons/coin.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Coinflip</span>
-      </a>
-      <a class="side-item" data-href="mines.html" href="mines.html">
-        <span class="icon"><img src="icons/bomb.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Mines</span>
-      </a>
-      <a class="side-item" data-href="crash.html" href="crash.html">
-        <span class="icon"><img src="icons/chart.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Crash</span>
-      </a>
-      <a class="side-item" data-href="casebattles.html" href="casebattles.html">
-        <span class="icon"><img src="icons/gift.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Case Battles</span>
-      </a>
-      <a class="side-item" data-href="games.html" href="games.html">
-        <span class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">All Games</span>
-      </a>
+  <div class="side-nav-block">
+    <div class="online-count">
+      <span class="online-dot"></span>
+      <span>1,248 Online</span>
     </div>
+    <a class="side-nav-item active" href="index.html">
+      <img src="icons/home.png" alt="" class="ico" draggable="false">
+      <span>Home</span>
+    </a>
+    <a class="side-nav-item" href="games.html">
+      <img src="icons/games.png" alt="" class="ico" draggable="false">
+      <span>Originals</span>
+    </a>
+    <a class="side-nav-item" href="games.html">
+      <img src="icons/sparkle.png" alt="" class="ico" draggable="false">
+      <span>Slots</span>
+    </a>
+    <a class="side-nav-item" href="rewards.html">
+      <img src="icons/gift.png" alt="" class="ico" draggable="false">
+      <span>Promotions</span>
+    </a>
+    <a class="side-nav-item" href="profile.html">
+      <img src="icons/diamond.png" alt="" class="ico" draggable="false">
+      <span>VIP</span>
+    </a>
   </div>
 
-  <div class="side-group open" data-group="social">
-    <button type="button" class="side-group-toggle" aria-expanded="true">
-      <span>Social</span>
-      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div class="side-group-body">
-      <a class="side-item" data-href="community.html" href="community.html">
-        <span class="icon"><img src="icons/community.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Community</span>
-      </a>
-      <a class="side-item" data-href="leaderboard.html" href="leaderboard.html">
-        <span class="icon"><img src="icons/leaderboard.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Leaderboard</span>
-      </a>
-    </div>
-  </div>
-
-  <div class="side-group open" data-group="account">
-    <button type="button" class="side-group-toggle" aria-expanded="true">
-      <span>Account</span>
-      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div class="side-group-body">
-      <a class="side-item" data-href="profile.html" href="profile.html">
-        <span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Profile</span>
-      </a>
-      <a class="side-item" data-href="settings.html" href="settings.html">
-        <span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Settings</span>
-      </a>
-    </div>
-  </div>
-
-  <a class="sidebar-discord" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">
-    <img src="icons/discord.png" alt="" class="ico" draggable="false">
-    <span>Discord</span>
-  </a>
-  <div class="sidebar-toggle">
-    <button type="button" class="sidebar-collapse-btn side-item" title="Collapse sidebar" aria-label="Collapse">
-      <span class="icon"><svg class="collapse-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></span>
-      <span class="label">Collapse</span>
-    </button>
+  <div class="side-promo">
+    <div class="side-promo-label">🎃 Halloween Event</div>
+    <div class="side-promo-title">Ends in 6d 12h</div>
+    <div class="side-promo-sub">Complete missions & earn exclusive rewards!</div>
   </div>
 </aside>
 
+<!-- MAIN CONTENT -->
 <main class="main">
   <div class="container page">
 
-    <div class="guest-hero" id="guestHero" hidden>
-      <div class="guest-hero-inner">
-        <div class="guest-badge">Roblox-linked gaming</div>
-        <h1 class="guest-title">Play fair. Cash out clean.</h1>
-        <p class="guest-sub">Coin flips, crash, mines, and case battles — powered by your Roblox identity. No password stored on BloxBet.</p>
-        <div class="guest-actions">
-          <a href="login.html" class="btn btn-primary">Log in</a>
+    <!-- HERO -->
+    <section class="home-hero">
+      <div class="home-hero-content">
+        <h1>PLAY YOUR <span>WAY</span></h1>
+        <p>Original games. Endless excitement.</p>
+        <div class="home-hero-actions">
+          <a href="games.html" class="btn-hero btn-hero-primary">Explore Games →</a>
+          <a href="rewards.html" class="btn-hero btn-hero-secondary">🎁 View Rewards</a>
         </div>
-        <ul class="guest-points">
-          <li>Verify once with a bio phrase</li>
-          <li>Instant balance after deposit</li>
-          <li>Live leaderboards & rewards</li>
-        </ul>
+      </div>
+      <div class="home-hero-deco"></div>
+    </section>
+
+    <!-- PROMO CARDS -->
+    <div class="promo-row">
+      <div class="promo-card halloween">
+        <div class="promo-tag">Limited Time</div>
+        <h3>HALLOWEEN EVENT</h3>
+        <p>Complete missions & earn exclusive rewards!</p>
+        <div class="promo-icon">🎃</div>
+      </div>
+      <div class="promo-card daily">
+        <div class="promo-tag">Daily</div>
+        <h3>DAILY REWARDS</h3>
+        <p>Log in daily for free rewards!</p>
+        <div class="promo-icon">📦</div>
+      </div>
+      <div class="promo-card weekly">
+        <div class="promo-tag">Weekly</div>
+        <h3>WEEKLY RACE</h3>
+        <p>Climb the leaderboard & win big!</p>
+        <div class="promo-icon">🏆</div>
       </div>
     </div>
 
-    <div id="dashboardHead">
-      <div class="page-head">
-        <div>
-          <h1>Dashboard</h1>
-          <div class="sub" id="welcomeSub">—</div>
+    <!-- BLOXBET ORIGINALS -->
+    <div class="bb-section-head">
+      <h2><span class="crown">👑</span> BLOXBET ORIGINALS</h2>
+      <a href="games.html">View All →</a>
+    </div>
+    <div class="originals-grid">
+      <a class="orig-card" href="games.html">
+        <div class="orig-card-art dice">
+          <span class="badge-orig">Original</span>
+          🎲
         </div>
-        <div class="page-head-actions">
-          <button class="btn btn-ghost" onclick="location.href='coinflip.html'">
-            <img src="icons/coin.png" alt="" class="ico" draggable="false">
-            <span>Coin Flip</span>
-          </button>
-          <button class="btn btn-primary" onclick="Modal.open('m-deposit')">
-            <img src="icons/plus.png" alt="" class="ico" draggable="false">
-            <span>Add Funds</span>
-          </button>
+        <div class="orig-card-body"><h4>DICE</h4></div>
+      </a>
+      <a class="orig-card" href="mines.html">
+        <div class="orig-card-art mines">
+          <span class="badge-orig">Original</span>
+          💣
+        </div>
+        <div class="orig-card-body"><h4>MINES</h4></div>
+      </a>
+      <a class="orig-card" href="crash.html">
+        <div class="orig-card-art crash">
+          <span class="badge-orig">Original</span>
+          🚀
+        </div>
+        <div class="orig-card-body"><h4>CRASH</h4></div>
+      </a>
+      <a class="orig-card" href="coinflip.html">
+        <div class="orig-card-art coinflip">
+          <span class="badge-orig">Original</span>
+          🪙
+        </div>
+        <div class="orig-card-body"><h4>COINFLIP</h4></div>
+      </a>
+      <a class="orig-card" href="games.html">
+        <div class="orig-card-art lucky">
+          <span class="badge-orig">Original</span>
+          🍀
+        </div>
+        <div class="orig-card-body"><h4>LUCKY</h4></div>
+      </a>
+      <a class="orig-card" href="casebattles.html">
+        <div class="orig-card-art cases">
+          <span class="badge-orig">Original</span>
+          📦
+        </div>
+        <div class="orig-card-body"><h4>CASES</h4></div>
+      </a>
+    </div>
+
+    <!-- NEW & TRENDING + RECENT WINS -->
+    <div class="bottom-row">
+      <div>
+        <div class="bb-section-head">
+          <h2>🔥 NEW & TRENDING</h2>
+          <a href="#">View All →</a>
+        </div>
+        <div class="trending-grid">
+          <div class="trend-item">
+            <div class="trend-thumb">🐉</div>
+            <div class="trend-name">Dragon Lore</div>
+            <div class="trend-price">$127.50</div>
+          </div>
+          <div class="trend-item">
+            <div class="trend-thumb">👑</div>
+            <div class="trend-name">Neon Crown</div>
+            <div class="trend-price">$84.32</div>
+          </div>
+          <div class="trend-item">
+            <div class="trend-thumb">🎩</div>
+            <div class="trend-name">Blue Top Hat</div>
+            <div class="trend-price">$42.17</div>
+          </div>
+          <div class="trend-item">
+            <div class="trend-thumb">🗡️</div>
+            <div class="trend-name">Golden Blade</div>
+            <div class="trend-price">$96.00</div>
+          </div>
+          <div class="trend-item">
+            <div class="trend-thumb">🦋</div>
+            <div class="trend-name">Cyber Wings</div>
+            <div class="trend-price">$73.25</div>
+          </div>
+          <div class="trend-item">
+            <div class="trend-thumb">💀</div>
+            <div class="trend-name">Void Helmet</div>
+            <div class="trend-price">$58.90</div>
+          </div>
         </div>
       </div>
 
-    <div class="section-head">
-      <h2>Games</h2>
-      <a class="link" href="games.html">View all</a>
-    </div>
-    <div class="grid" id="featuredGames">
-      <div class="card" style="cursor:default">
-        <div class="card-art"></div>
-        <div class="card-title">Loading…</div>
-      </div>
-    </div>
-
-    <div class="section-head">
-      <h2>Recent Activity</h2>
-      <span class="chip"><span class="live-dot"></span>Live</span>
-    </div>
-    <div class="panel">
-      <div class="panel-body" id="recentActivity">
-        <div class="empty">
-          <div class="icon"><img src="icons/coin.png" alt="" class="ico" draggable="false"></div>
-          <h4>No flips yet</h4>
-          <p>Play your first coin flip to see your history here.</p>
+      <div class="recent-wins">
+        <div class="recent-wins-head">
+          <h3>Recent Wins</h3>
+          <a href="#">View All</a>
         </div>
-      </div>
-    </div>
-
-    <div class="section-head">
-      <h2>Leaderboard</h2>
-      <a class="link" href="leaderboard.html">Full leaderboard</a>
-    </div>
-    <div class="panel">
-      <div class="panel-body" id="lbPreview">
-        <div class="side-empty">Loading…</div>
+        <div class="recent-win-item">
+          <div class="recent-win-avatar">SK</div>
+          <div class="recent-win-info">
+            <div class="recent-win-user">@ShadowKing</div>
+            <div class="recent-win-item-name">Dragon Lore</div>
+          </div>
+          <div>
+            <div class="recent-win-price">$127.50</div>
+            <div class="recent-win-time">3m ago</div>
+          </div>
+        </div>
+        <div class="recent-win-item">
+          <div class="recent-win-avatar">LT</div>
+          <div class="recent-win-info">
+            <div class="recent-win-user">@LuckyTaco</div>
+            <div class="recent-win-item-name">Neon Crown</div>
+          </div>
+          <div>
+            <div class="recent-win-price">$84.32</div>
+            <div class="recent-win-time">3m ago</div>
+          </div>
+        </div>
+        <div class="recent-win-item">
+          <div class="recent-win-avatar">ZY</div>
+          <div class="recent-win-info">
+            <div class="recent-win-user">@Zyna</div>
+            <div class="recent-win-item-name">Blue Top Hat</div>
+          </div>
+          <div>
+            <div class="recent-win-price">$42.17</div>
+            <div class="recent-win-time">5m ago</div>
+          </div>
+        </div>
+        <div class="recent-win-item">
+          <div class="recent-win-avatar">PF</div>
+          <div class="recent-win-info">
+            <div class="recent-win-user">@PixelFreak</div>
+            <div class="recent-win-item-name">Golden Blade</div>
+          </div>
+          <div>
+            <div class="recent-win-price">$96.00</div>
+            <div class="recent-win-time">6m ago</div>
+          </div>
+        </div>
+        <div class="recent-win-item">
+          <div class="recent-win-avatar">RG</div>
+          <div class="recent-win-info">
+            <div class="recent-win-user">@Rogue</div>
+            <div class="recent-win-item-name">Cyber Wings</div>
+          </div>
+          <div>
+            <div class="recent-win-price">$73.25</div>
+            <div class="recent-win-time">8m ago</div>
+          </div>
+        </div>
       </div>
     </div>
 
   </div>
 </main>
 
+<!-- Bottom nav (mobile) -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
     <a class="bn-item" data-href="index.html" href="index.html"><img src="icons/home.png" alt="" class="ico" draggable="false"><span>Home</span></a>
@@ -303,12 +398,13 @@
   </div>
 </nav>
 
+<!-- Deposit modal -->
 <div class="modal-overlay" id="m-deposit">
   <div class="modal">
     <div class="modal-head">
       <div>
         <h3>Add Funds</h3>
-        <p>Top up your RoCoins balance.</p>
+        <p>Top up your balance.</p>
       </div>
       <button class="modal-close" onclick="Modal.close('m-deposit')">
         <img src="icons/close.png" alt="" class="ico" draggable="false">
@@ -341,7 +437,7 @@
     setTimeout(function(){
       loader.classList.add('hide');
       setTimeout(function(){ loader.remove(); }, 520);
-    }, 2000);
+    }, 1600);
   })();
 </script>
 
@@ -355,173 +451,31 @@
 <script src="js/admin-link.js"></script>
 <script>
   (function(){
-    if(typeof Auth === 'undefined'){ console.error('[index] Auth missing'); return; }
+    if(typeof Auth === 'undefined'){ return; }
 
     var loggedIn = Auth.isLoggedIn();
-    var guestEl = document.getElementById('navAuthGuest');
-    var userEl = document.getElementById('navAuthUser');
-    var guestHero = document.getElementById('guestHero');
-    var dashHead = document.getElementById('dashboardHead');
-
-    if(guestEl) guestEl.hidden = !!loggedIn;
-    if(userEl) userEl.hidden = !loggedIn;
-    if(guestHero) guestHero.hidden = !!loggedIn;
-    if(dashHead) dashHead.hidden = !loggedIn;
-
-    if(!loggedIn) return;
-
     var me = Auth.getUser();
 
-    var sub = document.getElementById('welcomeSub');
-    if(sub && me) sub.textContent = '@' + (me.username || 'user');
-
     var navAvatar = document.getElementById('navAvatar');
-    if(navAvatar && typeof renderAvatar === 'function') renderAvatar(navAvatar, me);
-
-    function fillStats(u){
-      if(!u) return;
-      var set = function(k, v){
-        var el = document.querySelector('[data-stat="' + k + '"]');
-        if(el) el.textContent = v;
-      };
-      set('balance', Number(u.balance || 0).toLocaleString());
-      set('wagered', Number(u.totalWagered || 0).toLocaleString());
-      set('games', Number(u.gamesPlayed || 0).toLocaleString());
-      var wr = u.gamesPlayed > 0 ? Math.round((u.gamesWon / u.gamesPlayed) * 100) : 0;
-      set('winrate', wr + '%');
+    if(navAvatar && me && typeof renderAvatar === 'function') {
+      renderAvatar(navAvatar, me);
+    } else if(navAvatar && me) {
+      navAvatar.textContent = (me.username || '?').slice(0,2).toUpperCase();
     }
-    fillStats(me);
-    Auth.refreshUser().then(function(fresh){ if(fresh) fillStats(fresh); });
 
-    var grid = document.getElementById('featuredGames');
-    (async function loadFeatured(){
-      try {
-        var res = await Auth.api('/games');
-        if(!res.ok) throw new Error();
-        var data = await res.json();
-        var list = (data.games || []).filter(function(g){ return g.available; }).slice(0, 4);
-
-        if(list.length === 0){
-          grid.innerHTML =
-            '<div class="empty" style="grid-column:1/-1">' +
-              '<div class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></div>' +
-              '<h4>No games available</h4>' +
-              '<p>Check back soon.</p>' +
-            '</div>';
-          return;
-        }
-
-        grid.innerHTML = '';
-        list.forEach(function(g){
-          var card = document.createElement('div');
-          card.className = 'card';
-          var badgeHtml = g.badge
-            ? '<span class="badge badge-' + g.badge + '">' + g.badge + '</span>'
-            : '';
-          var playersLabel = g.players > 0
-            ? g.players.toLocaleString() + ' playing'
-            : 'No players';
-          var isCoin = (g.id === 'coinflip' || g.icon === 'coin' || /coinflip/i.test(g.route||'') || /coinflip/i.test(g.name||''));
-          if(isCoin){
-            card.className = 'card card-cover';
-            card.innerHTML =
-              '<div class="card-art-fill">' +
-                '<img src="icons/coin.png" alt="Coinflip" draggable="false">' +
-                '<div class="card-live">' +
-                  (g.players > 0 ? '<span class="live-dot"></span>' : '') +
-                  playersLabel +
-                '</div>' +
-                '<button type="button" class="btn btn-primary btn-sm card-play">Play</button>' +
-              '</div>';
-          } else {
-          card.innerHTML =
-            '<div class="card-art">' + Icon(g.icon, 'ico-2xl') + '</div>' +
-            '<div class="card-head">' +
-              '<div class="card-title">' + g.name + '</div>' +
-              badgeHtml +
-            '</div>' +
-            '<div class="card-desc">' + g.desc + '</div>' +
-            '<div class="card-foot">' +
-              '<div class="card-meta">' +
-                (g.players > 0 ? '<span class="live-dot"></span>' : '') +
-                playersLabel +
-              '</div>' +
-              '<button class="btn btn-primary btn-sm">Play</button>' +
-            '</div>';
-          }
-          card.addEventListener('click', function(){
-            if(g.route) location.href = g.route;
-          });
-          grid.appendChild(card);
-        });
-      } catch(e){
-        grid.innerHTML = '<div class="side-empty">Could not load games.</div>';
-      }
-    })();
-
-    var act = document.getElementById('recentActivity');
-    (async function(){
-      if(!act) return;
-      try {
-        var res = await Auth.api('/game/coinflip/history');
-        if(!res.ok) return;
-        var data = await res.json();
-        var flips = (data.history || []).slice(0, 6);
-        if(flips.length === 0) return;
-        act.innerHTML = '';
-        flips.forEach(function(f){
-          var row = document.createElement('div');
-          row.className = 'activity-row';
-          var coinSrc = 'icons/coin-' + f.result + '.png';
-          row.innerHTML =
-            '<div class="avatar avatar-sm"><img src="' + coinSrc + '" alt="' + f.result + '" class="coin-ico" draggable="false"></div>' +
-            '<div class="activity-user"><span class="name">' + (f.result === 'heads' ? 'Heads' : 'Tails') + '</span></div>' +
-            '<div class="activity-action">' + f.bet.toLocaleString() + ' on ' + f.choice + '</div>' +
-            '<div class="activity-time">' + new Date(f.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + '</div>' +
-            '<div class="activity-result ' + (f.win ? 'result-win' : 'result-loss') + '">' +
-              (f.win ? '+' : '-') + Math.abs(f.net).toLocaleString() +
-            '</div>';
-          act.appendChild(row);
-        });
-      } catch(e){}
-    })();
-
-    var lb = document.getElementById('lbPreview');
-    (async function(){
-      if(!lb) return;
-      try {
-        var res = await Auth.api('/leaderboard?sort=wagered');
-        if(!res.ok) return;
-        var data = await res.json();
-        var entries = (data.entries || []).slice(0, 5);
-        if(entries.length === 0){
-          lb.innerHTML = '<div class="side-empty">No players yet. Be the first.</div>';
-          return;
-        }
-        lb.innerHTML = '';
-        entries.forEach(function(u){
-          var cls = u.rank === 1 ? 'top1' : u.rank === 2 ? 'top2' : u.rank === 3 ? 'top3' : '';
-          var row = document.createElement('div');
-          row.className = 'lb-row';
-          if(u.id) row.setAttribute('data-user-id', u.id);
-          row.innerHTML =
-            '<div class="lb-rank ' + cls + '">#' + u.rank + '</div>' +
-            '<div class="lb-user">' +
-              (function(){
-                var url = (typeof resolveAvatarUrl === 'function') ? resolveAvatarUrl(u) : u.avatar;
-                var L = (u.username || 'U')[0].toUpperCase();
-                return url
-                  ? '<div class="avatar avatar-sm"><img src="' + url + '" alt="" draggable="false" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + L + '\'"></div>'
-                  : '<div class="avatar avatar-sm">' + L + '</div>';
-              })() +
-              '<span class="name">' + u.username + '</span>' +
-            '</div>' +
-            '<div class="lb-score">' + Number(u.totalWagered || 0).toLocaleString() + '</div>' +
-            '<div class="lb-delta">wagered</div>';
-          lb.appendChild(row);
-        });
-      } catch(e){}
-    })();
+    // Update balance display
+    function updateBalance(u) {
+      if(!u) return;
+      var els = document.querySelectorAll('[data-balance]');
+      var bal = Number(u.balance || 0);
+      els.forEach(function(el){
+        el.textContent = bal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      });
+    }
+    if(me) updateBalance(me);
+    if(loggedIn) {
+      Auth.refreshUser().then(function(fresh){ if(fresh) updateBalance(fresh); });
+    }
   })();
 </script>
 </body>
