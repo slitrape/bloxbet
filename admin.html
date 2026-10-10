@@ -535,7 +535,7 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
               (u.isAdmin?'<span class="av3-badge admin">Admin</span>':'<span class="av3-badge">User</span>') +
               (u.banned?'<span class="av3-badge ban">Banned</span>':(u.online?'<span class="av3-badge online">Online</span>':'<span class="av3-badge">Offline</span>')) +
             '</div></div>' +
-            '<div class="av3-bal"><div class="lbl">Balance</div><div class="val">'+fmt(u.balance)+'</div></div>' +
+            '<div class="av3-bal"><div class="lbl">RC / BC</div><div class="val">'+fmt(u.balance)+'</div><div class="lbl">'+fmt(u.bloxCoins||0)+' BC</div></div>' +
           '</div>' +
           '<div class="av3-actions">' +
             '<button type="button" class="btn btn-sm btn-primary" data-act="add">+ Funds</button>' +
@@ -592,12 +592,16 @@ body.bb-ui .admin-v3 { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.25r
       else Toast.error('Failed','Rejected');
       return;
     }
-    var amount = prompt(act==='add'?'RoCoins to add':'Set balance to');
+    var cur = prompt('Currency: rc or bc (BloxCoins)', 'rc');
+    if(cur==null) return;
+    cur = String(cur).toLowerCase().trim();
+    if(cur !== 'bc' && cur !== 'blox' && cur !== 'bloxcoins') cur = 'rc';
+    var amount = prompt(act==='add' ? ('Add '+(cur==='rc'?'RC':'BC')) : ('Set '+(cur==='rc'?'RC':'BC')+' to'));
     if(amount==null) return;
     amount = parseInt(amount,10);
     if(!Number.isFinite(amount)||amount<0){ Toast.error('Invalid','Need non-negative integer'); return; }
     var r = await Auth.api('/admin/users/'+id+'/balance', {
-      method:'POST', body: JSON.stringify({ action: act==='add'?'add':'set', amount: amount })
+      method:'POST', body: JSON.stringify({ action: act==='add'?'add':'set', amount: amount, currency: cur })
     });
     if(r.ok){ Toast.success('Balance updated','Saved'); loadUsers(document.getElementById('userSearch').value.trim()); loadStats(); }
     else Toast.error('Failed','Rejected');

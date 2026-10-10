@@ -67,8 +67,8 @@
     if(confirmBtn){
       confirmBtn.addEventListener('click', async function(){
         var amount = parseInt(amountInput && amountInput.value, 10);
-        if(!Number.isFinite(amount) || amount < 100){
-          if(window.Toast) Toast.error('Invalid amount', 'Minimum is 100 RC.');
+        if(!Number.isFinite(amount) || amount < 7){
+          if(window.Toast) Toast.error('Invalid amount', 'Minimum is 7 RC.');
           return;
         }
 

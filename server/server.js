@@ -1182,6 +1182,12 @@ function trackSession(userId, req){
   } catch (e) { console.error('[trackSession]', e.message); }
 }
 
+function assertBet(amount, min, max){
+  const n = Number(amount);
+  if(!Number.isFinite(n) || Math.floor(n) !== n) return { ok:false, error:'INVALID_BET' };
+  if(n < min || n > max) return { ok:false, error:'INVALID_BET' };
+  return { ok:true, amount: n };
+}
 function requireAuth(req, res, next){
   const auth = req.headers.authorization;
   if(!auth || !auth.startsWith('Bearer ')) return res.status(401).json({ error: 'UNAUTHORIZED' });
@@ -1848,7 +1854,7 @@ app.post('/api/wallet/deposit', requireAuth, (req, res) => {
     const amount = parseInt(req.body.amount, 10);
     if(!Number.isFinite(amount) || amount <= 0 || !Number.isInteger(amount))
       return res.status(400).json({ error: 'INVALID_AMOUNT' });
-    if(amount < 100)
+    if(amount < 7)
       return res.status(400).json({ error: 'AMOUNT_OUT_OF_RANGE', min: 100 });
 
     const user = ensureUser(req.userId, req.username);
@@ -3803,28 +3809,25 @@ app.get('/api/admin/users', requireAdmin, (req, res) => {
   try {
     const q = String(req.query.q || '').trim();
     const limit = Math.min(500, Math.max(10, parseInt(req.query.limit, 10) || 200));
+    // Ensure optional columns exist
+    try { addCol('users', 'banned', 'INTEGER DEFAULT 0'); } catch(e){}
+    try { addCol('users', 'ban_until', 'INTEGER'); } catch(e){}
+    try { addCol('users', 'ban_reason', 'TEXT'); } catch(e){}
+    try { addCol('users', 'last_ip', 'TEXT'); } catch(e){}
+    try { addCol('users', 'last_user_agent', 'TEXT'); } catch(e){}
+    try { addCol('users', 'last_login_at', 'INTEGER'); } catch(e){}
+    try { addCol('users', 'blox_coins', 'REAL DEFAULT 0'); } catch(e){}
 
     let rows;
     if(q){
       const pattern = '%' + q + '%';
       rows = db.prepare(`
-        SELECT id, username, display_name, avatar, balance, level, rank, is_admin,
-               games_played, total_wagered, referral_code, created_at, updated_at,
-               banned, ban_until, ban_reason,
-               last_ip, last_user_agent, last_login_at
-        FROM users
+        SELECT * FROM users
         WHERE username LIKE ? OR display_name LIKE ? OR id = ? OR IFNULL(last_ip,'') LIKE ?
         ORDER BY updated_at DESC LIMIT ?
       `).all(pattern, pattern, q, pattern, limit);
     } else {
-      rows = db.prepare(`
-        SELECT id, username, display_name, avatar, balance, level, rank, is_admin,
-               games_played, total_wagered, referral_code, created_at, updated_at,
-               banned, ban_until, ban_reason,
-               last_ip, last_user_agent, last_login_at
-        FROM users
-        ORDER BY created_at DESC LIMIT ?
-      `).all(limit);
+      rows = db.prepare(`SELECT * FROM users ORDER BY created_at DESC LIMIT ?`).all(limit);
     }
 
     const now = Date.now();
@@ -3835,8 +3838,9 @@ app.get('/api/admin/users', requireAdmin, (req, res) => {
           id: u.id,
           username: u.username,
           displayName: u.display_name || u.username,
-          avatar: avatarForUser(u) || ('/api/avatar/' + u.id),
-          balance: u.balance,
+          avatar: (typeof avatarForUser === 'function' ? avatarForUser(u) : u.avatar) || ('/api/avatar/' + u.id),
+          balance: u.balance || 0,
+          bloxCoins: u.blox_coins || 0,
           level: u.level,
           rank: u.rank,
           isAdmin: !!u.is_admin,
@@ -3857,40 +3861,37 @@ app.get('/api/admin/users', requireAdmin, (req, res) => {
     });
   } catch (err) {
     console.error('[admin/users]', err);
-    res.status(500).json({ error: 'SERVER_ERROR' });
+    res.status(500).json({ error: 'SERVER_ERROR', message: String(err && err.message || err) });
   }
 });
 
 app.post('/api/admin/users/:id/balance', requireAdmin, (req, res) => {
   try {
-    const targetId = String(req.params.id);
-    const amount = parseInt(req.body.amount, 10);
-    const action = req.body.action;
-
-    if(!['add','set','subtract'].includes(action))
-      return res.status(400).json({ error: 'INVALID_ACTION' });
-    if(!Number.isInteger(amount) || amount < 0)
-      return res.status(400).json({ error: 'INVALID_AMOUNT' });
-
-    const target = stmts.getUser.get(targetId);
-    if(!target) return res.status(404).json({ error: 'USER_NOT_FOUND' });
-
-    let newBalance = target.balance;
-    if(action === 'add')      newBalance = target.balance + amount;
-    if(action === 'subtract') newBalance = Math.max(0, target.balance - amount);
-    if(action === 'set')      newBalance = amount;
-
-    updateBalance(targetId, newBalance);
-
-    stmts.insertTx.run(
-      uuidv4(), targetId, 'admin_adjust', newBalance - target.balance, newBalance,
-      JSON.stringify({ by: req.adminUser.username, action, amount }), Date.now()
-    );
-
-    broadcastToUser(targetId, { type: 'balance', balance: newBalance });
-
-    logAdmin(req.adminUser, 'balance_' + action, target, { amount, newBalance }, req);
-    res.json({ ok: true, balance: newBalance, delta: newBalance - target.balance });
+    const id = req.params.id;
+    const { action, amount, currency } = req.body || {};
+    const amt = parseInt(amount, 10);
+    if(!Number.isFinite(amt) || amt < 0) return res.status(400).json({ error: 'INVALID_AMOUNT' });
+    const u = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+    if(!u) return res.status(404).json({ error: 'NOT_FOUND' });
+    try { addCol('users', 'blox_coins', 'REAL DEFAULT 0'); } catch(e){}
+    const cur = String(currency || 'rc').toLowerCase();
+    const now = Date.now();
+    if(cur === 'bc' || cur === 'blox' || cur === 'bloxcoins'){
+      let next = Number(u.blox_coins || 0);
+      if(action === 'set') next = amt;
+      else next = next + amt;
+      if(next < 0) next = 0;
+      db.prepare('UPDATE users SET blox_coins = ?, updated_at = ? WHERE id = ?').run(next, now, id);
+      try { logAdmin(req.user, 'balance_bc', u, { action, amount: amt, next }, req); } catch(e){}
+      return res.json({ ok: true, bloxCoins: next, balance: u.balance });
+    }
+    let next = Number(u.balance || 0);
+    if(action === 'set') next = amt;
+    else next = next + amt;
+    if(next < 0) next = 0;
+    db.prepare('UPDATE users SET balance = ?, updated_at = ? WHERE id = ?').run(next, now, id);
+    try { logAdmin(req.user, 'balance', u, { action, amount: amt, next }, req); } catch(e){}
+    res.json({ ok: true, balance: next, bloxCoins: u.blox_coins || 0 });
   } catch (err) {
     console.error('[admin/balance]', err);
     res.status(500).json({ error: 'SERVER_ERROR' });

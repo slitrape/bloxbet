@@ -2580,3 +2580,93 @@ body.bb-ui.chat-collapsed .chat-expand-fab { display: grid; }
   pointer-events: none;
 }
 .orig-card-art { position: relative; }
+
+/* Hamburger next to logo */
+body.bb-ui .nav-left {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+}
+body.bb-ui .nav-hamburger {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: #151a24;
+  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+body.bb-ui .nav-hamburger .ico { width: 18px; height: 18px; }
+
+/* Smaller transparent Discord */
+body.bb-ui .side-discord {
+  background: transparent !important;
+  border: 1px solid rgba(88,101,242,0.35);
+  padding: .45rem .65rem !important;
+  font-size: .82rem !important;
+  border-radius: 10px !important;
+}
+body.bb-ui .side-discord .ico {
+  width: 16px !important;
+  height: 16px !important;
+  filter: none !important;
+}
+
+/* Currency switch */
+.currency-switch { position: relative; }
+.currency-switch-btn {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: #151a24;
+  color: #fff;
+  font-family: inherit;
+  font-weight: 900;
+  font-size: .8rem;
+  padding: .45rem .6rem;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  cursor: pointer;
+}
+.currency-switch-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 160px;
+  background: #151a24;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: .35rem;
+  z-index: 80;
+  box-shadow: 0 12px 30px rgba(0,0,0,.4);
+}
+.currency-switch-menu.open { display: block; }
+.currency-switch-menu button {
+  width: 100%;
+  text-align: left;
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: .82rem;
+  padding: .5rem .6rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.currency-switch-menu button:hover { background: rgba(255,255,255,0.06); }
+
+/* Wallet tabs */
+.wallet-tabs { display:flex; gap:.4rem; margin-bottom:.25rem; }
+.wallet-tab {
+  flex:1; appearance:none; border:1px solid rgba(255,255,255,.08); background:#151a24;
+  color:#9aa3b5; font-family:inherit; font-weight:800; padding:.55rem; border-radius:10px; cursor:pointer;
+}
+.wallet-tab.active { background:linear-gradient(135deg,#ff9f2e,#ff6b00); color:#111; border-color:transparent; }
+.wallet-pane { display:none; }
+.wallet-pane.active { display:block; }

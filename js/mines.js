@@ -203,46 +203,37 @@
     renderLadder(data.picks);
   }
 
+  function ensureTileIcon(tile, src){
+    var img = tile.querySelector('img');
+    if(!img){
+      img = document.createElement('img');
+      img.alt = '';
+      img.draggable = false;
+      tile.appendChild(img);
+    }
+    img.src = src;
+    img.onerror = function(){ this.onerror = null; this.src = 'icons/coin.png'; };
+    img.style.opacity = '1';
+    img.style.transform = 'scale(1)';
+    img.style.filter = 'none';
+    return img;
+  }
+
   async function handleLoss(data){
     gameActive = false;
 
-    // Reveal the entire grid
-    var fullRevealed = data.revealed || [data.grid ? data.grid.length : 0];
     var grid_data = data.grid || [];
-
-    // Mark the tile that was clicked as a mine
+    // Reveal entire board: bombs on mines, diamonds on safe tiles
     grid.querySelectorAll('.mines-tile').forEach(function(tile){
       var idx = parseInt(tile.dataset.index, 10);
       tile.classList.add('disabled');
-      var img = tile.querySelector('img');
-      var isMine = grid_data[idx] === 'mine';
-      var wasRevealed = (data.revealed || []).indexOf(idx) !== -1;
-
+      var isMine = grid_data[idx] === 'mine' || grid_data[idx] === 1 || grid_data[idx] === 'bomb';
       if(isMine){
-        if(idx === parseInt(data.revealed[0], 10) || wasRevealed){
-          // This is the tile that was clicked (or any mine now shown)
-          tile.classList.add('revealed','mine');
-          tile.classList.add('reveal-mine-on-loss');
-          if(img){
-            img.src = 'icons/bomb.png';
-            img.onerror = function(){ this.onerror = null; this.src = 'icons/coin.png'; };
-            img.style.opacity = 1;
-            img.style.filter = 'none';
-          }
-        } else if(wasRevealed){
-          // Shouldn't happen but just in case
-        }
+        tile.classList.add('revealed','mine','reveal-mine-on-loss');
+        ensureTileIcon(tile, 'icons/bomb.png');
       } else {
-        // Safe tiles — reveal as gems
-        if(!wasRevealed){
-          tile.classList.add('revealed','gem');
-          if(img){
-            img.src = 'icons/diamond.png';
-            img.onerror = function(){ this.onerror = null; this.src = 'icons/coin.png'; };
-            img.style.opacity = 1;
-            img.style.filter = 'none';
-          }
-        }
+        tile.classList.add('revealed','gem');
+        ensureTileIcon(tile, 'icons/diamond.png');
       }
     });
 
