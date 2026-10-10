@@ -1949,3 +1949,134 @@ body.bb-ui .pvp-layout {
 @media (max-width: 900px) {
   .originals-grid-art { grid-template-columns: repeat(2, 1fr) !important; }
 }
+
+/* Hide online count sitewide */
+.online-count { display: none !important; }
+
+/* Bigger bolder logo */
+body.bb-ui .nav-logo-mark {
+  width: 36px !important;
+  height: 36px !important;
+}
+body.bb-ui .nav-logo-text {
+  font-size: 1.45rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* Bigger sidebar Home / Originals */
+body.bb-ui .side-nav-item,
+body.bb-ui .side-dropdown-toggle {
+  font-size: 1.08rem !important;
+  font-weight: 900 !important;
+  padding: .8rem .9rem !important;
+}
+body.bb-ui .side-nav-item img.ico,
+body.bb-ui .side-dropdown-toggle img.ico {
+  width: 24px !important;
+  height: 24px !important;
+}
+body.bb-ui .side-dropdown-menu a {
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  padding: .6rem .95rem !important;
+}
+body.bb-ui .side-dropdown-menu a img.ico {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Bigger chat with avatars */
+.side-chat {
+  max-height: 420px !important;
+  order: -1;
+}
+.side-chat-messages {
+  min-height: 240px !important;
+  max-height: 280px !important;
+}
+.side-chat-msg {
+  display: flex;
+  gap: .45rem;
+  align-items: flex-start;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: .45rem .55rem;
+  margin-bottom: .45rem !important;
+}
+.side-chat-av {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #1e2633;
+  display: grid;
+  place-items: center;
+  font-size: .7rem;
+  font-weight: 800;
+  color: #fff;
+  overflow: hidden;
+}
+.side-chat-av img { width: 100%; height: 100%; object-fit: cover; }
+.side-chat-body { min-width: 0; flex: 1; }
+.side-chat-user { display: block; margin-bottom: .1rem; }
+
+/* Game card hover overlay */
+.orig-card-art { position: relative; }
+.orig-hover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.82) 100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+  border-radius: inherit;
+}
+.orig-hover-inner {
+  width: 100%;
+  padding: .85rem .75rem 1rem;
+  transform: translateY(16px);
+  transition: transform .28s cubic-bezier(0.22, 1, 0.36, 1);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem;
+}
+.orig-card:hover .orig-hover { opacity: 1; }
+.orig-card:hover .orig-hover-inner { transform: translateY(0); }
+.orig-hover-stat {
+  text-align: center;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: .45rem .3rem;
+}
+.orig-hover-stat .oh-val {
+  display: block;
+  font-weight: 900;
+  font-size: 1.05rem;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.orig-hover-stat .oh-lbl {
+  display: block;
+  font-size: .65rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.65);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-top: .15rem;
+}
+
+/* Profile banner button */
+.pf-banner-btn .ico { display: none !important; }
+.pf-banner-btn { font-weight: 800 !important; padding: .55rem 1rem !important; }
+.pf-banner-menu {
+  min-width: 280px !important;
+  padding: 1rem !important;
+  border-radius: 14px !important;
+}

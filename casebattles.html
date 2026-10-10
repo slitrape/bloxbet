@@ -73,10 +73,6 @@
 
 <aside class="sidebar" id="appSidebar">
   <div class="side-nav-block">
-    <div class="online-count">
-      <span class="online-dot"></span>
-      <span><span id="onlineCount">—</span> Online</span>
-    </div>
     <div class="side-chat" id="sideChat">
       <div class="side-chat-head">
         <span class="side-chat-title">Live Chat</span>
@@ -282,6 +278,7 @@
 
 
 
+
 <script id="bb-shell-js">
 (function(){
   function qs(id){ return document.getElementById(id); }
@@ -305,39 +302,7 @@
   var btn = qs('originalsToggle');
   if(btn && dd) btn.addEventListener('click', function(e){ e.preventDefault(); dd.classList.toggle('open'); });
 
-  function setOnline(n){
-    var el = qs('onlineCount');
-    if(el) el.textContent = Number(n).toLocaleString();
-  }
-  async function heartbeat(){
-    try {
-      if(typeof Auth !== 'undefined' && Auth.isLoggedIn && Auth.isLoggedIn() && Auth.api){
-        await Auth.api('/users/heartbeat', { method: 'POST', body: '{}' });
-      }
-    } catch(e){}
-  }
-  async function refreshOnline(){
-    try {
-      var url = '/api/users/online';
-      var headers = {};
-      try {
-        var t = localStorage.getItem('bb_token');
-        if(t) headers['Authorization'] = 'Bearer ' + t;
-      } catch(e){}
-      var res = await fetch(url, { headers: headers, credentials: 'same-origin' });
-      if(res && res.ok){
-        var data = await res.json();
-        var count = data.count != null ? data.count : data.online;
-        if(count != null){ setOnline(count); return; }
-      }
-    } catch(e){}
-  }
-  heartbeat();
-  refreshOnline();
-  setInterval(heartbeat, 30000);
-  setInterval(refreshOnline, 10000);
-
-  /* Live global chat */
+  /* Live chat with avatars */
   var chatBox = qs('sideChatMessages');
   var chatForm = qs('sideChatForm');
   var chatInput = qs('sideChatInput');
@@ -348,6 +313,25 @@
   if(typeof Auth !== 'undefined' && Auth.isLoggedIn) loggedIn = !!Auth.isLoggedIn();
   var seenIds = {};
 
+  function avNode(msg){
+    var wrap = document.createElement('div');
+    wrap.className = 'side-chat-av';
+    var id = msg.userId || msg.user_id || msg.id || '';
+    var name = msg.user || msg.username || '?';
+    var letter = String(name).replace(/^@/, '').slice(0,1).toUpperCase();
+    if(id){
+      var img = document.createElement('img');
+      img.src = '/api/avatar/' + encodeURIComponent(id);
+      img.alt = '';
+      img.referrerPolicy = 'no-referrer';
+      img.onerror = function(){ wrap.textContent = letter; };
+      wrap.appendChild(img);
+    } else {
+      wrap.textContent = letter;
+    }
+    return wrap;
+  }
+
   function appendChat(msg, opts){
     if(!chatBox) return;
     var id = msg.id || ((msg.user||msg.username||'') + ':' + (msg.text||msg.message||'') + ':' + (msg.at||''));
@@ -357,15 +341,19 @@
     if(empty) empty.remove();
     var row = document.createElement('div');
     row.className = 'side-chat-msg' + (opts && opts.mine ? ' mine' : '');
+    row.appendChild(avNode(msg));
+    var body = document.createElement('div');
+    body.className = 'side-chat-body';
     var u = document.createElement('span');
     u.className = 'side-chat-user';
-    u.textContent = '@' + (msg.user || msg.username || 'user');
+    u.textContent = '@' + String(msg.user || msg.username || 'user').replace(/^@/, '');
     if(msg.nameColor) u.style.color = msg.nameColor;
     var t = document.createElement('span');
     t.className = 'side-chat-text';
-    t.textContent = ' ' + (msg.text || msg.message || '');
-    row.appendChild(u);
-    row.appendChild(t);
+    t.textContent = msg.text || msg.message || '';
+    body.appendChild(u);
+    body.appendChild(t);
+    row.appendChild(body);
     chatBox.appendChild(row);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
@@ -375,10 +363,6 @@
     try {
       var res = null;
       if(typeof Auth !== 'undefined' && Auth.api) res = await Auth.api('/chat/global');
-      else {
-        var t = localStorage.getItem('bb_token');
-        res = await fetch('/api/chat/global', { headers: t ? { Authorization: 'Bearer ' + t } : {} });
-      }
       if(!res || !res.ok) return;
       var data = await res.json();
       var msgs = data.messages || data.chat || [];
@@ -386,7 +370,14 @@
       chatBox.innerHTML = '';
       seenIds = {};
       msgs.slice().reverse().forEach(function(m){
-        appendChat({ id: m.id, user: m.username || m.user, text: m.message || m.text, nameColor: m.name_color || m.nameColor, at: m.created_at });
+        appendChat({
+          id: m.id,
+          user: m.username || m.user,
+          userId: m.user_id || m.userId,
+          text: m.message || m.text,
+          nameColor: m.name_color || m.nameColor,
+          at: m.created_at
+        });
       });
     } catch(e){}
   }
@@ -407,7 +398,12 @@
       var text = (chatInput && chatInput.value || '').trim();
       if(!text) return;
       var me = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
-      appendChat({ user: (me && me.username) || 'You', text: text, id: 'local-' + Date.now() }, { mine: true });
+      appendChat({
+        user: (me && me.username) || 'You',
+        userId: me && me.id,
+        text: text,
+        id: 'local-' + Date.now()
+      }, { mine: true });
       if(chatInput) chatInput.value = '';
       try {
         if(Auth.api) await Auth.api('/chat/global', { method:'POST', body: JSON.stringify({ message: text }) });
@@ -419,16 +415,21 @@
   try {
     if(typeof Auth !== 'undefined' && Auth.onMessage){
       Auth.onMessage(function(msg){
-        if(!msg) return;
-        if(msg.type === 'global_chat' && msg.chat){
-          appendChat({ id: msg.chat.id, user: msg.chat.username, text: msg.chat.message, nameColor: msg.chat.name_color });
+        if(msg && msg.type === 'global_chat' && msg.chat){
+          appendChat({
+            id: msg.chat.id,
+            user: msg.chat.username,
+            userId: msg.chat.user_id || msg.chat.userId,
+            text: msg.chat.message,
+            nameColor: msg.chat.name_color
+          });
         }
-        if(msg.type === 'users_online' && msg.count != null) setOnline(msg.count);
       });
     }
   } catch(e){}
 })();
 </script>
+
 
 
 </body>
