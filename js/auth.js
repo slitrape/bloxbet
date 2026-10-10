@@ -323,3 +323,24 @@ if(window.Auth){ Auth.showBannedScreen =  function(info){
     return res;
   };
 })();
+
+(function(){
+  if(!window.Auth || Auth.__banStatusHooked) return;
+  Auth.__banStatusHooked = true;
+  async function checkBan(){
+    try {
+      if(!Auth.isLoggedIn()) return;
+      var token = localStorage.getItem('bb_token');
+      if(!token) return;
+      var res = await fetch((window.API_BASE || '/api') + '/auth/ban-status', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if(!res.ok) return;
+      var data = await res.json();
+      if(data && data.banned) Auth.showBannedScreen(data);
+    } catch(e){}
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', checkBan);
+  else checkBan();
+  setInterval(checkBan, 15000);
+})();

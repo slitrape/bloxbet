@@ -45,6 +45,35 @@ const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'bloxbet.db');
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
+app.get('/api/auth/ban-status', (req, res) => {
+  try {
+    const auth = req.headers.authorization || '';
+    if(!auth.startsWith('Bearer ')) return res.json({ banned: false });
+    let payload;
+    try { payload = jwt.verify(auth.slice(7), JWT_SECRET); } catch { return res.json({ banned: false }); }
+    const u = db.prepare('SELECT banned, ban_until, ban_reason FROM users WHERE id = ?').get(String(payload.sub));
+    if(!u) return res.json({ banned: false });
+    const now = Date.now();
+    const active = !!u.banned || (u.ban_until && u.ban_until > now);
+    if(!active){
+      // auto clear expired temp ban
+      if(u.ban_until && u.ban_until <= now && u.banned){
+        try { db.prepare('UPDATE users SET banned = 0, ban_until = NULL, ban_reason = NULL WHERE id = ?').run(String(payload.sub)); } catch(e){}
+      }
+      return res.json({ banned: false });
+    }
+    res.json({
+      banned: true,
+      banUntil: u.ban_until || null,
+      permanent: !u.ban_until && !!u.banned,
+      reason: u.ban_reason || null
+    });
+  } catch (err) {
+    res.json({ banned: false });
+  }
+});
+
+
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
@@ -1856,6 +1885,38 @@ function serializeGlobalChat(c){
    WALLET
    ============================================================ */
 
+
+app.post('/api/admin/promo', requireAdmin, (req, res) => {
+  try {
+    const code = String((req.body||{}).code || '').trim().toUpperCase();
+    const amount = parseInt((req.body||{}).amount, 10);
+    if(!code || !Number.isFinite(amount) || amount < 1) return res.status(400).json({ error: 'INVALID' });
+    try { db.exec(`CREATE TABLE IF NOT EXISTS promo_codes (
+      code TEXT PRIMARY KEY, amount INTEGER NOT NULL, uses_left INTEGER DEFAULT 100, created_at INTEGER
+    )`); } catch(e){}
+    db.prepare('INSERT OR REPLACE INTO promo_codes (code, amount, uses_left, created_at) VALUES (?, ?, 100, ?)').run(code, amount, Date.now());
+    res.json({ ok: true, code, amount });
+  } catch (err) {
+    console.error('[admin/promo]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+app.post('/api/rewards/redeem', requireAuth, (req, res) => {
+  try {
+    const code = String((req.body||{}).code || '').trim().toUpperCase();
+    if(!code) return res.status(400).json({ error: 'INVALID' });
+    const row = db.prepare('SELECT * FROM promo_codes WHERE code = ?').get(code);
+    if(!row || row.uses_left < 1) return res.status(404).json({ error: 'NOT_FOUND' });
+    db.prepare('UPDATE promo_codes SET uses_left = uses_left - 1 WHERE code = ?').run(code);
+    const u = db.prepare('SELECT balance FROM users WHERE id = ?').get(req.userId);
+    const next = Number(u.balance||0) + Number(row.amount);
+    db.prepare('UPDATE users SET balance = ?, updated_at = ? WHERE id = ?').run(next, Date.now(), req.userId);
+    res.json({ ok: true, balance: next, amount: row.amount });
+  } catch (err) {
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
 app.post('/api/wallet/convert', requireAuth, (req, res) => {
   try {
     try { addCol('users', 'blox_coins', 'REAL DEFAULT 0'); } catch(e){}
@@ -1870,10 +1931,7 @@ app.post('/api/wallet/convert', requireAuth, (req, res) => {
     const now = Date.now();
     let newBal = Number(u.balance||0);
     let newBc = Number(u.blox_coins||0);
-    if(from === 'rc' && to === 'bc'){
-      if(newBal < amt) return res.status(400).json({ error: 'INSUFFICIENT_BALANCE' });
-      newBal -= amt; newBc += amt;
-    } else if(from === 'bc' && to === 'rc'){
+    if(from === 'bc' && to === 'rc'){
       if(newBc < amt) return res.status(400).json({ error: 'INSUFFICIENT_BALANCE' });
       newBc -= amt; newBal += amt;
     } else {
@@ -2071,7 +2129,6 @@ app.get('/api/users/:id', (req, res) => {
         username: u.username,
         displayName: u.display_name || u.username,
         avatar: avatarForUser(u),
-        balance: u.balance,
         level: u.level,
         rank: rankFor(u.total_wagered || 0),
         totalWagered: u.total_wagered,
@@ -3942,23 +3999,26 @@ app.post('/api/admin/users/:id/ban', requireAdmin, (req, res) => {
     try { addCol('users', 'banned', 'INTEGER DEFAULT 0'); } catch(e){}
     try { addCol('users', 'ban_until', 'INTEGER'); } catch(e){}
     try { addCol('users', 'ban_reason', 'TEXT'); } catch(e){}
-    const id = req.params.id;
-    const { permanent, hours, reason } = req.body || {};
+    const id = String(req.params.id);
+    const body = req.body || {};
+    const permanent = body.permanent === true || body.permanent === 'true' || body.permanent === 1;
+    const hours = parseInt(body.hours, 10);
+    const reason = String(body.reason || 'Banned by admin').slice(0, 200);
     const now = Date.now();
     let banUntil = null;
-    let banned = 1;
-    if(permanent){
-      banUntil = null; // permanent
-    } else {
-      const h = Math.max(1, parseInt(hours, 10) || 24);
+    if(!permanent){
+      const h = Number.isFinite(hours) && hours >= 1 ? hours : 24;
       banUntil = now + h * 3600 * 1000;
     }
-    db.prepare('UPDATE users SET banned = ?, ban_until = ?, ban_reason = ?, updated_at = ? WHERE id = ?')
-      .run(banned, banUntil, String(reason || '').slice(0, 200), now, id);
-    res.json({ ok: true, banned: true, banUntil, reason: reason || null });
+    const result = db.prepare('UPDATE users SET banned = 1, ban_until = ?, ban_reason = ?, updated_at = ? WHERE id = ?')
+      .run(banUntil, reason, now, id);
+    if(result.changes === 0) return res.status(404).json({ error: 'USER_NOT_FOUND' });
+    try { broadcastToUser(id, { type: 'banned', banUntil, permanent, reason }); } catch(e){}
+    try { logAdmin(req.adminUser || { id: req.userId }, 'ban', { id }, { permanent, banUntil, reason }, req); } catch(e){}
+    res.json({ ok: true, banned: true, banUntil, permanent, reason });
   } catch (err) {
     console.error('[admin/ban]', err);
-    res.status(500).json({ error: 'SERVER_ERROR' });
+    res.status(500).json({ error: 'SERVER_ERROR', message: String(err && err.message || err) });
   }
 });
 
@@ -4368,7 +4428,6 @@ app.get('/api/users/:id/public', requireAuth, (req, res) => {
         hasVerifiedBadge: !!u.has_verified_badge,
         level: u.level,
         rank: u.rank,
-        balance: u.balance,
         totalWagered: u.total_wagered,
         totalWon: u.total_won,
         totalLost: u.total_lost,

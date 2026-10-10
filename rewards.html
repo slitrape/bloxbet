@@ -13,6 +13,80 @@
 <link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/redesign.css">
 <link rel="stylesheet" href="css/rewards.css">
+
+<style id="rw-style">
+.rw-page{max-width:1100px;margin:0 auto;padding:1.25rem 1.25rem 3rem}
+.rw-streak{
+  background:linear-gradient(180deg,#141a24,#0f131b);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:22px;padding:1.25rem 1.25rem 1.1rem;margin-bottom:1.15rem;
+}
+.rw-streak-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:1rem;flex-wrap:wrap}
+.rw-streak-title{font-weight:900;font-size:1rem;letter-spacing:.04em;color:#fff}
+.rw-streak-head p{margin:.35rem 0 0;color:#8b95a8;font-size:.85rem;max-width:52ch;line-height:1.45}
+.rw-streak-progress{background:#12171f;border:1px solid rgba(255,255,255,.06);border-radius:999px;padding:.45rem .8rem;font-size:.8rem;color:#9aa3b5;font-weight:700}
+.rw-streak-progress strong{color:#fff}
+.rw-days{display:grid;grid-template-columns:repeat(7,1fr);gap:.55rem;margin-bottom:1rem}
+@media(max-width:900px){.rw-days{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:560px){.rw-days{grid-template-columns:repeat(2,1fr)}}
+.rw-day{
+  background:#10151d;border:1px solid rgba(255,255,255,.05);border-radius:16px;
+  padding:.85rem .55rem;text-align:center;min-height:120px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;
+}
+.rw-day-label{font-size:.62rem;font-weight:800;color:#6b7280;letter-spacing:.04em}
+.rw-day-icon{font-size:1.15rem;margin:.15rem 0}
+.rw-day-amt{font-weight:900;color:#c8d0dc;font-size:.9rem}
+.rw-day-status{font-size:.68rem;font-weight:700;color:#6b7280}
+.rw-day.done{border-color:rgba(34,197,94,.25)}
+.rw-day.done .rw-day-status{color:#4ade80}
+.rw-day.today{border:1.5px solid #ff9f2e;box-shadow:0 0 0 1px rgba(255,159,46,.12),0 10px 30px rgba(255,120,0,.08)}
+.rw-day.today .rw-day-label,.rw-day.today .rw-day-status{color:#ffb84d}
+.rw-day.today .rw-day-amt{color:#fff}
+.rw-day.mega{border:1.5px solid rgba(255,200,60,.45);background:linear-gradient(160deg,#1a160c,#121018)}
+.rw-day.mega .rw-day-amt{color:#ffd866}
+.rw-mega-tag{background:rgba(255,200,60,.15);color:#ffd866;border-radius:6px;padding:.1rem .3rem;font-size:.58rem;margin-left:.2rem}
+.rw-activity{background:#0d1118;border-radius:14px;padding:.85rem 1rem;border:1px solid rgba(255,255,255,.04)}
+.rw-activity-top{display:flex;justify-content:space-between;gap:.75rem;font-size:.8rem;color:#9aa3b5;font-weight:700;margin-bottom:.45rem}
+.rw-bar{height:8px;background:#1a2030;border-radius:999px;overflow:hidden}
+.rw-bar-fill{height:100%;background:linear-gradient(90deg,#ff9f2e,#ff6b00);border-radius:999px}
+.rw-activity-note{margin-top:.45rem;font-size:.72rem;color:#6b7280}
+.rw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem}
+@media(max-width:900px){.rw-grid{grid-template-columns:1fr}}
+.rw-card{
+  background:linear-gradient(180deg,#141a24,#10151d);
+  border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:1.15rem;
+  display:flex;flex-direction:column;gap:.55rem;
+}
+.rw-card-head{display:flex;justify-content:space-between;align-items:center}
+.rw-card-icon{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-weight:900;background:#1a2030}
+.rw-card-icon.rake{color:#c084fc}
+.rw-card-icon.code{color:#fbbf24}
+.rw-card-icon.quest{color:#60a5fa}
+.rw-pill{font-size:.62rem;font-weight:900;letter-spacing:.04em;padding:.28rem .5rem;border-radius:999px}
+.rw-pill.purple{background:rgba(168,85,247,.15);color:#c084fc}
+.rw-pill.gold{background:rgba(251,191,36,.12);color:#fbbf24}
+.rw-pill.blue{background:rgba(59,130,246,.12);color:#60a5fa}
+.rw-card h3{margin:0;font-size:1.05rem;font-weight:900;color:#fff;letter-spacing:.02em}
+.rw-card p{margin:0;color:#8b95a8;font-size:.84rem;line-height:1.45;flex:1}
+.rw-stat-box{background:#0d1118;border-radius:12px;padding:.75rem .85rem;display:flex;justify-content:space-between;align-items:center}
+.rw-stat-box span{font-size:.68rem;font-weight:800;color:#6b7280;letter-spacing:.04em}
+.rw-stat-box strong{font-family:'JetBrains Mono',monospace;color:#c084fc;font-size:1.15rem}
+.rw-input{
+  width:100%;box-sizing:border-box;background:#0d1118;border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;color:#fff;font-family:inherit;font-weight:700;padding:.75rem .85rem;outline:none;
+}
+.rw-btn{
+  appearance:none;border:none;border-radius:12px;padding:.8rem 1rem;font-family:inherit;font-weight:900;
+  cursor:pointer;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+}
+.rw-btn.purple{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff}
+.rw-btn.gold{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#111}
+.rw-btn.dark{background:#1a2030;color:#e5e7eb;border:1px solid rgba(255,255,255,.06)}
+.rw-quest-row{display:flex;justify-content:space-between;align-items:center;background:#0d1118;border-radius:12px;padding:.7rem .85rem;font-size:.85rem;font-weight:700;color:#c8d0dc}
+.rw-linked{color:#4ade80;font-size:.78rem}
+</style>
+
 </head>
 <body class="bb-ui">
 
@@ -45,15 +119,15 @@
     </a>
   </div>
   <div class="nav-center-links nav-center-funds">
-        <div class="currency-box" id="currencyBox">
+            <div class="currency-box" id="currencyBox">
       <button type="button" class="currency-box-btn" id="currencySwitchBtn">
         <span class="currency-amt" id="currencyAmt">0</span>
         <span class="currency-code" id="currencySwitchLabel">RC</span>
         <svg class="currency-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="currency-switch-menu" id="currencySwitchMenu">
-        <button type="button" data-cur="rc">RoCoins (RC)</button>
-        <button type="button" data-cur="bc">BloxCoins (BC)</button>
+        <button type="button" data-cur="rc" class="cur-opt"><span>RoCoins (RC)</span><strong id="menuRcAmt">0</strong></button>
+        <button type="button" data-cur="bc" class="cur-opt"><span>BloxCoins (BC)</span><strong id="menuBcAmt">0</strong></button>
       </div>
     </div>
     <button class="wallet-btn" type="button" onclick="Modal.open('m-deposit')">Wallet</button>
@@ -152,85 +226,74 @@
 
 
 <main class="main">
-  <div class="container page">
-
-    <div class="page-head">
-      <div>
-        <h1>Rewards</h1>
-        <div class="sub">Play 3 games a day for 7 days. Claim 100 RC once.</div>
+  <div class="rw-page">
+    <section class="rw-streak">
+      <div class="rw-streak-head">
+        <div>
+          <div class="rw-streak-title">🔥 7-DAY PLAY STREAK</div>
+          <p>Play at least 3 games daily to maintain your streak and unlock the Day 7 Mega Reward!</p>
+        </div>
+        <div class="rw-streak-progress">Streak Progress: <strong id="rwStreakDay">2</strong> / 7 Days</div>
       </div>
-    </div>
-
-    <div class="rw-wrap">
-
-      <div class="rw-hero locked" id="hero">
-        <div class="rw-badge" id="heroBadge">
-          <span id="heroBadgeText">Locked</span>
-        </div>
-
-        <div class="rw-value">
-          <span class="num" id="heroValue">100</span>
-          <span class="unit">RC</span>
-        </div>
-
-        <div class="rw-sub" id="heroSub">
-          Play at least 3 games every day for 7 days in a row to unlock.
-        </div>
-
-        <div class="rw-progress" id="progressWrap">
-          <div class="rw-progress-label">
-            <span>Progress</span>
-            <span class="count" id="progressCount">0 / 7</span>
-          </div>
-          <div class="rw-steps" id="progressSteps"></div>
-        </div>
-
-        <div class="rw-today" id="todayWrap">
-          <div class="rw-today-head">
-            <span class="label">Today</span>
-            <span class="value" id="todayValue">0 / 3 games</span>
-          </div>
-          <div class="rw-today-bar">
-            <div class="rw-today-fill" id="todayFill" style="width:0%"></div>
-          </div>
-        </div>
-
-        <button class="rw-claim locked" id="claimBtn" disabled>
-          <img src="icons/check.png" alt="" class="ico" draggable="false">
-          <span id="claimBtnText">Locked</span>
-        </button>
-
-        <div class="rw-reset">
-          Resets in <span class="time" id="resetTime">—</span>
-        </div>
+      <div class="rw-days" id="rwDays">
+        <div class="rw-day done"><div class="rw-day-label">DAY 1</div><div class="rw-day-icon">✓</div><div class="rw-day-amt">10 RC</div><div class="rw-day-status">Claimed</div></div>
+        <div class="rw-day today"><div class="rw-day-label">DAY 2 (TODAY)</div><div class="rw-day-icon">◎</div><div class="rw-day-amt">25 RC</div><div class="rw-day-status">In Progress</div></div>
+        <div class="rw-day locked"><div class="rw-day-label">DAY 3</div><div class="rw-day-icon">🔒</div><div class="rw-day-amt">35 RC</div><div class="rw-day-status">Locked</div></div>
+        <div class="rw-day locked"><div class="rw-day-label">DAY 4</div><div class="rw-day-icon">🔒</div><div class="rw-day-amt">50 RC</div><div class="rw-day-status">Locked</div></div>
+        <div class="rw-day locked"><div class="rw-day-label">DAY 5</div><div class="rw-day-icon">🔒</div><div class="rw-day-amt">65 RC</div><div class="rw-day-status">Locked</div></div>
+        <div class="rw-day locked"><div class="rw-day-label">DAY 6</div><div class="rw-day-icon">🔒</div><div class="rw-day-amt">80 RC</div><div class="rw-day-status">Locked</div></div>
+        <div class="rw-day mega"><div class="rw-day-label">DAY 7 <span class="rw-mega-tag">MEGA</span></div><div class="rw-day-icon">👑</div><div class="rw-day-amt">100 RC</div><div class="rw-day-status">+ Free Case</div></div>
       </div>
-
-      <div class="rw-info">
-        <div class="rw-info-card">
-          <div class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></div>
-          <div>
-            <h4>Play any game</h4>
-            <p>Coin Flip, Mines, Crash, and Case Battles all count toward your daily progress.</p>
-          </div>
+      <div class="rw-activity">
+        <div class="rw-activity-top">
+          <span>Today's Activity Requirement:</span>
+          <span><strong id="rwGamesToday">2</strong> / 3 Games Played Today</span>
         </div>
-        <div class="rw-info-card">
-          <div class="icon"><img src="icons/check.png" alt="" class="ico" draggable="false"></div>
-          <div>
-            <h4>3 games per day</h4>
-            <p>You need at least 3 wagered games each day. Multiple games in one day count once per game, up to any amount.</p>
-          </div>
-        </div>
-        <div class="rw-info-card">
-          <div class="icon"><img src="icons/clock.png" alt="" class="ico" draggable="false"></div>
-          <div>
-            <h4>Pacific time reset</h4>
-            <p>Your daily counter resets at midnight Pacific. Missing a day breaks your streak.</p>
-          </div>
-        </div>
+        <div class="rw-bar"><div class="rw-bar-fill" id="rwBarFill" style="width:66%"></div></div>
+        <div class="rw-activity-note">Wager on Mines, Crash, Coinflip or Cases to count.</div>
       </div>
+    </section>
 
-    </div>
+    <section class="rw-grid">
+      <article class="rw-card">
+        <div class="rw-card-head">
+          <div class="rw-card-icon rake">◈</div>
+          <span class="rw-pill purple">INSTANT CLAIM</span>
+        </div>
+        <h3>LEVEL RAKEBACK</h3>
+        <p>Earn back a percentage of every wager regardless of game outcome. Rakeback accumulates instantly.</p>
+        <div class="rw-stat-box">
+          <span>UNCLAIMED RAKEBACK</span>
+          <strong id="rwRakeAmt">0.00 RC</strong>
+        </div>
+        <button type="button" class="rw-btn purple" id="rwClaimRake">Claim Rakeback</button>
+      </article>
 
+      <article class="rw-card">
+        <div class="rw-card-head">
+          <div class="rw-card-icon code">⌘</div>
+          <span class="rw-pill gold">PROMO CODE</span>
+        </div>
+        <h3>REDEEM CODE</h3>
+        <p>Have an affiliate or promotional creator code? Enter it below to claim instant bonus coins.</p>
+        <input type="text" id="rwPromoCode" class="rw-input" placeholder="ENTER CODE (E.G. BLOX2026)" maxlength="32">
+        <button type="button" class="rw-btn gold" id="rwRedeemBtn">Redeem Code</button>
+      </article>
+
+      <article class="rw-card">
+        <div class="rw-card-head">
+          <div class="rw-card-icon quest">♟</div>
+          <span class="rw-pill blue">FREE COINS</span>
+        </div>
+        <h3>COMMUNITY QUESTS</h3>
+        <p>Connect your Discord &amp; Roblox accounts, join community giveaways, and complete social tasks.</p>
+        <div class="rw-quest-row">
+          <span>Discord Verification</span>
+          <span class="rw-linked">Linked</span>
+        </div>
+        <a class="rw-btn dark" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">View All Quests</a>
+      </article>
+    </section>
   </div>
 </main>
 
@@ -273,12 +336,13 @@
 
 
 
+
 <div class="modal-overlay" id="m-deposit">
   <div class="modal deposit-modal wallet-pro">
     <div class="modal-head">
       <div>
         <h3>Wallet</h3>
-        <p>Deposit, withdraw, and convert between RC &amp; BC</p>
+        <p>Deposit BC, convert to RC for play, or withdraw</p>
       </div>
       <button class="modal-close" onclick="Modal.close('m-deposit')" type="button">
         <img src="icons/close.png" alt="" class="ico" draggable="false">
@@ -291,12 +355,8 @@
         <button type="button" class="wallet-tab" data-wtab="convert">Convert</button>
       </div>
       <div class="wallet-pane active" id="walletDepositPane">
-        <div class="wallet-cur-tabs">
-          <button type="button" class="wcur active" data-wcur="bc">BloxCoins</button>
-          <button type="button" class="wcur" data-wcur="rc">RoCoins</button>
-        </div>
         <div class="dep-amount-wrap">
-          <label>Amount</label>
+          <label>Deposit BloxCoins</label>
           <div class="dep-amount-box">
             <input type="number" id="depositAmount" value="100" min="7" step="1">
             <span class="dep-unit" id="depositUnit">BC</span>
@@ -309,7 +369,7 @@
           <button class="dep-chip" data-deposit="500" type="button">500</button>
           <button class="dep-chip" data-deposit="1000" type="button">1K</button>
         </div>
-        <div class="dep-note">Min 7 · RC is the playable coin</div>
+        <div class="dep-note">Min 7 BC · Convert BC → RC to play games</div>
       </div>
       <div class="wallet-pane" id="walletWithdrawPane">
         <div class="dep-amount-wrap">
@@ -321,31 +381,29 @@
         </div>
         <div class="dep-note">Min 7 BC</div>
       </div>
-      
       <div class="wallet-pane" id="walletConvertPane">
         <div class="convert-dir">
-          <button type="button" class="convert-pill active" data-from="rc">RC → BC</button>
-          <button type="button" class="convert-pill" data-from="bc">BC → RC</button>
+          <button type="button" class="convert-pill active" data-from="bc">BC → RC</button>
         </div>
-        <input type="hidden" id="convertFrom" value="rc">
+        <input type="hidden" id="convertFrom" value="bc">
         <div class="dep-amount-wrap" style="margin-top:.85rem">
-          <label>Amount</label>
+          <label>Amount (BloxCoins)</label>
           <div class="dep-amount-box">
             <input type="number" id="convertAmount" value="100" min="1" step="1">
+            <span class="dep-unit">BC</span>
           </div>
         </div>
-        <div class="dep-note">1:1 conversion · RC is used for games</div>
+        <div class="dep-note">1:1 · RC is the playable coin</div>
       </div>
-      </div>
+    </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="Modal.close('m-deposit')" type="button">Cancel</button>
       <button class="btn btn-primary btn-orange" id="depositConfirmBtn" type="button">Confirm Deposit</button>
       <button class="btn btn-primary btn-orange" id="withdrawConfirmBtn" type="button" style="display:none">Confirm Withdraw</button>
-      <button class="btn btn-primary btn-orange" id="convertConfirmBtn" type="button" style="display:none">Convert</button>
+      <button class="btn btn-primary btn-orange" id="convertConfirmBtn" type="button" style="display:none">Convert to RC</button>
     </div>
   </div>
 </div>
-
 
 <script id="bb-loader-ctrl">
 (function(){
@@ -557,6 +615,7 @@
 
 
 
+
 <script id="bb-wallet-js">
 (function(){
   var cur = localStorage.getItem('bb_pref_currency') || 'rc';
@@ -578,13 +637,25 @@
         ? bc.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})
         : rc.toLocaleString();
     }
+    var mrc = document.getElementById('menuRcAmt');
+    var mbc = document.getElementById('menuBcAmt');
+    if(mrc) mrc.textContent = rc.toLocaleString();
+    if(mbc) mbc.textContent = bc.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
   }
   paintCur();
-  setInterval(paintCur, 3000);
+  setInterval(paintCur, 2000);
+  // live refresh from server
+  setInterval(async function(){
+    try {
+      if(typeof Auth === 'undefined' || !Auth.refreshUser) return;
+      var u = await Auth.refreshUser();
+      if(u) paintCur();
+    } catch(e){}
+  }, 8000);
   var btn = document.getElementById('currencySwitchBtn');
   var menu = document.getElementById('currencySwitchMenu');
   if(btn && menu){
-    btn.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('open'); });
+    btn.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('open'); paintCur(); });
     menu.querySelectorAll('[data-cur]').forEach(function(b){
       b.addEventListener('click', function(){
         cur = b.getAttribute('data-cur') || 'rc';
@@ -605,15 +676,7 @@
       if(pane) pane.classList.add('active');
       var depBtn = document.getElementById('depositConfirmBtn');
       var wdBtn = document.getElementById('withdrawConfirmBtn');
-      document.querySelectorAll('.convert-pill').forEach(function(p){
-    p.addEventListener('click', function(){
-      document.querySelectorAll('.convert-pill').forEach(function(x){ x.classList.remove('active'); });
-      p.classList.add('active');
-      var inp = document.getElementById('convertFrom');
-      if(inp) inp.value = p.getAttribute('data-from') || 'rc';
-    });
-  });
-  var cvBtn = document.getElementById('convertConfirmBtn');
+      var cvBtn = document.getElementById('convertConfirmBtn');
       if(depBtn) depBtn.style.display = tab.dataset.wtab === 'deposit' ? '' : 'none';
       if(wdBtn) wdBtn.style.display = tab.dataset.wtab === 'withdraw' ? '' : 'none';
       if(cvBtn) cvBtn.style.display = tab.dataset.wtab === 'convert' ? '' : 'none';
@@ -633,39 +696,55 @@
       document.querySelectorAll('.convert-pill').forEach(function(x){ x.classList.remove('active'); });
       p.classList.add('active');
       var inp = document.getElementById('convertFrom');
-      if(inp) inp.value = p.getAttribute('data-from') || 'rc';
+      if(inp) inp.value = p.getAttribute('data-from') || 'bc';
     });
   });
   var cvBtn = document.getElementById('convertConfirmBtn');
   if(cvBtn){
     cvBtn.addEventListener('click', async function(){
       var amt = parseInt((document.getElementById('convertAmount')||{}).value, 10);
-      var from = (document.getElementById('convertFrom')||{}).value || 'rc';
-      var to = from === 'rc' ? 'bc' : 'rc';
       if(!Number.isFinite(amt) || amt < 1){ Toast.error('Invalid','Enter amount'); return; }
       try {
-        var res = await Auth.api('/wallet/convert', { method:'POST', body: JSON.stringify({ amount: amt, from: from, to: to }) });
+        var res = await Auth.api('/wallet/convert', { method:'POST', body: JSON.stringify({ amount: amt, from: 'bc', to: 'rc' }) });
         if(!res.ok){ Toast.error('Convert','Failed'); return; }
         var d = await res.json();
         Auth.updateUser({ balance: d.balance, bloxCoins: d.bloxCoins });
-        Toast.success('Converted', amt + ' ' + from.toUpperCase() + ' → ' + to.toUpperCase());
+        Toast.success('Converted', amt + ' BC → RC');
         paintCur();
         if(window.Modal) Modal.close('m-deposit');
       } catch(e){ Toast.error('Convert','Failed'); }
     });
   }
-  document.querySelectorAll('.wcur').forEach(function(b){
-    b.addEventListener('click', function(){
-      document.querySelectorAll('.wcur').forEach(function(x){ x.classList.remove('active'); });
-      b.classList.add('active');
-      var unit = document.getElementById('depositUnit');
-      if(unit) unit.textContent = b.getAttribute('data-wcur') === 'rc' ? 'RC' : 'BC';
-    });
-  });
 })();
 </script>
 
 
 
+
+
+<script>
+(function(){
+  var claim = document.getElementById('rwClaimRake');
+  if(claim) claim.addEventListener('click', function(){
+    if(window.Toast) Toast.info('Rakeback', 'No rakeback available yet');
+  });
+  var redeem = document.getElementById('rwRedeemBtn');
+  if(redeem) redeem.addEventListener('click', async function(){
+    var code = (document.getElementById('rwPromoCode')||{}).value || '';
+    code = code.trim();
+    if(!code){ if(window.Toast) Toast.error('Code','Enter a code'); return; }
+    try {
+      if(typeof Auth !== 'undefined' && Auth.api){
+        var res = await Auth.api('/rewards/redeem', { method:'POST', body: JSON.stringify({ code: code }) });
+        if(res.ok){
+          var d = await res.json();
+          if(d.balance!=null) Auth.updateUser({ balance: d.balance });
+          Toast.success('Redeemed', 'Code applied');
+        } else Toast.error('Invalid', 'Code not found');
+      } else Toast.error('Login','Sign in first');
+    } catch(e){ Toast.error('Failed','Try again'); }
+  });
+})();
+</script>
 </body>
 </html>

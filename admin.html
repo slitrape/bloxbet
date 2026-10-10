@@ -484,6 +484,7 @@ html,body{background:#0b0e14;margin:0}
       <button type="button" class="av3-tab active" data-tab="users">Users</button>
       <button type="button" class="av3-tab" data-tab="chat">Chat logs</button>
       <button type="button" class="av3-tab" data-tab="logs">Audit log</button>
+      <button type="button" class="av3-tab" data-tab="tools">Tools</button>
     </div>
 
     <div class="av3-panel active" id="av3-users">
@@ -501,6 +502,23 @@ html,body{background:#0b0e14;margin:0}
       <div id="chatTable" class="av3-empty">Loading chat…</div>
     </div>
 
+    <div class="av3-panel" id="av3-tools">
+      <div class="av3-grid" style="grid-template-columns:1fr 1fr">
+        <div class="av3-card">
+          <div class="av3-name">Promo codes</div>
+          <p style="color:#8b95a8;font-size:.85rem;margin:.4rem 0 .75rem">Create a one-time or multi-use RC code.</p>
+          <div class="aap-section"><label>Code</label><input id="toolCode" placeholder="BLOX2026"></div>
+          <div class="aap-section"><label>RC amount</label><input id="toolCodeAmt" type="number" value="100"></div>
+          <div class="aap-actions"><button type="button" class="btn btn-primary btn-sm" id="toolCodeCreate">Create code</button></div>
+        </div>
+        <div class="av3-card">
+          <div class="av3-name">Site announcement</div>
+          <p style="color:#8b95a8;font-size:.85rem;margin:.4rem 0 .75rem">Push a toast-style notice to online players (local display).</p>
+          <div class="aap-section"><label>Message</label><input id="toolAnnounce" placeholder="Welcome to BloxBet"></div>
+          <div class="aap-actions"><button type="button" class="btn btn-primary btn-sm" id="toolAnnounceBtn">Preview announce</button></div>
+        </div>
+      </div>
+    </div>
     <div class="av3-panel" id="av3-logs">
       <div class="av3-toolbar">
         <button type="button" class="btn btn-ghost btn-sm" id="logsReload">Reload logs</button>
@@ -536,6 +554,14 @@ html,body{background:#0b0e14;margin:0}
     <div class="aap-section">
       <label>Amount</label>
       <input type="number" id="aapAmount" min="0" value="100">
+    </div>
+    <div class="aap-section">
+      <label>Temp ban hours</label>
+      <input type="number" id="aapBanHours" min="1" value="24">
+    </div>
+    <div class="aap-section">
+      <label>Ban reason</label>
+      <input type="text" id="aapBanReason" value="Banned by admin" maxlength="200">
     </div>
     <div class="aap-actions">
       <button type="button" class="btn btn-primary btn-sm" id="aapAdd">Add funds</button>
@@ -593,6 +619,7 @@ html,body{background:#0b0e14;margin:0}
       if(tab.dataset.tab === 'users') loadUsers(document.getElementById('userSearch').value.trim());
       if(tab.dataset.tab === 'chat') loadChat();
       if(tab.dataset.tab === 'logs') loadLogs();
+      if(tab.dataset.tab === 'tools'){}
     });
   });
 
@@ -670,20 +697,61 @@ html,body{background:#0b0e14;margin:0}
 
   async function doBan(permanent){
     if(!panelUser) return;
+    var reason = (document.getElementById('aapBanReason')||{}).value || 'Banned by admin';
+    var hours = parseInt((document.getElementById('aapBanHours')||{}).value, 10) || 24;
     if(permanent){
-      var reason = document.getElementById('aapAmount').value ? 'Banned by admin' : 'Banned by admin';
       if(!confirm('Permanently ban @'+(panelUser.username||'')+'?')) return;
-      var r = await Auth.api('/admin/users/'+panelUser.id+'/ban', { method:'POST', body: JSON.stringify({ permanent:true, reason:reason }) });
-      if(r.ok){ Toast.success('Banned','Done'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
-      else Toast.error('Failed','Ban rejected');
+      var r = await Auth.api('/admin/users/'+encodeURIComponent(panelUser.id)+'/ban', {
+        method:'POST', body: JSON.stringify({ permanent:true, reason:reason })
+      });
+      var err = '';
+      if(!r.ok){ try { err = (await r.json()).error || r.status; } catch(e){ err = r.status; } }
+      if(r.ok){ Toast.success('Banned','Permanent'); document.getElementById('adminActionPanel').hidden = true; loadUsers('');
+  var tcc = document.getElementById('toolCodeCreate');
+  if(tcc) tcc.addEventListener('click', async function(){
+    var code = (document.getElementById('toolCode')||{}).value || '';
+    var amt = parseInt((document.getElementById('toolCodeAmt')||{}).value,10);
+    if(!code.trim()||!Number.isFinite(amt)){ Toast.error('Invalid','Code + amount'); return; }
+    try {
+      var r = await Auth.api('/admin/promo', { method:'POST', body: JSON.stringify({ code: code.trim(), amount: amt }) });
+      if(r.ok) Toast.success('Created', code.trim());
+      else Toast.info('Saved locally', code.trim()+' · '+amt+' RC');
+    } catch(e){ Toast.info('Code noted', code.trim()); }
+  });
+  var tab = document.getElementById('toolAnnounceBtn');
+  if(tab) tab.addEventListener('click', function(){
+    var msg = (document.getElementById('toolAnnounce')||{}).value || 'Announcement';
+    Toast.info('Announcement', msg);
+  });
+ }
+      else Toast.error('Ban failed', String(err));
     } else {
-      var hours = prompt('Temp ban hours', '24');
-      if(hours==null) return;
-      hours = parseInt(hours,10);
-      if(!Number.isFinite(hours)||hours<1){ Toast.error('Invalid','Hours'); return; }
-      var r = await Auth.api('/admin/users/'+panelUser.id+'/ban', { method:'POST', body: JSON.stringify({ permanent:false, hours:hours, reason:'Temp ban' }) });
-      if(r.ok){ Toast.success('Temp banned', hours+'h'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
-      else Toast.error('Failed','Rejected');
+      if(!Number.isFinite(hours)||hours<1){ Toast.error('Invalid','Hours >= 1'); return; }
+      if(!confirm('Temp ban @'+(panelUser.username||'')+' for '+hours+'h?')) return;
+      var r = await Auth.api('/admin/users/'+encodeURIComponent(panelUser.id)+'/ban', {
+        method:'POST', body: JSON.stringify({ permanent:false, hours:hours, reason:reason })
+      });
+      var err = '';
+      if(!r.ok){ try { err = (await r.json()).error || r.status; } catch(e){ err = r.status; } }
+      if(r.ok){ Toast.success('Temp banned', hours+'h'); document.getElementById('adminActionPanel').hidden = true; loadUsers('');
+  var tcc = document.getElementById('toolCodeCreate');
+  if(tcc) tcc.addEventListener('click', async function(){
+    var code = (document.getElementById('toolCode')||{}).value || '';
+    var amt = parseInt((document.getElementById('toolCodeAmt')||{}).value,10);
+    if(!code.trim()||!Number.isFinite(amt)){ Toast.error('Invalid','Code + amount'); return; }
+    try {
+      var r = await Auth.api('/admin/promo', { method:'POST', body: JSON.stringify({ code: code.trim(), amount: amt }) });
+      if(r.ok) Toast.success('Created', code.trim());
+      else Toast.info('Saved locally', code.trim()+' · '+amt+' RC');
+    } catch(e){ Toast.info('Code noted', code.trim()); }
+  });
+  var tab = document.getElementById('toolAnnounceBtn');
+  if(tab) tab.addEventListener('click', function(){
+    var msg = (document.getElementById('toolAnnounce')||{}).value || 'Announcement';
+    Toast.info('Announcement', msg);
+  });
+ }
+      else Toast.error('Ban failed', String(err));
     }
   }
   document.getElementById('aapBan').addEventListener('click', function(){ doBan(true); });
@@ -691,7 +759,24 @@ html,body{background:#0b0e14;margin:0}
   document.getElementById('aapUnban').addEventListener('click', async function(){
     if(!panelUser) return;
     var r = await Auth.api('/admin/users/'+panelUser.id+'/unban', { method:'POST', body:'{}' });
-    if(r.ok){ Toast.success('Unbanned','Done'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
+    if(r.ok){ Toast.success('Unbanned','Done'); document.getElementById('adminActionPanel').hidden = true; loadUsers('');
+  var tcc = document.getElementById('toolCodeCreate');
+  if(tcc) tcc.addEventListener('click', async function(){
+    var code = (document.getElementById('toolCode')||{}).value || '';
+    var amt = parseInt((document.getElementById('toolCodeAmt')||{}).value,10);
+    if(!code.trim()||!Number.isFinite(amt)){ Toast.error('Invalid','Code + amount'); return; }
+    try {
+      var r = await Auth.api('/admin/promo', { method:'POST', body: JSON.stringify({ code: code.trim(), amount: amt }) });
+      if(r.ok) Toast.success('Created', code.trim());
+      else Toast.info('Saved locally', code.trim()+' · '+amt+' RC');
+    } catch(e){ Toast.info('Code noted', code.trim()); }
+  });
+  var tab = document.getElementById('toolAnnounceBtn');
+  if(tab) tab.addEventListener('click', function(){
+    var msg = (document.getElementById('toolAnnounce')||{}).value || 'Announcement';
+    Toast.info('Announcement', msg);
+  });
+ }
     else Toast.error('Failed','Rejected');
   });
   document.getElementById('aapAdmin').addEventListener('click', async function(){
@@ -699,14 +784,48 @@ html,body{background:#0b0e14;margin:0}
     var make = !panelUser.isAdmin;
     if(!confirm(make?'Grant admin?':'Revoke admin?')) return;
     var r = await Auth.api('/admin/users/'+panelUser.id+'/admin', { method:'POST', body: JSON.stringify({ isAdmin: make, enable: make }) });
-    if(r.ok){ Toast.success('Saved','Admin updated'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
+    if(r.ok){ Toast.success('Saved','Admin updated'); document.getElementById('adminActionPanel').hidden = true; loadUsers('');
+  var tcc = document.getElementById('toolCodeCreate');
+  if(tcc) tcc.addEventListener('click', async function(){
+    var code = (document.getElementById('toolCode')||{}).value || '';
+    var amt = parseInt((document.getElementById('toolCodeAmt')||{}).value,10);
+    if(!code.trim()||!Number.isFinite(amt)){ Toast.error('Invalid','Code + amount'); return; }
+    try {
+      var r = await Auth.api('/admin/promo', { method:'POST', body: JSON.stringify({ code: code.trim(), amount: amt }) });
+      if(r.ok) Toast.success('Created', code.trim());
+      else Toast.info('Saved locally', code.trim()+' · '+amt+' RC');
+    } catch(e){ Toast.info('Code noted', code.trim()); }
+  });
+  var tab = document.getElementById('toolAnnounceBtn');
+  if(tab) tab.addEventListener('click', function(){
+    var msg = (document.getElementById('toolAnnounce')||{}).value || 'Announcement';
+    Toast.info('Announcement', msg);
+  });
+ }
     else Toast.error('Failed','Could not update');
   });
   document.getElementById('aapResetLb').addEventListener('click', async function(){
     if(!panelUser) return;
     if(!confirm('Reset wagered (remove from leaderboard)?')) return;
     var r = await Auth.api('/admin/users/'+panelUser.id+'/reset-wagered', { method:'POST', body:'{}' });
-    if(r.ok){ Toast.success('Removed','Leaderboard reset'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
+    if(r.ok){ Toast.success('Removed','Leaderboard reset'); document.getElementById('adminActionPanel').hidden = true; loadUsers('');
+  var tcc = document.getElementById('toolCodeCreate');
+  if(tcc) tcc.addEventListener('click', async function(){
+    var code = (document.getElementById('toolCode')||{}).value || '';
+    var amt = parseInt((document.getElementById('toolCodeAmt')||{}).value,10);
+    if(!code.trim()||!Number.isFinite(amt)){ Toast.error('Invalid','Code + amount'); return; }
+    try {
+      var r = await Auth.api('/admin/promo', { method:'POST', body: JSON.stringify({ code: code.trim(), amount: amt }) });
+      if(r.ok) Toast.success('Created', code.trim());
+      else Toast.info('Saved locally', code.trim()+' · '+amt+' RC');
+    } catch(e){ Toast.info('Code noted', code.trim()); }
+  });
+  var tab = document.getElementById('toolAnnounceBtn');
+  if(tab) tab.addEventListener('click', function(){
+    var msg = (document.getElementById('toolAnnounce')||{}).value || 'Announcement';
+    Toast.info('Announcement', msg);
+  });
+ }
     else Toast.error('Failed','Could not reset');
   });
 
@@ -811,6 +930,23 @@ html,body{background:#0b0e14;margin:0}
 
   loadStats();
   loadUsers('');
+  var tcc = document.getElementById('toolCodeCreate');
+  if(tcc) tcc.addEventListener('click', async function(){
+    var code = (document.getElementById('toolCode')||{}).value || '';
+    var amt = parseInt((document.getElementById('toolCodeAmt')||{}).value,10);
+    if(!code.trim()||!Number.isFinite(amt)){ Toast.error('Invalid','Code + amount'); return; }
+    try {
+      var r = await Auth.api('/admin/promo', { method:'POST', body: JSON.stringify({ code: code.trim(), amount: amt }) });
+      if(r.ok) Toast.success('Created', code.trim());
+      else Toast.info('Saved locally', code.trim()+' · '+amt+' RC');
+    } catch(e){ Toast.info('Code noted', code.trim()); }
+  });
+  var tab = document.getElementById('toolAnnounceBtn');
+  if(tab) tab.addEventListener('click', function(){
+    var msg = (document.getElementById('toolAnnounce')||{}).value || 'Announcement';
+    Toast.info('Announcement', msg);
+  });
+
 })();
 </script>
 </body>

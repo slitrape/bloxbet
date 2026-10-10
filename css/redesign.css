@@ -2920,3 +2920,33 @@ body.bb-ui .sidebar.collapsed .side-dropdown-toggle{
 .convert-pill.active{
   background:rgba(255,159,46,.1);border-color:rgba(255,159,46,.35);color:#ffb84d;
 }
+
+.currency-switch-menu .cur-opt{
+  display:flex!important;justify-content:space-between;align-items:center;gap:1rem;width:100%;
+}
+.currency-switch-menu .cur-opt strong{
+  font-family:'JetBrains Mono',monospace;font-weight:900;color:#ffb84d;font-size:.82rem;
+}
+body.bb-ui .side-row-top{
+  display:grid!important;
+  grid-template-columns:1fr auto;
+  grid-template-rows:auto auto;
+  align-items:center;
+  gap:.35rem .4rem;
+}
+body.bb-ui .side-row-top .side-hamburger{
+  grid-column:2;grid-row:1;justify-self:end;
+}
+body.bb-ui .side-row-top .side-nav-item{
+  grid-column:1 / -1;grid-row:2;
+}
+body.bb-ui .sidebar.collapsed .side-row-top{
+  grid-template-columns:1fr;
+  justify-items:center;
+}
+body.bb-ui .sidebar.collapsed .side-row-top .side-hamburger{
+  grid-column:1;grid-row:1;margin:.35rem auto .1rem;
+}
+body.bb-ui .sidebar.collapsed .side-row-top .side-nav-item{
+  grid-column:1;grid-row:2;
+}
