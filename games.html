@@ -6,9 +6,10 @@
 <title>Games — BloxBet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/redesign.css">
 <style>
   #allGames{
     grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
@@ -85,7 +86,7 @@
   }
 </style>
 </head>
-<body>
+<body class="bb-ui">
 
 <div id="bbLoader" class="bb-loader">
   <div class="bb-loader-bg"></div>
@@ -107,32 +108,34 @@
   </div>
 </div>
 
+<!-- TOP NAV -->
 <nav class="nav">
   <div class="nav-left">
-    <button class="menu-btn" data-tip="Menu"><img src="icons/menu.png" alt="" class="ico" draggable="false"></button>
     <a href="index.html" class="nav-logo">
       <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
-      <span class="nav-logo-text">BloxBet</span>
+      <span class="nav-logo-text">BLOXBET</span>
     </a>
   </div>
-  <div class="nav-center" id="navCenter">
-    <div class="balance-chip" id="navBalanceChip">
-      <div>
-        <div class="label">Balance</div>
-        <div class="value"><span data-balance data-balance="0">0</span><span class="unit">RC</span></div>
-      </div>
-      <button class="add" data-tip="Add funds" onclick="Modal.open('m-deposit')">
-        <img src="icons/plus.png" alt="" class="ico" draggable="false">
-      </button>
-    </div>
+  <div class="nav-center-links">
+    <a href="index.html"><img src="icons/home.png" alt="" class="ico"> Home</a>
+    <a href="games.html" class="active"><img src="icons/games.png" alt="" class="ico"> Originals</a>
+    <a href="games.html"><img src="icons/sparkle.png" alt="" class="ico"> Slots</a>
+    <a href="rewards.html"><img src="icons/rewards.png" alt="" class="ico"> Rewards</a>
+    <a href="leaderboard.html"><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
   </div>
   <div class="nav-right">
+    <div class="balance-chip" id="navBalanceChip">
+      <div class="value">$ <span data-balance>0.00</span></div>
+    </div>
+    <button class="wallet-btn" type="button" onclick="Modal.open('m-deposit')">Wallet</button>
     <div class="dropdown">
-      <button class="btn btn-ghost btn-icon" data-dropdown data-tip="Notifications"><img src="icons/bell.png" alt="" class="ico" draggable="false"></button>
+      <button class="nav-icon-btn" data-dropdown data-tip="Notifications" type="button">
+        <img src="icons/bell.png" alt="" class="ico" draggable="false">
+      </button>
       <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
     </div>
     <div class="dropdown">
-      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">N</button>
+      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar" type="button">?</button>
       <div class="dropdown-menu">
         <a class="dropdown-item" href="profile.html">Profile</a>
         <a class="dropdown-item" href="settings.html">Settings</a>
@@ -143,96 +146,56 @@
   </div>
 </nav>
 
+<!-- SIDEBAR -->
 <aside class="sidebar" id="appSidebar">
-  <div class="side-group open" data-group="overview">
-    <button type="button" class="side-group-toggle" aria-expanded="true">
-      <span>Overview</span>
-      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div class="side-group-body">
-      <a class="side-item" data-href="index.html" href="index.html">
-        <span class="icon"><img src="icons/home.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Home</span>
-      </a>
-      <a class="side-item" data-href="rewards.html" href="rewards.html">
-        <span class="icon"><img src="icons/rewards.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Rewards</span>
-      </a>
+  <div class="live-drops">
+    <div class="live-drops-head">
+      <h3>Live Drops</h3>
+      <a href="#">View All</a>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb ph ph-amber ph-icon"><img src="icons/fire.png" alt=""></div>
+      <div class="drop-info"><div class="drop-name">Dragon Lore</div><div class="drop-user">@ShadowKing</div></div>
+      <div><div class="drop-price">$127.50</div><div class="drop-time">3m ago</div></div>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb ph ph-purple ph-icon"><img src="icons/diamond.png" alt=""></div>
+      <div class="drop-info"><div class="drop-name">Neon Crown</div><div class="drop-user">@LuckyTaco</div></div>
+      <div><div class="drop-price">$84.32</div><div class="drop-time">3m ago</div></div>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb ph ph-blue ph-icon"><img src="icons/star.png" alt=""></div>
+      <div class="drop-info"><div class="drop-name">Blue Top Hat</div><div class="drop-user">@Zyna</div></div>
+      <div><div class="drop-price">$42.17</div><div class="drop-time">5m ago</div></div>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb ph ph-gold ph-icon"><img src="icons/trophy.png" alt=""></div>
+      <div class="drop-info"><div class="drop-name">Golden Blade</div><div class="drop-user">@PixelFreak</div></div>
+      <div><div class="drop-price">$96.00</div><div class="drop-time">6m ago</div></div>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb ph ph-cyan ph-icon"><img src="icons/sparkle.png" alt=""></div>
+      <div class="drop-info"><div class="drop-name">Cyber Wings</div><div class="drop-user">@Rogue</div></div>
+      <div><div class="drop-price">$73.25</div><div class="drop-time">8m ago</div></div>
+    </div>
+    <div class="drop-item">
+      <div class="drop-thumb ph ph-red ph-icon"><img src="icons/bomb.png" alt=""></div>
+      <div class="drop-info"><div class="drop-name">Void Helmet</div><div class="drop-user">@Luna</div></div>
+      <div><div class="drop-price">$58.90</div><div class="drop-time">10m ago</div></div>
     </div>
   </div>
-
-  <div class="side-group open" data-group="casino">
-    <button type="button" class="side-group-toggle" aria-expanded="true">
-      <span>Casino</span>
-      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div class="side-group-body">
-      <a class="side-item" data-href="coinflip.html" href="coinflip.html">
-        <span class="icon"><img src="icons/coin.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Coinflip</span>
-      </a>
-      <a class="side-item" data-href="mines.html" href="mines.html">
-        <span class="icon"><img src="icons/bomb.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Mines</span>
-      </a>
-      <a class="side-item" data-href="crash.html" href="crash.html">
-        <span class="icon"><img src="icons/chart.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Crash</span>
-      </a>
-      <a class="side-item" data-href="casebattles.html" href="casebattles.html">
-        <span class="icon"><img src="icons/gift.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Case Battles</span>
-      </a>
-      <a class="side-item" data-href="games.html" href="games.html">
-        <span class="icon"><img src="icons/games.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">All Games</span>
-      </a>
-    </div>
+  <div class="side-nav-block">
+    <div class="online-count"><span class="online-dot"></span><span>1,248 Online</span></div>
+    <a class="side-nav-item" href="index.html"><img src="icons/home.png" alt="" class="ico"><span>Home</span></a>
+    <a class="side-nav-item active" href="games.html"><img src="icons/games.png" alt="" class="ico"><span>Originals</span></a>
+    <a class="side-nav-item" href="games.html"><img src="icons/sparkle.png" alt="" class="ico"><span>Slots</span></a>
+    <a class="side-nav-item" href="rewards.html"><img src="icons/gift.png" alt="" class="ico"><span>Promotions</span></a>
+    <a class="side-nav-item" href="profile.html"><img src="icons/diamond.png" alt="" class="ico"><span>VIP</span></a>
   </div>
-
-  <div class="side-group open" data-group="social">
-    <button type="button" class="side-group-toggle" aria-expanded="true">
-      <span>Social</span>
-      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div class="side-group-body">
-      <a class="side-item" data-href="community.html" href="community.html">
-        <span class="icon"><img src="icons/community.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Community</span>
-      </a>
-      <a class="side-item" data-href="leaderboard.html" href="leaderboard.html">
-        <span class="icon"><img src="icons/leaderboard.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Leaderboard</span>
-      </a>
-    </div>
-  </div>
-
-  <div class="side-group open" data-group="account">
-    <button type="button" class="side-group-toggle" aria-expanded="true">
-      <span>Account</span>
-      <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div class="side-group-body">
-      <a class="side-item" data-href="profile.html" href="profile.html">
-        <span class="icon"><img src="icons/profile.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Profile</span>
-      </a>
-      <a class="side-item" data-href="settings.html" href="settings.html">
-        <span class="icon"><img src="icons/settings.png" alt="" class="ico" draggable="false"></span>
-        <span class="label">Settings</span>
-      </a>
-    </div>
-  </div>
-
-  <a class="sidebar-discord" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">
-    <img src="icons/discord.png" alt="" class="ico" draggable="false">
-    <span>Discord</span>
-  </a>
-  <div class="sidebar-toggle">
-    <button type="button" class="sidebar-collapse-btn side-item" title="Collapse sidebar" aria-label="Collapse">
-      <span class="icon"><svg class="collapse-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></span>
-      <span class="label">Collapse</span>
-    </button>
+  <div class="side-promo">
+    <div class="side-promo-label">Halloween Event</div>
+    <div class="side-promo-title">Ends in 6d 12h</div>
+    <div class="side-promo-sub">Complete missions &amp; earn exclusive rewards!</div>
   </div>
 </aside>
 

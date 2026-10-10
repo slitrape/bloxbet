@@ -6,12 +6,12 @@
 <title>BloxBet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/home-redesign.css">
+<link rel="stylesheet" href="css/redesign.css">
 </head>
-<body class="home-redesign">
+<body class="bb-ui">
 <script>
 (function(){
   try {
@@ -27,12 +27,6 @@
   <div class="bb-loader-veil"></div>
   <div class="bb-loader-vignette"></div>
   <div class="bb-loader-glow"></div>
-  <div class="bb-leaves">
-    <div class="bb-leaf amber"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
-    <div class="bb-leaf rust"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
-    <div class="bb-leaf crimson"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
-    <div class="bb-leaf gold"><svg viewBox="0 0 24 24"><path d="M12 2l1.4 3.5 3.1-1.2-.9 3.6 3.7.5-2.4 2.8 3 2.2-3.5 1.3 1.5 3.4-3.7-.6-.4 3.7-2.8-2.4-2.8 2.4-.4-3.7-3.7.6 1.5-3.4L2 15.4l3-2.2-2.4-2.8 3.7-.5-.9-3.6 3.1 1.2L12 2z"/></svg></div>
-  </div>
   <div class="bb-loader-inner">
     <div class="bb-loader-lockup">
       <div class="bb-loader-mark"><img src="icons/bloxbet.png" alt="BloxBet" draggable="false"></div>
@@ -50,28 +44,26 @@
       <span class="nav-logo-text">BLOXBET</span>
     </a>
   </div>
-
   <div class="nav-center-links">
-    <a href="index.html" class="active">🏠 Home</a>
-    <a href="games.html">🎮 Originals</a>
-    <a href="games.html">🎰 Slots</a>
-    <a href="rewards.html">🎁 Rewards</a>
-    <a href="leaderboard.html">🏆 Leaderboard</a>
+    <a href="index.html" class="active"><img src="icons/home.png" alt="" class="ico"> Home</a>
+    <a href="games.html"><img src="icons/games.png" alt="" class="ico"> Originals</a>
+    <a href="games.html"><img src="icons/sparkle.png" alt="" class="ico"> Slots</a>
+    <a href="rewards.html"><img src="icons/rewards.png" alt="" class="ico"> Rewards</a>
+    <a href="leaderboard.html"><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
   </div>
-
   <div class="nav-right">
     <div class="balance-chip" id="navBalanceChip">
-      <div class="value">$ <span data-balance data-balance="0">0.00</span></div>
+      <div class="value">$ <span data-balance>0.00</span></div>
     </div>
-    <button class="wallet-btn" onclick="Modal.open('m-deposit')">Wallet</button>
+    <button class="wallet-btn" type="button" onclick="Modal.open('m-deposit')">Wallet</button>
     <div class="dropdown">
-      <button class="nav-icon-btn" data-dropdown data-tip="Notifications">
-        <img src="icons/bell.png" alt="" class="ico" style="width:16px;height:16px" draggable="false">
+      <button class="nav-icon-btn" data-dropdown data-tip="Notifications" type="button">
+        <img src="icons/bell.png" alt="" class="ico" draggable="false">
       </button>
       <div class="dropdown-menu"><div class="dropdown-item">No notifications</div></div>
     </div>
     <div class="dropdown">
-      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar">?</button>
+      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar" type="button">?</button>
       <div class="dropdown-menu">
         <a class="dropdown-item" href="profile.html">Profile</a>
         <a class="dropdown-item" href="settings.html">Settings</a>
@@ -90,7 +82,7 @@
       <a href="#">View All</a>
     </div>
     <div class="drop-item">
-      <div class="drop-thumb">🐉</div>
+      <div class="drop-thumb ph ph-amber ph-icon"><img src="icons/fire.png" alt=""></div>
       <div class="drop-info">
         <div class="drop-name">Dragon Lore</div>
         <div class="drop-user">@ShadowKing</div>
@@ -101,7 +93,7 @@
       </div>
     </div>
     <div class="drop-item">
-      <div class="drop-thumb">👑</div>
+      <div class="drop-thumb ph ph-purple ph-icon"><img src="icons/diamond.png" alt=""></div>
       <div class="drop-info">
         <div class="drop-name">Neon Crown</div>
         <div class="drop-user">@LuckyTaco</div>
@@ -112,7 +104,7 @@
       </div>
     </div>
     <div class="drop-item">
-      <div class="drop-thumb">🎩</div>
+      <div class="drop-thumb ph ph-blue ph-icon"><img src="icons/star.png" alt=""></div>
       <div class="drop-info">
         <div class="drop-name">Blue Top Hat</div>
         <div class="drop-user">@Zyna</div>
@@ -123,7 +115,7 @@
       </div>
     </div>
     <div class="drop-item">
-      <div class="drop-thumb">🗡️</div>
+      <div class="drop-thumb ph ph-gold ph-icon"><img src="icons/trophy.png" alt=""></div>
       <div class="drop-info">
         <div class="drop-name">Golden Blade</div>
         <div class="drop-user">@PixelFreak</div>
@@ -134,7 +126,7 @@
       </div>
     </div>
     <div class="drop-item">
-      <div class="drop-thumb">🦋</div>
+      <div class="drop-thumb ph ph-cyan ph-icon"><img src="icons/sparkle.png" alt=""></div>
       <div class="drop-info">
         <div class="drop-name">Cyber Wings</div>
         <div class="drop-user">@Rogue</div>
@@ -145,7 +137,7 @@
       </div>
     </div>
     <div class="drop-item">
-      <div class="drop-thumb">💀</div>
+      <div class="drop-thumb ph ph-red ph-icon"><img src="icons/bomb.png" alt=""></div>
       <div class="drop-info">
         <div class="drop-name">Void Helmet</div>
         <div class="drop-user">@Luna</div>
@@ -185,136 +177,136 @@
   </div>
 
   <div class="side-promo">
-    <div class="side-promo-label">🎃 Halloween Event</div>
+    <div class="side-promo-label">Halloween Event</div>
     <div class="side-promo-title">Ends in 6d 12h</div>
-    <div class="side-promo-sub">Complete missions & earn exclusive rewards!</div>
+    <div class="side-promo-sub">Complete missions &amp; earn exclusive rewards!</div>
   </div>
 </aside>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <main class="main">
   <div class="container page">
 
-    <!-- HERO -->
     <section class="home-hero">
       <div class="home-hero-content">
         <h1>PLAY YOUR <span>WAY</span></h1>
         <p>Original games. Endless excitement.</p>
         <div class="home-hero-actions">
-          <a href="games.html" class="btn-hero btn-hero-primary">Explore Games →</a>
-          <a href="rewards.html" class="btn-hero btn-hero-secondary">🎁 View Rewards</a>
+          <a href="games.html" class="btn-hero btn-hero-primary">Explore Games</a>
+          <a href="rewards.html" class="btn-hero btn-hero-secondary">View Rewards</a>
         </div>
       </div>
-      <div class="home-hero-deco"></div>
+      <div class="home-hero-art">
+        <div class="ph ph-amber ph-icon"><img src="icons/fire.png" alt=""></div>
+        <div class="ph ph-gold ph-icon"><img src="icons/trophy.png" alt=""></div>
+        <div class="ph ph-purple ph-icon"><img src="icons/gift.png" alt=""></div>
+      </div>
     </section>
 
-    <!-- PROMO CARDS -->
     <div class="promo-row">
       <div class="promo-card halloween">
         <div class="promo-tag">Limited Time</div>
         <h3>HALLOWEEN EVENT</h3>
-        <p>Complete missions & earn exclusive rewards!</p>
-        <div class="promo-icon">🎃</div>
+        <p>Complete missions &amp; earn exclusive rewards!</p>
+        <div class="promo-ph ph ph-amber ph-icon"><img src="icons/fire.png" alt=""></div>
       </div>
       <div class="promo-card daily">
         <div class="promo-tag">Daily</div>
         <h3>DAILY REWARDS</h3>
         <p>Log in daily for free rewards!</p>
-        <div class="promo-icon">📦</div>
+        <div class="promo-ph ph ph-purple ph-icon"><img src="icons/gift.png" alt=""></div>
       </div>
       <div class="promo-card weekly">
         <div class="promo-tag">Weekly</div>
         <h3>WEEKLY RACE</h3>
-        <p>Climb the leaderboard & win big!</p>
-        <div class="promo-icon">🏆</div>
+        <p>Climb the leaderboard &amp; win big!</p>
+        <div class="promo-ph ph ph-blue ph-icon"><img src="icons/trophy.png" alt=""></div>
       </div>
     </div>
 
-    <!-- BLOXBET ORIGINALS -->
     <div class="bb-section-head">
-      <h2><span class="crown">👑</span> BLOXBET ORIGINALS</h2>
-      <a href="games.html">View All →</a>
+      <h2>BLOXBET ORIGINALS</h2>
+      <a href="games.html">View All</a>
     </div>
     <div class="originals-grid">
       <a class="orig-card" href="games.html">
-        <div class="orig-card-art dice">
+        <div class="orig-card-art">
           <span class="badge-orig">Original</span>
-          🎲
+          <div class="ph ph-green ph-icon"><img src="icons/games.png" alt=""></div>
         </div>
         <div class="orig-card-body"><h4>DICE</h4></div>
       </a>
       <a class="orig-card" href="mines.html">
-        <div class="orig-card-art mines">
+        <div class="orig-card-art">
           <span class="badge-orig">Original</span>
-          💣
+          <div class="ph ph-red ph-icon"><img src="icons/bomb.png" alt=""></div>
         </div>
         <div class="orig-card-body"><h4>MINES</h4></div>
       </a>
       <a class="orig-card" href="crash.html">
-        <div class="orig-card-art crash">
+        <div class="orig-card-art">
           <span class="badge-orig">Original</span>
-          🚀
+          <div class="ph ph-blue ph-icon"><img src="icons/chart.png" alt=""></div>
         </div>
         <div class="orig-card-body"><h4>CRASH</h4></div>
       </a>
       <a class="orig-card" href="coinflip.html">
-        <div class="orig-card-art coinflip">
+        <div class="orig-card-art">
           <span class="badge-orig">Original</span>
-          🪙
+          <div class="ph ph-gold ph-icon"><img src="icons/coin.png" alt=""></div>
         </div>
         <div class="orig-card-body"><h4>COINFLIP</h4></div>
       </a>
       <a class="orig-card" href="games.html">
-        <div class="orig-card-art lucky">
+        <div class="orig-card-art">
           <span class="badge-orig">Original</span>
-          🍀
+          <div class="ph ph-green ph-icon"><img src="icons/star.png" alt=""></div>
         </div>
         <div class="orig-card-body"><h4>LUCKY</h4></div>
       </a>
       <a class="orig-card" href="casebattles.html">
-        <div class="orig-card-art cases">
+        <div class="orig-card-art">
           <span class="badge-orig">Original</span>
-          📦
+          <div class="ph ph-purple ph-icon"><img src="icons/gift.png" alt=""></div>
         </div>
         <div class="orig-card-body"><h4>CASES</h4></div>
       </a>
     </div>
 
-    <!-- NEW & TRENDING + RECENT WINS -->
     <div class="bottom-row">
       <div>
         <div class="bb-section-head">
-          <h2>🔥 NEW & TRENDING</h2>
-          <a href="#">View All →</a>
+          <h2>NEW &amp; TRENDING</h2>
+          <a href="#">View All</a>
         </div>
         <div class="trending-grid">
           <div class="trend-item">
-            <div class="trend-thumb">🐉</div>
+            <div class="trend-thumb ph ph-amber ph-icon"><img src="icons/fire.png" alt=""></div>
             <div class="trend-name">Dragon Lore</div>
             <div class="trend-price">$127.50</div>
           </div>
           <div class="trend-item">
-            <div class="trend-thumb">👑</div>
+            <div class="trend-thumb ph ph-purple ph-icon"><img src="icons/diamond.png" alt=""></div>
             <div class="trend-name">Neon Crown</div>
             <div class="trend-price">$84.32</div>
           </div>
           <div class="trend-item">
-            <div class="trend-thumb">🎩</div>
+            <div class="trend-thumb ph ph-blue ph-icon"><img src="icons/star.png" alt=""></div>
             <div class="trend-name">Blue Top Hat</div>
             <div class="trend-price">$42.17</div>
           </div>
           <div class="trend-item">
-            <div class="trend-thumb">🗡️</div>
+            <div class="trend-thumb ph ph-gold ph-icon"><img src="icons/trophy.png" alt=""></div>
             <div class="trend-name">Golden Blade</div>
             <div class="trend-price">$96.00</div>
           </div>
           <div class="trend-item">
-            <div class="trend-thumb">🦋</div>
+            <div class="trend-thumb ph ph-cyan ph-icon"><img src="icons/sparkle.png" alt=""></div>
             <div class="trend-name">Cyber Wings</div>
             <div class="trend-price">$73.25</div>
           </div>
           <div class="trend-item">
-            <div class="trend-thumb">💀</div>
+            <div class="trend-thumb ph ph-red ph-icon"><img src="icons/bomb.png" alt=""></div>
             <div class="trend-name">Void Helmet</div>
             <div class="trend-price">$58.90</div>
           </div>
@@ -387,18 +379,16 @@
   </div>
 </main>
 
-<!-- Bottom nav (mobile) -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
-    <a class="bn-item" data-href="index.html" href="index.html"><img src="icons/home.png" alt="" class="ico" draggable="false"><span>Home</span></a>
-    <a class="bn-item" data-href="games.html" href="games.html"><img src="icons/games.png" alt="" class="ico" draggable="false"><span>Games</span></a>
-    <a class="bn-item" data-href="rewards.html" href="rewards.html"><img src="icons/rewards.png" alt="" class="ico" draggable="false"><span>Rewards</span></a>
-    <a class="bn-item" data-href="community.html" href="community.html"><img src="icons/community.png" alt="" class="ico" draggable="false"><span>Social</span></a>
-    <a class="bn-item" data-href="profile.html" href="profile.html"><img src="icons/profile.png" alt="" class="ico" draggable="false"><span>Me</span></a>
+    <a class="bn-item" href="index.html"><img src="icons/home.png" alt="" class="ico"><span>Home</span></a>
+    <a class="bn-item" href="games.html"><img src="icons/games.png" alt="" class="ico"><span>Games</span></a>
+    <a class="bn-item" href="rewards.html"><img src="icons/rewards.png" alt="" class="ico"><span>Rewards</span></a>
+    <a class="bn-item" href="community.html"><img src="icons/community.png" alt="" class="ico"><span>Social</span></a>
+    <a class="bn-item" href="profile.html"><img src="icons/profile.png" alt="" class="ico"><span>Me</span></a>
   </div>
 </nav>
 
-<!-- Deposit modal -->
 <div class="modal-overlay" id="m-deposit">
   <div class="modal">
     <div class="modal-head">
@@ -406,7 +396,7 @@
         <h3>Add Funds</h3>
         <p>Top up your balance.</p>
       </div>
-      <button class="modal-close" onclick="Modal.close('m-deposit')">
+      <button class="modal-close" onclick="Modal.close('m-deposit')" type="button">
         <img src="icons/close.png" alt="" class="ico" draggable="false">
       </button>
     </div>
@@ -416,31 +406,30 @@
         <input type="number" id="depositAmount" value="1000" min="100" step="100">
       </div>
       <div class="quick-bets" style="margin-top:.5rem">
-        <button class="quick-bet" data-deposit="500">500</button>
-        <button class="quick-bet" data-deposit="1000">1K</button>
-        <button class="quick-bet" data-deposit="5000">5K</button>
-        <button class="quick-bet" data-deposit="10000">10K</button>
-        <button class="quick-bet" data-deposit="50000">50K</button>
+        <button class="quick-bet" data-deposit="500" type="button">500</button>
+        <button class="quick-bet" data-deposit="1000" type="button">1K</button>
+        <button class="quick-bet" data-deposit="5000" type="button">5K</button>
+        <button class="quick-bet" data-deposit="10000" type="button">10K</button>
+        <button class="quick-bet" data-deposit="50000" type="button">50K</button>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')">Cancel</button>
-      <button class="btn btn-primary" id="depositConfirmBtn">Confirm</button>
+      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')" type="button">Cancel</button>
+      <button class="btn btn-primary" id="depositConfirmBtn" type="button">Confirm</button>
     </div>
   </div>
 </div>
 
 <script>
-  (function(){
-    var loader = document.getElementById('bbLoader');
-    if(!loader) return;
-    setTimeout(function(){
-      loader.classList.add('hide');
-      setTimeout(function(){ loader.remove(); }, 520);
-    }, 1600);
-  })();
+(function(){
+  var loader = document.getElementById('bbLoader');
+  if(!loader) return;
+  setTimeout(function(){
+    loader.classList.add('hide');
+    setTimeout(function(){ loader.remove(); }, 520);
+  }, 1400);
+})();
 </script>
-
 <script src="js/data.js"></script>
 <script src="js/icons.js"></script>
 <script src="js/toasts.js"></script>
@@ -450,33 +439,26 @@
 <script src="js/deposit.js"></script>
 <script src="js/admin-link.js"></script>
 <script>
-  (function(){
-    if(typeof Auth === 'undefined'){ return; }
-
-    var loggedIn = Auth.isLoggedIn();
-    var me = Auth.getUser();
-
-    var navAvatar = document.getElementById('navAvatar');
-    if(navAvatar && me && typeof renderAvatar === 'function') {
-      renderAvatar(navAvatar, me);
-    } else if(navAvatar && me) {
-      navAvatar.textContent = (me.username || '?').slice(0,2).toUpperCase();
-    }
-
-    // Update balance display
-    function updateBalance(u) {
-      if(!u) return;
-      var els = document.querySelectorAll('[data-balance]');
-      var bal = Number(u.balance || 0);
-      els.forEach(function(el){
-        el.textContent = bal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-      });
-    }
-    if(me) updateBalance(me);
-    if(loggedIn) {
-      Auth.refreshUser().then(function(fresh){ if(fresh) updateBalance(fresh); });
-    }
-  })();
+(function(){
+  if(typeof Auth === 'undefined') return;
+  var loggedIn = Auth.isLoggedIn();
+  var me = Auth.getUser();
+  var navAvatar = document.getElementById('navAvatar');
+  if(navAvatar && me && typeof renderAvatar === 'function') {
+    renderAvatar(navAvatar, me);
+  } else if(navAvatar && me) {
+    navAvatar.textContent = (me.username || '?').slice(0,2).toUpperCase();
+  }
+  function updateBalance(u) {
+    if(!u) return;
+    var bal = Number(u.balance || 0);
+    document.querySelectorAll('[data-balance]').forEach(function(el){
+      el.textContent = bal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    });
+  }
+  if(me) updateBalance(me);
+  if(loggedIn) Auth.refreshUser().then(function(f){ if(f) updateBalance(f); });
+})();
 </script>
 </body>
 </html>
