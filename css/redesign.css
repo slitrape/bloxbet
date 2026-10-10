@@ -3073,3 +3073,37 @@ body.reduce-motion .name-admin-glow {
   border-radius:18px; padding:1rem 1.1rem;
 }
 .pf-v2-card h3{ margin:0 0 .75rem; font-size:.95rem; font-weight:900; color:#fff; }
+
+
+/* Banner upload modal (profile) */
+.banner-upload-modal{ max-width:480px; width:100%; }
+.banner-drop{
+  border:1.5px dashed rgba(255,255,255,.16);
+  border-radius:14px;
+  background:rgba(0,0,0,.25);
+  min-height:160px;
+  display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+  transition:border-color .15s, background .15s;
+}
+.banner-drop.drag{ border-color:var(--accent,#ff9500); background:rgba(255,149,0,.08); }
+.banner-drop.has-preview .banner-drop-inner{ display:none; }
+.banner-drop-inner{ text-align:center; padding:1.25rem; color:#9aa3b2; }
+.banner-drop-inner strong{ display:block; color:#fff; margin:.35rem 0 .15rem; font-size:.9rem; }
+.banner-drop-inner span{ font-size:.72rem; opacity:.8; }
+.banner-drop-icon{ font-size:1.6rem; opacity:.7; }
+.banner-browse{ margin-top:.75rem; display:inline-flex; cursor:pointer; }
+.banner-preview{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.banner-or{ text-align:center; font-size:.72rem; color:#6b7280; margin:.85rem 0 .45rem; text-transform:uppercase; letter-spacing:.06em; }
+.banner-url{
+  width:100%; box-sizing:border-box;
+  background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.1);
+  border-radius:10px; color:#fff; padding:.55rem .7rem; font:inherit; margin-bottom:.75rem;
+}
+.banner-url:focus{ outline:none; border-color:var(--accent,#ff9500); }
+.banner-actions{ display:flex; gap:.5rem; justify-content:flex-end; flex-wrap:wrap; }
+#bannerModal.modal-overlay.show{ opacity:1; visibility:visible; display:flex; }
+
+/* Keep username visible next to admin badge */
+.pf-v2-name .pf-name{ display:inline; }
+.pf-v2-name .pf-badges-row{ display:inline-flex; margin-top:0; margin-left:.15rem; }

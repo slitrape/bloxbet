@@ -128,6 +128,36 @@
   .pf-banner-menu .row{display:flex;gap:.35rem;flex-wrap:wrap}
   .pf-banner-menu .hint{font-size:.68rem;color:var(--text-3);margin-top:.4rem;min-height:1em}
 
+  /* Banner upload modal */
+  .banner-upload-modal{ max-width:480px; width:100%; }
+  .banner-drop{
+    border:1.5px dashed rgba(255,255,255,.16);
+    border-radius:14px;
+    background:rgba(0,0,0,.25);
+    min-height:160px;
+    display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+    transition:border-color .15s, background .15s;
+  }
+  .banner-drop.drag{ border-color:var(--accent,#ff9500); background:rgba(255,149,0,.08); }
+  .banner-drop.has-preview .banner-drop-inner{ display:none; }
+  .banner-drop-inner{ text-align:center; padding:1.25rem; color:var(--text-2,#9aa3b2); }
+  .banner-drop-inner strong{ display:block; color:#fff; margin:.35rem 0 .15rem; font-size:.9rem; }
+  .banner-drop-inner span{ font-size:.72rem; opacity:.8; }
+  .banner-drop-icon{ font-size:1.6rem; opacity:.7; }
+  .banner-browse{ margin-top:.75rem; display:inline-flex; cursor:pointer; }
+  .banner-preview{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .banner-or{ text-align:center; font-size:.72rem; color:var(--text-3,#6b7280); margin:.85rem 0 .45rem; text-transform:uppercase; letter-spacing:.06em; }
+  .banner-url{
+    width:100%; box-sizing:border-box;
+    background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.1);
+    border-radius:10px; color:#fff; padding:.55rem .7rem; font:inherit; margin-bottom:.75rem;
+  }
+  .banner-url:focus{ outline:none; border-color:var(--accent,#ff9500); }
+  .banner-actions{ display:flex; gap:.5rem; justify-content:flex-end; flex-wrap:wrap; }
+  #bannerModal.modal-overlay.show{ opacity:1; visibility:visible; }
+
+
   .pf-banner-grid-lines{
     position:absolute;
     inset:0;
@@ -1211,21 +1241,33 @@ function bannerClassFromBanner(banner){
       ring.className = 'pf-avatar-ring ' + ringClassFromAvatarRing(u.avatarRing);
 
       var nameEl = document.getElementById('pfName');
-      nameEl.className = 'pf-name ' + nameColorClass(u.nameColor);
+      var nameClasses = 'pf-name ' + nameColorClass(u.nameColor);
+      if(u.isAdmin) nameClasses += ' is-admin';
+      nameEl.className = nameClasses;
       nameEl.textContent = displayName;
-      if(u.nameColor && /^#[0-9a-f]{3,8}$/i.test(u.nameColor)){
+      if(u.isAdmin){
+        nameEl.setAttribute('data-admin-name','1');
+        // gradient clip handles color; don't force inline color over it
+        nameEl.style.color = '';
+      } else if(u.nameColor && /^#[0-9a-f]{3,8}$/i.test(u.nameColor)){
+        nameEl.removeAttribute('data-admin-name');
         nameEl.style.color = u.nameColor;
       } else {
+        nameEl.removeAttribute('data-admin-name');
         nameEl.style.color = '';
       }
 
       var v = document.getElementById('pfVerified');
-      v.style.display = u.hasVerifiedBadge ? 'inline-block' : 'none';
+      if(v) v.style.display = u.hasVerifiedBadge ? 'inline-block' : 'none';
 
       document.getElementById('pfHandle').textContent = '@' + username;
 
       var badges = document.getElementById('pfBadges');
       badges.innerHTML = '';
+
+      // Admin / VIP icons next to username (do not replace the name text)
+      if(u.isAdmin) badges.innerHTML += '<img class="pf-badge-img" src="icons/badge-admin.png" alt="Admin" title="BloxBet Admin">';
+      if(u.vip) badges.innerHTML += '<img class="pf-badge-img vip" src="icons/badge-vip.png" alt="VIP" title="VIP">';
 
       var rankName = u.rank || 'Bronze';
       badges.innerHTML += '<span class="pf-badge ' + rankClass(rankName) + '">' + esc(rankName) + '</span>';
@@ -1234,6 +1276,16 @@ function bannerClassFromBanner(banner){
       if(u.chatBadge){
         var cb = chatBadgeClass(u.chatBadge);
         if(cb) badges.innerHTML += '<span class="pf-badge ' + cb + '">' + esc(u.chatBadge) + '</span>';
+      }
+
+      // chips row under handle
+      var chips = document.getElementById('pfBadgeChips');
+      if(chips){
+        var c = '';
+        if(u.isAdmin) c += '<span class="pf-badge-chip admin"><img class="pf-badge-img" src="icons/badge-admin.png" alt=""> Admin</span>';
+        if(u.vip) c += '<span class="pf-badge-chip vip"><img class="pf-badge-img vip" src="icons/badge-vip.png" alt=""> VIP</span>';
+        if(u.chatBadge) c += '<span class="pf-badge-chip">'+esc(String(u.chatBadge))+'</span>';
+        chips.innerHTML = c;
       }
 
       var xp = Number(u.xp) || 0;
@@ -1962,16 +2014,21 @@ function bannerClassFromBanner(banner){
 
   function openModal(){
     if(!overlay) return;
-    overlay.classList.add('open');
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden','false');
+    // hard override in case other CSS fights it
     overlay.style.display = 'flex';
-    overlay.style.alignItems = 'center';
-    overlay.style.justifyContent = 'center';
-    overlay.style.zIndex = '300';
+    overlay.style.opacity = '1';
+    overlay.style.visibility = 'visible';
+    overlay.style.zIndex = '9999';
   }
   function closeModal(){
     if(!overlay) return;
-    overlay.classList.remove('open');
-    overlay.style.display = 'none';
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden','true');
+    overlay.style.display = '';
+    overlay.style.opacity = '';
+    overlay.style.visibility = '';
   }
   function setStatus(t){ if(status) status.textContent = t || ''; }
   function applyBanner(url){
@@ -2006,9 +2063,18 @@ function bannerClassFromBanner(banner){
     var t = e.target;
     if(t && (t.id === 'pfBannerEditBtn' || (t.closest && t.closest('#pfBannerEditBtn')))){
       e.preventDefault();
+      e.stopPropagation();
       openModal();
     }
   });
+  var editBtn = $('pfBannerEditBtn');
+  if(editBtn){
+    editBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      openModal();
+    });
+  }
   var closeBtn = $('bannerModalClose');
   if(closeBtn) closeBtn.addEventListener('click', closeModal);
   if(overlay) overlay.addEventListener('click', function(e){ if(e.target === overlay) closeModal(); });
@@ -2056,27 +2122,42 @@ function bannerClassFromBanner(banner){
 <script id="pf-badges-js">
 (function(){
   function renderBadges(u){
-    var row = document.getElementById('pfBadges');
-    var chips = document.getElementById('pfBadgeChips');
     var nameEl = document.getElementById('pfName');
     if(!u) return;
+    // Only decorate name — never clear textContent or replace rank/level badges
     if(nameEl){
       nameEl.classList.toggle('is-admin', !!u.isAdmin);
-      if(u.isAdmin) nameEl.setAttribute('data-admin-name','1');
+      if(u.isAdmin){
+        nameEl.setAttribute('data-admin-name','1');
+        nameEl.style.color = '';
+      } else {
+        nameEl.removeAttribute('data-admin-name');
+      }
+      // If name is still the placeholder, fill from user
+      if(!nameEl.textContent || nameEl.textContent === '—' || nameEl.textContent === '-'){
+        nameEl.textContent = u.displayName || u.username || 'User';
+      }
     }
-    var html = '';
-    if(u.isAdmin) html += '<img class="pf-badge-img" src="icons/badge-admin.png" alt="Admin" title="BloxBet Admin">';
-    if(u.vip) html += '<img class="pf-badge-img vip" src="icons/badge-vip.png" alt="VIP" title="VIP">';
-    if(row) row.innerHTML = html;
-    if(chips){
+    // If hero already rendered rank badges, only ensure admin/vip icons are present
+    var row = document.getElementById('pfBadges');
+    if(row){
+      var hasAdminImg = !!row.querySelector('img.pf-badge-img[alt="Admin"]');
+      var hasVipImg = !!row.querySelector('img.pf-badge-img.vip, img.pf-badge-img[alt="VIP"]');
+      var prefix = '';
+      if(u.isAdmin && !hasAdminImg) prefix += '<img class="pf-badge-img" src="icons/badge-admin.png" alt="Admin" title="BloxBet Admin">';
+      if(u.vip && !hasVipImg) prefix += '<img class="pf-badge-img vip" src="icons/badge-vip.png" alt="VIP" title="VIP">';
+      if(prefix) row.insertAdjacentHTML('afterbegin', prefix);
+    }
+    var chips = document.getElementById('pfBadgeChips');
+    if(chips && !chips.innerHTML.trim()){
       var c = '';
       if(u.isAdmin) c += '<span class="pf-badge-chip admin"><img class="pf-badge-img" src="icons/badge-admin.png" alt=""> Admin</span>';
       if(u.vip) c += '<span class="pf-badge-chip vip"><img class="pf-badge-img vip" src="icons/badge-vip.png" alt=""> VIP</span>';
-      if(u.chatBadge) c += '<span class="pf-badge-chip">'+String(u.chatBadge)+'</span>';
+      if(u.chatBadge) c += '<span class="pf-badge-chip">'+String(u.chatBadge).replace(/</g,'&lt;')+'</span>';
       chips.innerHTML = c;
     }
     var av = document.getElementById('pfAvatar');
-    if(av && u.id){
+    if(av && u.id && av.tagName !== 'IMG'){
       av.outerHTML = '<img class="pf-v2-av" id="pfAvatar" src="/api/avatar/'+encodeURIComponent(u.id)+'" alt="" referrerpolicy="no-referrer">';
     }
     var idEl = document.getElementById('pfUserId');
