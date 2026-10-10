@@ -406,14 +406,13 @@ body.bb-ui .ad-empty {
     </div>
 
     <div class="ad-tabs" id="adTabs">
-      <button class="ad-tab active" data-tab="live">Live</button>
-      <button class="ad-tab" data-tab="users">Users</button>
-      <button class="ad-tab" data-tab="tx">Transactions</button>
+      <button class="ad-tab active" data-tab="users">Users</button>
+      <button class="ad-tab" data-tab="live">Live</button>
       <button class="ad-tab" data-tab="chat">Chat</button>
       <button class="ad-tab" data-tab="logs">Audit log</button>
     </div>
 
-    <div class="ad-panel active" id="panel-live">
+    <div class="ad-panel" id="panel-live">
       <div class="ad-live-grid">
         <div>
           <div class="ad-section-title">Players online</div>
@@ -426,19 +425,12 @@ body.bb-ui .ad-empty {
       </div>
     </div>
 
-    <div class="ad-panel" id="panel-users">
+    <div class="ad-panel active" id="panel-users">
       <div class="ad-toolbar">
         <input type="search" id="userSearch" placeholder="Search username or id…">
         <button class="btn btn-ghost btn-sm" id="userSearchBtn">Search</button>
       </div>
       <div class="ad-card ad-users" id="userTable"></div>
-    </div>
-
-    <div class="ad-panel" id="panel-tx">
-      <div class="ad-toolbar">
-        <button class="btn btn-ghost btn-sm" id="txReload">Reload</button>
-      </div>
-      <div class="ad-card ad-tx" id="txTable"></div>
     </div>
 
     <div class="ad-panel" id="panel-chat">
@@ -668,7 +660,7 @@ body.bb-ui .ad-empty {
     });
   }
 
-  async function loadTx(){
+  async function loadTx(){ if(!document.getElementById('txTable')) return;
     var res = await Auth.api('/admin/transactions');
     if(!res.ok) return;
     var d = await res.json();
@@ -719,7 +711,7 @@ body.bb-ui .ad-empty {
   function loadTab(name){
     if(name==='live') loadLive();
     if(name==='users') loadUsers(document.getElementById('userSearch').value.trim());
-    if(name==='tx') loadTx();
+    
     if(name==='chat') loadChat();
     if(name==='logs') loadLogs();
   }
@@ -735,17 +727,23 @@ body.bb-ui .ad-empty {
   document.getElementById('userSearch').addEventListener('keydown', function(e){
     if(e.key==='Enter') loadUsers(e.target.value.trim());
   });
-  document.getElementById('txReload').addEventListener('click', loadTx);
+  
   document.getElementById('chatReload').addEventListener('click', loadChat);
   document.getElementById('logsReload').addEventListener('click', loadLogs);
 
+
+  // Force Users tab visible on boot
+  document.querySelectorAll('.ad-tab').forEach(function(t){ t.classList.toggle('active', t.dataset.tab==='users'); });
+  document.querySelectorAll('.ad-panel').forEach(function(p){ p.classList.toggle('active', p.id==='panel-users'); });
   loadStats();
-  loadLive();
+  loadUsers('');
+
   setInterval(function(){
     loadStats();
     var t = document.querySelector('.ad-tab.active');
     if(t && t.dataset.tab==='live') loadLive();
-  }, 20000);
+    if(t && t.dataset.tab==='users') loadUsers(document.getElementById('userSearch').value.trim());
+  }, 30000);
 })();
 </script>
 

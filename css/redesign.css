@@ -1917,3 +1917,35 @@ body.bb-ui .pvp-layout {
 .side-chat-title {
   font-size: .78rem !important;
 }
+
+/* Full-bleed game cover art on homepage */
+.originals-grid-art {
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 1rem;
+}
+.originals-grid-art .orig-card-art {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: #0e1219;
+}
+.originals-grid-art .orig-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform .25s ease;
+}
+.originals-grid-art .orig-card:hover .orig-cover {
+  transform: scale(1.04);
+}
+.originals-grid-art .orig-card:hover .orig-card-art {
+  border-color: rgba(255,138,0,0.4);
+  box-shadow: 0 0 32px rgba(255,138,0,0.22);
+}
+@media (max-width: 900px) {
+  .originals-grid-art { grid-template-columns: repeat(2, 1fr) !important; }
+}

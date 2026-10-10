@@ -915,11 +915,6 @@
         <div class="pf-stat-sub">won − lost</div>
       </div>
       <div class="pf-stat">
-        <div class="pf-stat-label">Win Rate</div>
-        <div class="pf-stat-value" id="pfWinRate">—</div>
-        <div class="pf-stat-sub" id="pfWinRateSub">—</div>
-      </div>
-      <div class="pf-stat">
         <div class="pf-stat-label">Biggest Win</div>
         <div class="pf-stat-value accent" id="pfBiggest">—</div>
         <div class="pf-stat-sub">single flip</div>
@@ -952,56 +947,12 @@
           <div class="pf-streak-strip" id="pfStreakStrip"></div>
         </div>
 
-        <div class="pf-card">
-          <div class="pf-card-head">
-            <h3>Transactions</h3>
-            <span class="hint" id="pfTxCount">—</span>
-          </div>
-          <div class="pf-card-body" id="pfTransactions">
-            <div class="pf-empty">Loading…</div>
-          </div>
         </div>
-
-      </div>
 
       <div class="pf-col">
 
-        <div class="pf-card">
-          <div class="pf-card-head">
-            <h3>Achievements</h3>
-            <span class="hint" id="pfAchCount">0 / 0</span>
-          </div>
-          <div class="pf-ach-grid" id="pfAchGrid"></div>
         </div>
 
-        <div class="pf-card">
-          <div class="pf-card-head">
-            <h3>Referrals</h3>
-            <span class="hint" id="pfRefCount">0</span>
-          </div>
-          <div class="pf-card-body">
-            <div class="pf-ref-row">
-              <span class="lbl">Your Code</span>
-              <span class="pf-ref-code" id="pfRefCode">—</span>
-            </div>
-            <div class="pf-ref-row">
-              <span class="lbl">Earnings</span>
-              <span class="pf-stat-value" style="font-size:.85rem" id="pfRefEarnings">0 RC</span>
-            </div>
-            <div class="pf-ref-row">
-              <span class="lbl">Cap</span>
-              <span style="font-family:'JetBrains Mono',monospace;color:var(--text-2);font-size:.72rem" id="pfRefCap">0 / 10</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="pf-card">
-          <div class="pf-card-head">
-            <h3>Cosmetics</h3>
-          </div>
-          <div class="pf-card-body" id="pfCosmetics">
-            <div class="pf-empty">No cosmetics equipped.</div>
-          </div>
         </div>
 
       </div>
@@ -1478,7 +1429,7 @@ function bannerClassFromBanner(banner){
         var s = data.summary || {};
 
         document.getElementById('pfRank').textContent = '#' + (s.globalRank || '—');
-        document.getElementById('pfRankSub').textContent = (s.achievements || 0) + ' achievements';
+        document.getElementById('pfRankSub').textContent = 'by wagered';
       } catch(e){}
     }
 
@@ -1493,10 +1444,10 @@ function bannerClassFromBanner(banner){
 
     loadActivity();
     loadStreakStrip();
-    loadTransactions();
-    loadAchievements();
-    loadReferrals();
-    loadCosmetics();
+    
+    
+    
+    
     loadSummary();
 
     setInterval(function(){
