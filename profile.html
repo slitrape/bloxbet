@@ -138,7 +138,9 @@
     display:flex; align-items:center; justify-content:center;
     position:relative; overflow:hidden;
     transition:border-color .15s, background .15s;
+    cursor:pointer;
   }
+  .banner-drop:hover{ border-color:rgba(255,149,0,.55); background:rgba(255,149,0,.06); }
   .banner-drop.drag{ border-color:var(--accent,#ff9500); background:rgba(255,149,0,.08); }
   .banner-drop.has-preview .banner-drop-inner{ display:none; }
   .banner-drop-inner{ text-align:center; padding:1.25rem; color:var(--text-2,#9aa3b2); }
@@ -1185,11 +1187,15 @@
       if(!el) return;
       var s = banner ? String(banner) : '';
       el.style.backgroundImage = '';
-      el.className = 'pf-banner';
+      // keep v2 shell class so actions/button stay laid out
+      var keepV2 = el.classList.contains('pf-v2-banner') || el.id === 'pfBanner';
+      el.className = keepV2 ? 'pf-v2-banner' : 'pf-banner';
       if(!s) return;
       if(/^https?:\/\//i.test(s) || s.indexOf('data:image/') === 0){
         el.classList.add('has-image');
         el.style.backgroundImage = 'url(' + JSON.stringify(s).slice(1,-1) + ')';
+        el.style.backgroundSize = 'cover';
+        el.style.backgroundPosition = 'center';
         return;
       }
       if(s.indexOf('grid') !== -1) el.classList.add('banner-grid');
@@ -1219,8 +1225,19 @@ function bannerClassFromBanner(banner){
     function renderHero(u){
       if(!u) return;
 
-      var displayName = u.displayName || u.username || 'User';
-      var username = u.username || 'user';
+      var displayName = u.displayName || u.username || u.name || 'User';
+      var username = u.username || u.displayName || u.name || '';
+      if(!username || String(username).toLowerCase() === 'user'){
+        // last-chance: local session may still have the real handle
+        try {
+          var meLocal = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
+          if(meLocal && (meLocal.username || meLocal.displayName)){
+            username = meLocal.username || meLocal.displayName;
+            if(!u.displayName && meLocal.displayName) displayName = meLocal.displayName;
+          }
+        } catch(e){}
+      }
+      if(!username) username = 'user';
 
       var banner = document.getElementById('pfBanner');
       applyProfileBanner(banner, u.profileBanner);
@@ -1841,7 +1858,16 @@ function bannerClassFromBanner(banner){
         var nameEl = document.querySelector('.pf-hero-info h1, #pfName, .pf-name');
         if(nameEl) nameEl.textContent = u.displayName || u.username || 'Player';
         var handle = document.querySelector('.pf-handle, #pfHandle');
-        if(handle) handle.textContent = '@' + (u.username || 'user');
+        if(handle){
+          var h = u.username || u.displayName || u.name || '';
+          if(!h || String(h).toLowerCase() === 'user'){
+            try {
+              var me2 = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
+              if(me2) h = me2.username || me2.displayName || h;
+            } catch(e){}
+          }
+          handle.textContent = '@' + (h || 'user');
+        }
         if(typeof renderAvatar === 'function'){
           var av = document.getElementById('pfAvatar');
           if(av) renderAvatar(av, u);
@@ -1978,16 +2004,13 @@ function bannerClassFromBanner(banner){
       <button class="modal-close" type="button" id="bannerModalClose"><img src="icons/close.png" class="ico" alt=""></button>
     </div>
     <div class="modal-body">
-      <div class="banner-drop" id="bannerDrop">
+      <div class="banner-drop" id="bannerDrop" role="button" tabindex="0" title="Click or drop an image">
         <div class="banner-drop-inner">
           <div class="banner-drop-icon">⤒</div>
           <strong>Drop image here</strong>
-          <span>PNG, JPG, WebP · max ~3MB</span>
-          <label class="btn btn-primary btn-sm banner-browse">
-            Browse files
-            <input type="file" id="pfBannerFile" accept="image/*" hidden>
-          </label>
+          <span>or click to upload · PNG, JPG, WebP · max ~3MB</span>
         </div>
+        <input type="file" id="pfBannerFile" accept="image/*" hidden>
         <img id="bannerPreview" class="banner-preview" alt="" hidden>
       </div>
       <div class="banner-or">or image URL</div>
@@ -2082,6 +2105,18 @@ function bannerClassFromBanner(banner){
     ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('drag'); }); });
     ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('drag'); }); });
     drop.addEventListener('drop', function(e){ var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if(f) readFile(f); });
+    // whole zone is the browse target
+    drop.addEventListener('click', function(e){
+      if(e.target && e.target.id === 'pfBannerFile') return;
+      e.preventDefault();
+      if(fileInput) fileInput.click();
+    });
+    drop.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        if(fileInput) fileInput.click();
+      }
+    });
   }
   if(fileInput) fileInput.addEventListener('change', function(){ var f = fileInput.files && fileInput.files[0]; if(f) readFile(f); });
   var saveBtn = $('pfBannerSaveBtn');

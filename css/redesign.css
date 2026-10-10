@@ -3085,7 +3085,9 @@ body.reduce-motion .name-admin-glow {
   display:flex; align-items:center; justify-content:center;
   position:relative; overflow:hidden;
   transition:border-color .15s, background .15s;
+  cursor:pointer;
 }
+.banner-drop:hover{ border-color:rgba(255,149,0,.55); background:rgba(255,149,0,.06); }
 .banner-drop.drag{ border-color:var(--accent,#ff9500); background:rgba(255,149,0,.08); }
 .banner-drop.has-preview .banner-drop-inner{ display:none; }
 .banner-drop-inner{ text-align:center; padding:1.25rem; color:#9aa3b2; }
