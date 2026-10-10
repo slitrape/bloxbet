@@ -576,7 +576,7 @@
     pvpWaitDetails.innerHTML =
       '<div class="pvp-duel">' +
         '<div class="pvp-duel-side">' +
-          '<div class="pvp-duel-av">' + avHtml + '</div>' +
+          '<div class="pvp-duel-av" style="width:76px;height:76px">' + avHtml + '</div>' +
           '<div class="pvp-duel-name">' + escapeHtml(m.creatorUsername||'You') + '</div>' +
           '<div class="pvp-duel-bet">' + fmtFull(m.bet) + ' RC</div>' +
           '<div class="pvp-duel-choice">' + escapeHtml(side) + '</div>' +
@@ -854,14 +854,14 @@
     }
     duel.innerHTML =
       '<div class="pvp-duel-side">' +
-        '<div class="pvp-duel-av">' + av(left) + '</div>' +
+        '<div class="pvp-duel-av" style="width:76px;height:76px">' + av(left) + '</div>' +
         '<div class="pvp-duel-name">' + escapeHtml(left.username||'?') + '</div>' +
         '<div class="pvp-duel-bet">' + fmtFull(left.bet) + ' RC</div>' +
         '<div class="pvp-duel-choice">' + escapeHtml(left.choice) + '</div>' +
       '</div>' +
       '<div class="pvp-duel-coin"><img src="icons/coin-' + result + '.png" alt="" draggable="false"></div>' +
       '<div class="pvp-duel-side">' +
-        '<div class="pvp-duel-av">' + av(right) + '</div>' +
+        '<div class="pvp-duel-av" style="width:76px;height:76px">' + av(right) + '</div>' +
         '<div class="pvp-duel-name">' + escapeHtml(right.username||'?') + '</div>' +
         '<div class="pvp-duel-bet">' + fmtFull(right.bet) + ' RC</div>' +
         '<div class="pvp-duel-choice">' + escapeHtml(right.choice) + '</div>' +
@@ -968,7 +968,7 @@
         pvpResultSub.innerHTML =
           '<div class="pvp-duel">' +
             '<div class="pvp-duel-side">' +
-              '<div class="pvp-duel-av" data-user-id="' + (left.id||'') + '">' + avHtml(left) + '</div>' +
+              '<div class="pvp-duel-av" style="width:76px;height:76px" data-user-id="' + (left.id||'') + '">' + avHtml(left) + '</div>' +
               '<div class="pvp-duel-name">' + escapeHtml(left.username) + '</div>' +
               '<div class="pvp-duel-bet">' + fmtFull(left.bet) + ' RC</div>' +
               '<div class="pvp-duel-choice">' + escapeHtml(left.choice) + '</div>' +
@@ -977,7 +977,7 @@
               '<img id="pvpDuelCoin" src="icons/coin-heads.png" alt="" class="spinning" draggable="false">' +
             '</div>' +
             '<div class="pvp-duel-side">' +
-              '<div class="pvp-duel-av" data-user-id="' + (right.id||'') + '">' + avHtml(right) + '</div>' +
+              '<div class="pvp-duel-av" style="width:76px;height:76px" data-user-id="' + (right.id||'') + '">' + avHtml(right) + '</div>' +
               '<div class="pvp-duel-name">' + escapeHtml(right.username) + '</div>' +
               '<div class="pvp-duel-bet">' + fmtFull(right.bet) + ' RC</div>' +
               '<div class="pvp-duel-choice">' + escapeHtml(right.choice) + '</div>' +

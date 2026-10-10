@@ -206,20 +206,8 @@
     grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
     gap:.5rem;
   }
-  .pvp-recent-item{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--r-md);
-    padding:.6rem .85rem;
-    display:grid;
-    grid-template-columns:20px 1fr auto;
-    align-items:center;
-    gap:.55rem;
-    font-size:.72rem;
-  }
-  .pvp-recent-item img{
-    width:20px;height:20px;object-fit:contain;
-  }
+  .pvp-recent-item{display:flex;align-items:center;gap:.85rem;padding:1rem 1.1rem;border-radius:14px;border:1px solid rgba(255,255,255,.07);background:#12141c;cursor:pointer;transition:border-color .15s,transform .15s}
+  .pvp-recent-item img{width:40px;height:40px;object-fit:contain}
   .pvp-recent-name{
     color:var(--text-2);
     font-weight:500;
@@ -392,11 +380,7 @@
     margin-top:.75rem;
   }
   .pvp-duel-side{text-align:center}
-  .pvp-duel-av{
-    width:72px;height:72px;border-radius:50%;overflow:hidden;margin:0 auto .5rem;
-    background:var(--surface-3);border:2px solid var(--border-2);
-    display:grid;place-items:center;font-weight:700;font-size:1.2rem;
-  }
+  .pvp-duel-av{width:76px;height:76px;border-radius:50%;margin:0 auto .55rem;overflow:hidden;border:2px solid rgba(255,149,0,.4);background:var(--surface-2);display:grid;place-items:center;font-weight:800;font-size:1.35rem}
   .pvp-duel-av img{width:100%;height:100%;object-fit:cover}
   .pvp-duel-name{font-weight:600;font-size:.85rem;margin-bottom:.25rem}
   .pvp-duel-bet{
@@ -407,7 +391,7 @@
     font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;
     color:var(--text-3);margin-top:.2rem;font-weight:600;
   }
-  .pvp-duel-coin{display:flex;align-items:center;justify-content:center}
+  .pvp-duel-coin{display:flex;align-items:center;justify-content:center}.pvp-duel-coin img{width:128px;height:128px;object-fit:contain;filter:drop-shadow(0 10px 28px rgba(255,150,0,.4))}
   .pvp-duel-coin img{
     width:88px;height:88px;object-fit:contain;
     filter:drop-shadow(0 6px 18px rgba(255,149,0,.35));
@@ -447,6 +431,12 @@
     .pvp-header{flex-direction:column;align-items:stretch}
     .pvp-create-btn{width:100%;justify-content:center}
   }
+
+  #m-createMatch .modal{max-width:560px;width:95%}
+  #m-createMatch .pvp-duel{padding:1.5rem .5rem}
+  #m-createMatch .pvp-duel-name{font-size:1.05rem;font-weight:800}
+  #m-createMatch .pvp-duel-bet{font-size:.95rem;font-weight:800;color:#f5d76e}
+  .pvp-recent-item:hover{border-color:rgba(255,149,0,.35);transform:translateY(-1px)}
 </style>
 </head>
 <body class="bb-ui">
@@ -530,6 +520,19 @@
       <span class="online-dot"></span>
       <span><span id="onlineCount">—</span> Online</span>
     </div>
+    <div class="side-chat" id="sideChat">
+      <div class="side-chat-head">
+        <span class="side-chat-title">Live Chat</span>
+        <span class="side-chat-lock" id="sideChatLock">Login required</span>
+      </div>
+      <div class="side-chat-messages" id="sideChatMessages">
+        <div class="side-chat-empty">Sign in with Roblox to chat.</div>
+      </div>
+      <form class="side-chat-form" id="sideChatForm">
+        <input type="text" id="sideChatInput" placeholder="Say something…" maxlength="200" autocomplete="off" disabled>
+        <button type="submit" id="sideChatSend" disabled>Send</button>
+      </form>
+    </div>
     <a class="side-nav-item" href="index.html">
       <img src="icons/home.png" alt="" class="ico" draggable="false">
       <span>Home</span>
@@ -548,10 +551,10 @@
       </div>
     </div>
   </div>
-  <div class="side-promo">
+  <div class="side-promo side-promo-hw">
     <div class="side-promo-label">Halloween Event</div>
-    <div class="side-promo-title">Ends in 6d 12h</div>
-    <div class="side-promo-sub">Complete missions &amp; earn exclusive rewards!</div>
+    <div class="side-promo-title" id="hwCountdown">—</div>
+    <div class="side-promo-sub">Ends Oct 31, 2026 · Complete missions &amp; earn exclusive rewards!</div>
   </div>
   <div class="sidebar-collapse-bar">
     <button type="button" id="sidebarCollapseBtn" title="Collapse sidebar">
@@ -1000,29 +1003,48 @@
 
 
 
-<script>
+
+
+
+
+<script id="bb-shell-js">
 (function(){
-  var dd = document.getElementById('originalsDropdown');
-  var btn = document.getElementById('originalsToggle');
-  if(btn && dd){ btn.addEventListener('click', function(){ dd.classList.toggle('open'); }); }
-  var side = document.getElementById('appSidebar');
+  function qs(id){ return document.getElementById(id); }
+
+  /* Collapse */
+  var side = qs('appSidebar');
   var main = document.querySelector('main.main');
-  var colBtn = document.getElementById('sidebarCollapseBtn');
-  if(colBtn && side){
-    try {
-      if(localStorage.getItem('bb_sidebar_collapsed') === '1'){
-        side.classList.add('collapsed');
-        if(main) main.classList.add('sidebar-collapsed');
-      }
-    } catch(e){}
-    colBtn.addEventListener('click', function(){
-      side.classList.toggle('collapsed');
-      if(main) main.classList.toggle('sidebar-collapsed');
-      try { localStorage.setItem('bb_sidebar_collapsed', side.classList.contains('collapsed') ? '1' : '0'); } catch(e){}
+  var colBtn = qs('sidebarCollapseBtn');
+  function applyCollapsed(on){
+    if(!side) return;
+    side.classList.toggle('collapsed', !!on);
+    if(main) main.classList.toggle('expanded', !!on);
+    try { localStorage.setItem('bb_sidebar_collapsed', on ? '1' : '0'); } catch(e){}
+  }
+  try {
+    if(localStorage.getItem('bb_sidebar_collapsed') === '1') applyCollapsed(true);
+  } catch(e){}
+  if(colBtn){
+    colBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      applyCollapsed(!(side && side.classList.contains('collapsed')));
     });
   }
+
+  /* Originals dropdown */
+  var dd = qs('originalsDropdown');
+  var btn = qs('originalsToggle');
+  if(btn && dd){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      dd.classList.toggle('open');
+    });
+  }
+
+  /* Online */
   function setOnline(n){
-    var el = document.getElementById('onlineCount');
+    var el = qs('onlineCount');
     if(el) el.textContent = Number(n).toLocaleString();
   }
   async function refreshOnline(){
@@ -1031,19 +1053,79 @@
         var res = await Auth.api('/users/online');
         if(res && res.ok){
           var data = await res.json();
-          var count = data.count != null ? data.count : (data.online != null ? data.online : (Array.isArray(data.users) ? data.users.length : null));
+          var count = data.count != null ? data.count : (data.online != null ? data.online : null);
           if(count != null){ setOnline(count); return; }
         }
       }
     } catch(e){}
-    var base = 1200 + Math.floor((Date.now() / 60000) % 80);
-    setOnline(base + Math.floor(Math.random() * 12));
+    setOnline(1200 + Math.floor((Date.now()/60000)%80) + Math.floor(Math.random()*12));
   }
   refreshOnline();
   setInterval(refreshOnline, 20000);
+
+  /* Halloween countdown ends Oct 31 2026 */
+  var end = new Date(2026, 9, 31, 23, 59, 59).getTime();
+  function tickHw(){
+    var el = qs('hwCountdown');
+    if(!el) return;
+    var diff = Math.max(0, end - Date.now());
+    var d = Math.floor(diff/86400000);
+    var h = Math.floor((diff%86400000)/3600000);
+    var m = Math.floor((diff%3600000)/60000);
+    var s = Math.floor((diff%60000)/1000);
+    el.textContent = d + 'd ' + h + 'h ' + m + 'm ' + s + 's';
+  }
+  tickHw();
+  setInterval(tickHw, 1000);
+
+  /* Chat */
+  var chatBox = qs('sideChatMessages');
+  var chatForm = qs('sideChatForm');
+  var chatInput = qs('sideChatInput');
+  var chatSend = qs('sideChatSend');
+  var chatLock = qs('sideChatLock');
+  var loggedIn = false;
+  try { loggedIn = !!(localStorage.getItem('bb_token') && localStorage.getItem('bb_user')); } catch(e){}
+  if(typeof Auth !== 'undefined' && Auth.isLoggedIn) loggedIn = !!Auth.isLoggedIn();
+
+  function appendChat(msg){
+    if(!chatBox) return;
+    var empty = chatBox.querySelector('.side-chat-empty');
+    if(empty) empty.remove();
+    var row = document.createElement('div');
+    row.className = 'side-chat-msg';
+    var u = document.createElement('span');
+    u.className = 'side-chat-user';
+    u.textContent = '@' + (msg.user||'user');
+    var t = document.createElement('span');
+    t.className = 'side-chat-text';
+    t.textContent = ' ' + (msg.text||'');
+    row.appendChild(u);
+    row.appendChild(t);
+    chatBox.appendChild(row);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+  if(loggedIn){
+    if(chatInput) chatInput.disabled = false;
+    if(chatSend) chatSend.disabled = false;
+    if(chatLock){ chatLock.textContent = 'Live'; chatLock.classList.add('live'); }
+    if(chatBox) chatBox.innerHTML = '';
+    appendChat({ user: 'System', text: 'Welcome to Live Chat.' });
+  }
+  if(chatForm){
+    chatForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(!loggedIn) return;
+      var text = (chatInput && chatInput.value || '').trim();
+      if(!text) return;
+      var me = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
+      appendChat({ user: (me && me.username) || 'You', text: text });
+      if(chatInput) chatInput.value = '';
+      try { if(Auth.api) Auth.api('/chat', { method:'POST', body: JSON.stringify({ message: text }) }).catch(function(){}); } catch(err){}
+    });
+  }
 })();
 </script>
-
 
 </body>
 </html>
