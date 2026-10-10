@@ -85,13 +85,41 @@
   </div>
 </div>
 
-<script>
-  (function(){
-    var loader = document.getElementById('bbLoader');
-    if(!loader) return;
-    setTimeout(function(){ loader.classList.add('hide'); setTimeout(function(){ loader.remove(); }, 400);; }, 400);
-  })();
+
+<script id="bb-loader-ctrl">
+(function(){
+  var path = (location.pathname || '').split('/').pop() || 'index.html';
+  var forcePages = { 'leaderboard.html':1, 'profile.html':1 };
+  var nav = false;
+  try { nav = sessionStorage.getItem('bb_internal_nav') === '1'; } catch(e){}
+  var show = forcePages[path] || !nav;
+  // mark next navigations as internal
+  document.addEventListener('click', function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if(!a) return;
+    var href = a.getAttribute('href') || '';
+    if(!href || href.indexOf('http') === 0 || href.indexOf('//') === 0 || href.charAt(0) === '#' || a.target === '_blank') return;
+    try { sessionStorage.setItem('bb_internal_nav', '1'); } catch(err){}
+  }, true);
+  // hard refresh clears performance navigation type
+  try {
+    var navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if(navEntry && navEntry.type === 'reload'){ show = true; }
+  } catch(e){}
+  var loader = document.getElementById('bbLoader');
+  if(!loader) return;
+  if(!show){
+    loader.classList.add('hide');
+    try { loader.remove(); } catch(e){}
+    return;
+  }
+  setTimeout(function(){
+    loader.classList.add('hide');
+    setTimeout(function(){ try{ loader.remove(); }catch(e){} }, 350);
+  }, 320);
+})();
 </script>
+
 
 <script src="js/auth.js"></script>
 <script>

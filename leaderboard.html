@@ -487,13 +487,13 @@ a.race-pod-card:hover, a.race-row:hover { border-color: rgba(59,130,246,0.35); }
 <aside class="sidebar" id="appSidebar">
   <div class="side-nav-block">
     <div class="side-row-top">
+      <button type="button" class="side-hamburger" id="sidebarCollapseBtn" title="Toggle menu">
+        <img src="icons/menu.png" alt="" class="ico">
+      </button>
       <a class="side-nav-item" href="index.html">
         <img src="icons/home.png" alt="" class="ico" draggable="false">
         <span>Home</span>
       </a>
-      <button type="button" class="side-hamburger" id="sidebarCollapseBtn" title="Toggle menu">
-        <img src="icons/menu.png" alt="" class="ico">
-      </button>
     </div>
     <div class="side-dropdown" id="originalsDropdown">
       <button type="button" class="side-dropdown-toggle" id="originalsToggle">
@@ -708,15 +708,14 @@ a.race-pod-card:hover, a.race-row:hover { border-color: rgba(59,130,246,0.35); }
         </div>
         <div class="dep-note">Min 7 BC</div>
       </div>
+      
       <div class="wallet-pane" id="walletConvertPane">
-        <div class="aap-section" style="margin:0">
-          <label>From</label>
-          <select id="convertFrom">
-            <option value="rc">RoCoins (RC) → BloxCoins</option>
-            <option value="bc">BloxCoins (BC) → RoCoins</option>
-          </select>
+        <div class="convert-dir">
+          <button type="button" class="convert-pill active" data-from="rc">RC → BC</button>
+          <button type="button" class="convert-pill" data-from="bc">BC → RC</button>
         </div>
-        <div class="dep-amount-wrap" style="margin-top:.75rem">
+        <input type="hidden" id="convertFrom" value="rc">
+        <div class="dep-amount-wrap" style="margin-top:.85rem">
           <label>Amount</label>
           <div class="dep-amount-box">
             <input type="number" id="convertAmount" value="100" min="1" step="1">
@@ -724,7 +723,7 @@ a.race-pod-card:hover, a.race-row:hover { border-color: rgba(59,130,246,0.35); }
         </div>
         <div class="dep-note">1:1 conversion · RC is used for games</div>
       </div>
-    </div>
+      </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="Modal.close('m-deposit')" type="button">Cancel</button>
       <button class="btn btn-primary btn-orange" id="depositConfirmBtn" type="button">Confirm Deposit</button>
@@ -734,13 +733,41 @@ a.race-pod-card:hover, a.race-row:hover { border-color: rgba(59,130,246,0.35); }
   </div>
 </div>
 
-<script>
-  (function(){
-    var loader = document.getElementById('bbLoader');
-    if(!loader) return;
-    setTimeout(function(){ loader.classList.add('hide'); setTimeout(function(){ loader.remove(); }, 400);; }, 400);
-  })();
+
+<script id="bb-loader-ctrl">
+(function(){
+  var path = (location.pathname || '').split('/').pop() || 'index.html';
+  var forcePages = { 'leaderboard.html':1, 'profile.html':1 };
+  var nav = false;
+  try { nav = sessionStorage.getItem('bb_internal_nav') === '1'; } catch(e){}
+  var show = forcePages[path] || !nav;
+  // mark next navigations as internal
+  document.addEventListener('click', function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if(!a) return;
+    var href = a.getAttribute('href') || '';
+    if(!href || href.indexOf('http') === 0 || href.indexOf('//') === 0 || href.charAt(0) === '#' || a.target === '_blank') return;
+    try { sessionStorage.setItem('bb_internal_nav', '1'); } catch(err){}
+  }, true);
+  // hard refresh clears performance navigation type
+  try {
+    var navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if(navEntry && navEntry.type === 'reload'){ show = true; }
+  } catch(e){}
+  var loader = document.getElementById('bbLoader');
+  if(!loader) return;
+  if(!show){
+    loader.classList.add('hide');
+    try { loader.remove(); } catch(e){}
+    return;
+  }
+  setTimeout(function(){
+    loader.classList.add('hide');
+    setTimeout(function(){ try{ loader.remove(); }catch(e){} }, 350);
+  }, 320);
+})();
 </script>
+
 
 <script src="js/data.js"></script>
 <script src="js/icons.js"></script>
@@ -1152,7 +1179,15 @@ a.race-pod-card:hover, a.race-row:hover { border-color: rgba(59,130,246,0.35); }
       if(pane) pane.classList.add('active');
       var depBtn = document.getElementById('depositConfirmBtn');
       var wdBtn = document.getElementById('withdrawConfirmBtn');
-      var cvBtn = document.getElementById('convertConfirmBtn');
+      document.querySelectorAll('.convert-pill').forEach(function(p){
+    p.addEventListener('click', function(){
+      document.querySelectorAll('.convert-pill').forEach(function(x){ x.classList.remove('active'); });
+      p.classList.add('active');
+      var inp = document.getElementById('convertFrom');
+      if(inp) inp.value = p.getAttribute('data-from') || 'rc';
+    });
+  });
+  var cvBtn = document.getElementById('convertConfirmBtn');
       if(depBtn) depBtn.style.display = tab.dataset.wtab === 'deposit' ? '' : 'none';
       if(wdBtn) wdBtn.style.display = tab.dataset.wtab === 'withdraw' ? '' : 'none';
       if(cvBtn) cvBtn.style.display = tab.dataset.wtab === 'convert' ? '' : 'none';
@@ -1167,6 +1202,14 @@ a.race-pod-card:hover, a.race-row:hover { border-color: rgba(59,130,246,0.35); }
       if(window.Modal) Modal.close('m-deposit');
     });
   }
+  document.querySelectorAll('.convert-pill').forEach(function(p){
+    p.addEventListener('click', function(){
+      document.querySelectorAll('.convert-pill').forEach(function(x){ x.classList.remove('active'); });
+      p.classList.add('active');
+      var inp = document.getElementById('convertFrom');
+      if(inp) inp.value = p.getAttribute('data-from') || 'rc';
+    });
+  });
   var cvBtn = document.getElementById('convertConfirmBtn');
   if(cvBtn){
     cvBtn.addEventListener('click', async function(){

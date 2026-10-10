@@ -698,7 +698,7 @@ html,body{background:#0b0e14;margin:0}
     if(!panelUser) return;
     var make = !panelUser.isAdmin;
     if(!confirm(make?'Grant admin?':'Revoke admin?')) return;
-    var r = await Auth.api('/admin/users/'+panelUser.id+'/admin', { method:'POST', body: JSON.stringify({ isAdmin: make }) });
+    var r = await Auth.api('/admin/users/'+panelUser.id+'/admin', { method:'POST', body: JSON.stringify({ isAdmin: make, enable: make }) });
     if(r.ok){ Toast.success('Saved','Admin updated'); document.getElementById('adminActionPanel').hidden = true; loadUsers(''); }
     else Toast.error('Failed','Could not update');
   });

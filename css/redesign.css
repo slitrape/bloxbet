@@ -2772,3 +2772,151 @@ body.bb-ui .sidebar.collapsed .side-nav-item,
 body.bb-ui .sidebar.collapsed .side-dropdown-toggle {
   justify-content: center;
 }
+
+/* Banned screen */
+#bbBannedScreen{
+  position:fixed;inset:0;z-index:99999;background:rgba(5,7,12,.92);
+  display:grid;place-items:center;padding:1.25rem;
+  backdrop-filter:blur(10px);
+}
+.bb-ban-card{
+  width:min(420px,100%);background:#12161f;border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;padding:1.75rem 1.5rem;text-align:center;
+  box-shadow:0 24px 60px rgba(0,0,0,.5);
+}
+.bb-ban-logo{width:48px;height:48px;margin-bottom:.75rem}
+.bb-ban-card h1{margin:0 0 .35rem;font-size:1.45rem;font-weight:900;color:#fff}
+.bb-ban-type{margin:0 0 .75rem;color:#f87171;font-weight:800}
+.bb-ban-reason{margin:0 0 1rem;color:#9aa3b5;font-size:.9rem}
+.bb-ban-meta{display:grid;gap:.5rem;margin-bottom:1rem}
+.bb-ban-meta div{background:#0e1219;border-radius:12px;padding:.65rem .75rem;display:flex;justify-content:space-between;gap:.5rem}
+.bb-ban-meta span{color:#6b7280;font-weight:700;font-size:.75rem;text-transform:uppercase}
+.bb-ban-meta strong{color:#fff;font-weight:800}
+.bb-ban-help{color:#8b95a8;font-size:.88rem;margin:0 0 1rem}
+.bb-ban-discord{
+  display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  background:#5865F2;color:#fff;text-decoration:none;font-weight:800;
+  border-radius:12px;padding:.7rem 1.1rem;margin-bottom:.55rem;
+}
+.bb-ban-logout{
+  display:block;width:100%;margin-top:.35rem;appearance:none;border:1px solid rgba(255,255,255,.1);
+  background:transparent;color:#9aa3b5;font-family:inherit;font-weight:700;
+  border-radius:12px;padding:.65rem;cursor:pointer;
+}
+
+/* Currency chip expands left */
+body.bb-ui .nav-center-funds{display:flex;align-items:center;justify-content:center;gap:.55rem}
+body.bb-ui .currency-box{position:relative}
+body.bb-ui .currency-box-btn{
+  min-width:0!important;width:max-content!important;max-width:none!important;
+  padding:.4rem .6rem!important;gap:.3rem!important;font-size:.88rem!important;
+  white-space:nowrap;
+}
+body.bb-ui .currency-box-btn .currency-amt{
+  max-width:none!important;overflow:visible!important;text-overflow:clip!important;
+  font-variant-numeric:tabular-nums;
+}
+
+/* Collapsed sidebar: hamburger ABOVE home */
+body.bb-ui .sidebar.collapsed .side-row-top{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  gap:.4rem!important;
+}
+body.bb-ui .sidebar.collapsed .side-hamburger{
+  order:0!important;
+  margin:.4rem auto .1rem!important;
+}
+body.bb-ui .sidebar.collapsed .side-row-top .side-nav-item{
+  order:1!important;
+}
+body.bb-ui .sidebar.collapsed .side-nav-item.active,
+body.bb-ui .sidebar.collapsed .side-dropdown-toggle.active,
+body.bb-ui .sidebar.collapsed .side-nav-item:hover,
+body.bb-ui .sidebar.collapsed .side-dropdown-toggle:hover{
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+  color:inherit!important;
+}
+body.bb-ui .sidebar.collapsed .side-nav-item,
+body.bb-ui .sidebar.collapsed .side-dropdown-toggle{
+  background:transparent!important;
+  border:none!important;
+  box-shadow:none!important;
+}
+
+/* Clean wallet */
+.wallet-pro.modal,.deposit-modal.wallet-pro{
+  background:#0f131a!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:22px!important;
+  box-shadow:0 30px 80px rgba(0,0,0,.55)!important;
+  overflow:hidden;
+}
+.wallet-pro .modal-head{
+  border-bottom:1px solid rgba(255,255,255,.06);
+  padding:1.15rem 1.25rem .9rem!important;
+}
+.wallet-pro .modal-head h3{font-size:1.2rem;font-weight:900;letter-spacing:-.02em}
+.wallet-pro .modal-head p{color:#7b8494;font-size:.82rem;margin:.2rem 0 0}
+.wallet-pro .modal-body{padding:1rem 1.25rem 1.15rem!important}
+.wallet-pro .wallet-tabs{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:.35rem;
+  background:#0b0e14;border-radius:14px;padding:.3rem;margin-bottom:1rem;
+  border:1px solid rgba(255,255,255,.05);
+}
+.wallet-pro .wallet-tab{
+  border:none!important;background:transparent!important;color:#8b95a8!important;
+  border-radius:11px!important;padding:.55rem .4rem!important;font-weight:800!important;
+}
+.wallet-pro .wallet-tab.active{
+  background:#1a2030!important;color:#fff!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.04);
+}
+.wallet-pro .wallet-cur-tabs{display:flex;gap:.35rem;margin-bottom:.85rem}
+.wallet-pro .wcur{
+  flex:1;border:1px solid rgba(255,255,255,.06)!important;background:#12171f!important;
+  color:#8b95a8!important;border-radius:12px!important;padding:.55rem!important;font-weight:800!important;
+}
+.wallet-pro .wcur.active{
+  border-color:rgba(255,159,46,.35)!important;color:#ffb84d!important;
+  background:rgba(255,159,46,.08)!important;
+}
+.wallet-pro .dep-amount-box{
+  display:flex;align-items:center;gap:.5rem;
+  background:#0b0e14!important;border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:14px!important;padding:.35rem .75rem!important;
+}
+.wallet-pro .dep-amount-box input{
+  flex:1;border:none!important;background:transparent!important;color:#fff!important;
+  font-size:1.25rem!important;font-weight:900!important;font-family:'JetBrains Mono',monospace!important;
+  outline:none!important;padding:.55rem 0!important;
+}
+.wallet-pro .dep-unit{color:#ffb84d;font-weight:900;font-size:.8rem}
+.wallet-pro .dep-quick{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.75rem}
+.wallet-pro .dep-chip{
+  border:1px solid rgba(255,255,255,.07)!important;background:#12171f!important;
+  color:#c8d0dc!important;border-radius:999px!important;padding:.4rem .7rem!important;
+  font-weight:800!important;font-size:.78rem!important;
+}
+.wallet-pro .dep-note{color:#6b7280;font-size:.75rem;margin-top:.75rem}
+.wallet-pro .modal-foot{
+  border-top:1px solid rgba(255,255,255,.06);
+  padding:.85rem 1.25rem 1.1rem!important;gap:.5rem;
+}
+.wallet-pro select#convertFrom{
+  width:100%;appearance:none;background:#0b0e14 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239aa3b5' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") right .85rem center no-repeat;
+  border:1px solid rgba(255,255,255,.08);border-radius:14px;color:#fff;
+  font-family:inherit;font-weight:800;padding:.8rem 2.2rem .8rem .9rem;
+}
+
+.convert-dir{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+.convert-pill{
+  appearance:none;border:1px solid rgba(255,255,255,.07);background:#12171f;color:#8b95a8;
+  font-family:inherit;font-weight:800;border-radius:12px;padding:.7rem .5rem;cursor:pointer;
+}
+.convert-pill.active{
+  background:rgba(255,159,46,.1);border-color:rgba(255,159,46,.35);color:#ffb84d;
+}

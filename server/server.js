@@ -1200,7 +1200,13 @@ function requireAuth(req, res, next){
       if(u){
         const now = Date.now();
         if(u.banned || (u.ban_until && u.ban_until > now)){
-          return res.status(403).json({ error: 'BANNED', banUntil: u.ban_until || null });
+          const reasonRow = db.prepare('SELECT ban_reason, banned FROM users WHERE id = ?').get(req.userId) || {};
+          return res.status(403).json({
+            error: 'BANNED',
+            banUntil: u.ban_until || null,
+            permanent: !u.ban_until && !!u.banned,
+            reason: reasonRow.ban_reason || null
+          });
         }
       }
     } catch(e){}
@@ -3933,6 +3939,9 @@ app.post('/api/admin/users/:id/balance', requireAdmin, (req, res) => {
 
 app.post('/api/admin/users/:id/ban', requireAdmin, (req, res) => {
   try {
+    try { addCol('users', 'banned', 'INTEGER DEFAULT 0'); } catch(e){}
+    try { addCol('users', 'ban_until', 'INTEGER'); } catch(e){}
+    try { addCol('users', 'ban_reason', 'TEXT'); } catch(e){}
     const id = req.params.id;
     const { permanent, hours, reason } = req.body || {};
     const now = Date.now();
@@ -3980,9 +3989,11 @@ app.post('/api/admin/users/:id/unban', requireAdmin, (req, res) => {
 app.post('/api/admin/users/:id/admin', requireAdmin, (req, res) => {
   try {
     const targetId = String(req.params.id);
-    const enable = !!req.body.enable;
+    const body = req.body || {};
+    const enable = body.isAdmin != null ? !!body.isAdmin : !!body.enable;
 
-    if(targetId === String(req.adminUser.id) && !enable){
+    const adminId = String((req.adminUser && req.adminUser.id) || req.userId || '');
+    if(targetId === adminId && !enable){
       return res.status(400).json({ error: 'CANNOT_DEMOTE_SELF' });
     }
 
@@ -3992,11 +4003,11 @@ app.post('/api/admin/users/:id/admin', requireAdmin, (req, res) => {
     db.prepare('UPDATE users SET is_admin = ?, updated_at = ? WHERE id = ?')
       .run(enable ? 1 : 0, Date.now(), targetId);
 
-    logAdmin(req.adminUser, 'set_admin', target, { isAdmin: !!req.body.isAdmin }, req);
+    try { logAdmin(req.adminUser || { id: req.userId, username: req.username }, 'set_admin', target, { isAdmin: enable }, req); } catch(e){}
     res.json({ ok: true, isAdmin: enable });
   } catch (err) {
     console.error('[admin/toggle-admin]', err);
-    res.status(500).json({ error: 'SERVER_ERROR' });
+    res.status(500).json({ error: 'SERVER_ERROR', message: String(err && err.message || err) });
   }
 });
 

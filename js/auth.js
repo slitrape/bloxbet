@@ -265,3 +265,61 @@ const Auth = (() => {
     connectSocket
   };
 })();
+if(window.Auth){ Auth.showBannedScreen =  function(info){
+    try {
+      var until = info && (info.banUntil || info.ban_until);
+      var permanent = !!(info && (info.permanent || (!until && info.error === 'BANNED')));
+      var reason = (info && (info.reason || info.banReason)) || '';
+      var when = permanent ? 'Permanent' : (until ? new Date(Number(until)).toLocaleString() : 'Unknown');
+      var left = '';
+      if(!permanent && until){
+        var ms = Number(until) - Date.now();
+        if(ms > 0){
+          var sec = Math.floor(ms/1000);
+          var d = Math.floor(sec/86400); sec %= 86400;
+          var h = Math.floor(sec/3600); sec %= 3600;
+          var m = Math.floor(sec/60); sec %= 60;
+          left = (d?d+'d ':'') + (h?h+'h ':'') + (m?m+'m ':'') + sec + 's';
+        } else left = 'Expired';
+      }
+      var existing = document.getElementById('bbBannedScreen');
+      if(existing) existing.remove();
+      var el = document.createElement('div');
+      el.id = 'bbBannedScreen';
+      el.innerHTML = '<div class="bb-ban-card">' +
+        '<img src="icons/bloxbet.png" alt="" class="bb-ban-logo">' +
+        '<h1>Account suspended</h1>' +
+        '<p class="bb-ban-type">' + (permanent ? 'Permanent ban' : 'Temporary ban') + '</p>' +
+        (reason ? '<p class="bb-ban-reason">'+String(reason).replace(/</g,'&lt;')+'</p>' : '') +
+        '<div class="bb-ban-meta">' +
+          '<div><span>Expires</span><strong>'+when+'</strong></div>' +
+          (left ? '<div><span>Time left</span><strong>'+left+'</strong></div>' : '') +
+        '</div>' +
+        '<p class="bb-ban-help">Contact the mod team on Discord to appeal.</p>' +
+        '<a class="bb-ban-discord" href="https://discord.gg/bloxbet" target="_blank" rel="noopener">Join Discord</a>' +
+        '<button type="button" class="bb-ban-logout">Sign out</button>' +
+      '</div>';
+      document.body.appendChild(el);
+      el.querySelector('.bb-ban-logout').addEventListener('click', function(){ Auth.logout(); });
+    } catch(e){ console.error(e); }
+  }; }
+
+
+(function(){
+  if(!window.Auth || !Auth.api || Auth.__banHooked) return;
+  Auth.__banHooked = true;
+  var orig = Auth.api.bind(Auth);
+  Auth.api = async function(){
+    var res = await orig.apply(null, arguments);
+    try {
+      if(res && res.status === 403){
+        var clone = res.clone();
+        var data = await clone.json().catch(function(){ return null; });
+        if(data && data.error === 'BANNED'){
+          Auth.showBannedScreen(data);
+        }
+      }
+    } catch(e){}
+    return res;
+  };
+})();
