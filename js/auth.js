@@ -19,7 +19,13 @@ const Auth = (() => {
       const raw = localStorage.getItem(USER_KEY);
       if(!raw) return null;
       const parsed = JSON.parse(raw);
-      if(!parsed || typeof parsed !== 'object' || !parsed.username) return null;
+      if(!parsed || typeof parsed !== 'object') return null;
+      // Normalize handle: never leave blank / literal "user" if we have a real name
+      if(!parsed.username || String(parsed.username).toLowerCase() === 'user'){
+        const alt = parsed.displayName || parsed.display_name || parsed.name || '';
+        if(alt && String(alt).toLowerCase() !== 'user') parsed.username = String(alt);
+      }
+      if(!parsed.username && !parsed.id && !parsed.displayName) return null;
       return parsed;
     } catch { return null; }
   }

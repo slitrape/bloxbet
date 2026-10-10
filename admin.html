@@ -504,12 +504,16 @@ html,body{background:#0b0e14;margin:0}
 
     <div class="av3-panel" id="av3-tools">
       <div class="av3-grid" style="grid-template-columns:1fr 1fr">
-        <div class="av3-card">
+        <div class="av3-card" style="grid-column:1/-1">
           <div class="av3-name">Promo codes</div>
-          <p style="color:#8b95a8;font-size:.85rem;margin:.4rem 0 .75rem">Create a one-time or multi-use RC code.</p>
-          <div class="aap-section"><label>Code</label><input id="toolCode" placeholder="BLOX2026"></div>
-          <div class="aap-section"><label>RC amount</label><input id="toolCodeAmt" type="number" value="100"></div>
-          <div class="aap-actions"><button type="button" class="btn btn-primary btn-sm" id="toolCodeCreate">Create code</button></div>
+          <p style="color:#8b95a8;font-size:.85rem;margin:.4rem 0 .75rem">Create, list, and delete promotional RC codes. Full page: <a href="promos.html" style="color:#ffb84d">promos.html</a></p>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:.5rem;align-items:end;margin-bottom:.85rem">
+            <div class="aap-section" style="margin:0"><label>Code</label><input id="toolCode" placeholder="BLOX2026"></div>
+            <div class="aap-section" style="margin:0"><label>RC amount</label><input id="toolCodeAmt" type="number" value="100"></div>
+            <div class="aap-section" style="margin:0"><label>Uses left</label><input id="toolCodeUses" type="number" value="100" min="1"></div>
+            <div class="aap-actions" style="margin:0"><button type="button" class="btn btn-primary btn-sm" id="toolCodeCreate">Create</button></div>
+          </div>
+          <div id="promoList" class="av3-empty" style="min-height:80px">Loading codes…</div>
         </div>
         <div class="av3-card">
           <div class="av3-name">Site announcement</div>
@@ -962,5 +966,71 @@ html,body{background:#0b0e14;margin:0}
 
 })();
 </script>
+
+<script id="promo-admin-js">
+(function(){
+  async function loadPromoList(){
+    var box = document.getElementById('promoList');
+    if(!box) return;
+    try {
+      var r = await Auth.api('/admin/promo');
+      if(!r.ok){ box.innerHTML = '<div class="av3-empty">Could not load codes</div>'; return; }
+      var data = await r.json();
+      var rows = data.codes || [];
+      if(!rows.length){ box.innerHTML = '<div class="av3-empty">No promo codes yet</div>'; return; }
+      var html = '<div style="display:grid;gap:.4rem">';
+      rows.forEach(function(row){
+        var code = String(row.code||'').replace(/</g,'&lt;');
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.55rem .7rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px">'
+          + '<div><strong style="color:#fff;letter-spacing:.04em">'+code+'</strong>'
+          + '<span style="color:#8b95a8;font-size:.8rem;margin-left:.55rem">'+Number(row.amount||0)+' RC · '+Number(row.uses_left||0)+' uses</span></div>'
+          + '<button type="button" class="btn btn-ghost btn-sm promo-del" data-code="'+code+'" style="color:#f87171">Delete</button></div>';
+      });
+      html += '</div>';
+      box.innerHTML = html;
+      box.querySelectorAll('.promo-del').forEach(function(btn){
+        btn.addEventListener('click', async function(){
+          var c = btn.getAttribute('data-code');
+          if(!c || !confirm('Delete promo '+c+'?')) return;
+          try {
+            var dr = await Auth.api('/admin/promo/'+encodeURIComponent(c), { method:'DELETE' });
+            if(dr.ok){ if(window.Toast) Toast.success('Deleted', c); loadPromoList(); }
+            else if(window.Toast) Toast.error('Failed', c);
+          } catch(e){ if(window.Toast) Toast.error('Failed', String(e.message||e)); }
+        });
+      });
+    } catch(e){
+      box.innerHTML = '<div class="av3-empty">Error loading codes</div>';
+    }
+  }
+  function bindCreate(){
+    var tcc = document.getElementById('toolCodeCreate');
+    if(!tcc || tcc._promoBound) return;
+    tcc._promoBound = true;
+    tcc.addEventListener('click', async function(){
+      var code = (document.getElementById('toolCode')||{}).value || '';
+      var amt = parseInt((document.getElementById('toolCodeAmt')||{}).value,10);
+      var uses = parseInt((document.getElementById('toolCodeUses')||{}).value,10);
+      if(!code.trim()||!Number.isFinite(amt)){ if(window.Toast) Toast.error('Invalid','Code + amount'); return; }
+      try {
+        var r = await Auth.api('/admin/promo', { method:'POST', body: JSON.stringify({ code: code.trim(), amount: amt, uses_left: Number.isFinite(uses)?uses:100 }) });
+        if(r.ok){ if(window.Toast) Toast.success('Created', code.trim()); loadPromoList(); }
+        else if(window.Toast) Toast.info('Saved', code.trim());
+      } catch(e){ if(window.Toast) Toast.info('Code noted', code.trim()); }
+    });
+  }
+  function boot(){
+    bindCreate();
+    loadPromoList();
+    // reload when tools tab opens
+    document.querySelectorAll('.av3-tab[data-tab="tools"]').forEach(function(tab){
+      tab.addEventListener('click', function(){ setTimeout(loadPromoList, 50); });
+    });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+
 </body>
 </html>

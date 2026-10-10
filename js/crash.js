@@ -87,128 +87,216 @@
 
   
   function drawSky(w, h){
-    // Night sky gradient
-    var sky = ctx.createLinearGradient(0, 0, 0, h);
-    sky.addColorStop(0, '#071018');
-    sky.addColorStop(0.4, '#0c1c30');
-    sky.addColorStop(0.75, '#132840');
-    sky.addColorStop(1, '#0a1828');
+    // Deep galaxy background
+    var sky = ctx.createRadialGradient(w * 0.55, h * 0.35, 0, w * 0.5, h * 0.5, Math.max(w, h) * 0.85);
+    sky.addColorStop(0, '#1a0a3a');
+    sky.addColorStop(0.25, '#0d0a28');
+    sky.addColorStop(0.55, '#08061a');
+    sky.addColorStop(1, '#03010c');
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, h);
 
-    // Soft stars
-    ctx.fillStyle = 'rgba(255,255,255,0.35)';
-    var seed = 7;
-    for(var i = 0; i < 48; i++){
+    // Nebula washes
+    var neb1 = ctx.createRadialGradient(w * 0.2, h * 0.25, 0, w * 0.2, h * 0.25, w * 0.45);
+    neb1.addColorStop(0, 'rgba(124,58,237,0.22)');
+    neb1.addColorStop(0.5, 'rgba(88,28,135,0.08)');
+    neb1.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = neb1;
+    ctx.fillRect(0, 0, w, h);
+
+    var neb2 = ctx.createRadialGradient(w * 0.85, h * 0.55, 0, w * 0.85, h * 0.55, w * 0.4);
+    neb2.addColorStop(0, 'rgba(59,130,246,0.14)');
+    neb2.addColorStop(0.55, 'rgba(37,99,235,0.05)');
+    neb2.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = neb2;
+    ctx.fillRect(0, 0, w, h);
+
+    var neb3 = ctx.createRadialGradient(w * 0.55, h * 0.85, 0, w * 0.55, h * 0.9, w * 0.5);
+    neb3.addColorStop(0, 'rgba(168,85,247,0.12)');
+    neb3.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = neb3;
+    ctx.fillRect(0, 0, w, h);
+
+    // Star field
+    var seed = 13;
+    for(var i = 0; i < 90; i++){
       seed = (seed * 16807 + 11) % 2147483647;
       var sx = (seed % 1000) / 1000 * w;
       seed = (seed * 16807 + 11) % 2147483647;
-      var sy = (seed % 1000) / 1000 * h * 0.7;
-      var r = 0.6 + (seed % 3) * 0.4;
+      var sy = (seed % 1000) / 1000 * h;
+      seed = (seed * 16807 + 11) % 2147483647;
+      var r = 0.4 + (seed % 4) * 0.35;
+      var a = 0.25 + (seed % 60) / 100;
+      ctx.fillStyle = 'rgba(255,255,255,' + a + ')';
       ctx.beginPath();
       ctx.arc(sx, sy, r, 0, Math.PI * 2);
       ctx.fill();
+      if(i % 11 === 0){
+        ctx.strokeStyle = 'rgba(200,180,255,' + (a * 0.55) + ')';
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(sx - r * 3, sy);
+        ctx.lineTo(sx + r * 3, sy);
+        ctx.moveTo(sx, sy - r * 3);
+        ctx.lineTo(sx, sy + r * 3);
+        ctx.stroke();
+      }
     }
 
-    // Horizon glow
-    var hg = ctx.createLinearGradient(0, h * 0.7, 0, h);
-    hg.addColorStop(0, 'rgba(255,140,40,0)');
-    hg.addColorStop(1, 'rgba(255,100,20,0.12)');
-    ctx.fillStyle = hg;
-    ctx.fillRect(0, h * 0.65, w, h * 0.35);
+    // Soft bottom vignette
+    var vg = ctx.createLinearGradient(0, h * 0.55, 0, h);
+    vg.addColorStop(0, 'rgba(0,0,0,0)');
+    vg.addColorStop(1, 'rgba(2,0,12,0.55)');
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, h * 0.55, w, h * 0.45);
   }
 
   function drawRocket(x, y, crashed){
     ctx.save();
     ctx.translate(x, y);
-    ctx.scale(1.5, 1.5);
+    // Slight tilt toward flight path (bottom-left → top-right)
+    ctx.rotate(crashed ? 0.15 : -0.55);
+    ctx.scale(1.85, 1.85);
 
-    // Exhaust beam
+    // Purple exhaust beam (behind body)
     if(!crashed){
-      var beam = ctx.createLinearGradient(0, 8, 0, 70);
-      beam.addColorStop(0, 'rgba(255,200,80,0.95)');
-      beam.addColorStop(0.35, 'rgba(255,120,30,0.55)');
-      beam.addColorStop(1, 'rgba(255,60,0,0)');
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      var beam = ctx.createLinearGradient(0, 10, 0, 95);
+      beam.addColorStop(0, 'rgba(232,180,255,0.95)');
+      beam.addColorStop(0.15, 'rgba(168,85,247,0.85)');
+      beam.addColorStop(0.45, 'rgba(124,58,237,0.45)');
+      beam.addColorStop(1, 'rgba(76,29,149,0)');
       ctx.fillStyle = beam;
       ctx.beginPath();
-      ctx.moveTo(-6, 10);
-      ctx.lineTo(6, 10);
-      ctx.lineTo(14, 70);
-      ctx.lineTo(-14, 70);
+      ctx.moveTo(-7, 12);
+      ctx.lineTo(7, 12);
+      ctx.lineTo(18, 95);
+      ctx.lineTo(-18, 95);
       ctx.closePath();
       ctx.fill();
 
-      // Core beam
-      var core = ctx.createLinearGradient(0, 8, 0, 55);
-      core.addColorStop(0, 'rgba(255,255,220,0.95)');
-      core.addColorStop(1, 'rgba(255,180,50,0)');
+      // Hot core
+      var core = ctx.createLinearGradient(0, 10, 0, 70);
+      core.addColorStop(0, 'rgba(255,255,255,0.95)');
+      core.addColorStop(0.25, 'rgba(216,180,254,0.8)');
+      core.addColorStop(1, 'rgba(167,139,250,0)');
       ctx.fillStyle = core;
       ctx.beginPath();
-      ctx.moveTo(-2.5, 10);
-      ctx.lineTo(2.5, 10);
-      ctx.lineTo(5, 50);
-      ctx.lineTo(-5, 50);
+      ctx.moveTo(-2.8, 12);
+      ctx.lineTo(2.8, 12);
+      ctx.lineTo(6, 70);
+      ctx.lineTo(-6, 70);
       ctx.closePath();
       ctx.fill();
-    } else {
-      // Explosion puff
-      ctx.fillStyle = 'rgba(239,68,68,0.45)';
+      ctx.restore();
+
+      // Soft glow under rocket
+      var glow = ctx.createRadialGradient(0, 18, 0, 0, 18, 28);
+      glow.addColorStop(0, 'rgba(168,85,247,0.45)');
+      glow.addColorStop(1, 'rgba(168,85,247,0)');
+      ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(0, 6, 18, 0, Math.PI * 2);
+      ctx.arc(0, 18, 28, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = 'rgba(251,146,60,0.5)';
+    } else {
+      ctx.fillStyle = 'rgba(239,68,68,0.5)';
       ctx.beginPath();
-      ctx.arc(-8, 4, 10, 0, Math.PI * 2);
-      ctx.arc(8, 8, 12, 0, Math.PI * 2);
+      ctx.arc(0, 4, 20, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(251,146,60,0.55)';
+      ctx.beginPath();
+      ctx.arc(-9, 2, 11, 0, Math.PI * 2);
+      ctx.arc(10, 8, 13, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.beginPath();
+      ctx.arc(2, 0, 6, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    // Body
-    ctx.fillStyle = crashed ? '#64748b' : '#e8eef7';
+    // 3D body with side shading
+    var bodyGrad = ctx.createLinearGradient(-12, 0, 12, 0);
+    if(crashed){
+      bodyGrad.addColorStop(0, '#475569');
+      bodyGrad.addColorStop(0.5, '#94a3b8');
+      bodyGrad.addColorStop(1, '#64748b');
+    } else {
+      bodyGrad.addColorStop(0, '#94a3b8');
+      bodyGrad.addColorStop(0.35, '#f1f5f9');
+      bodyGrad.addColorStop(0.65, '#e2e8f0');
+      bodyGrad.addColorStop(1, '#64748b');
+    }
+    ctx.fillStyle = bodyGrad;
     ctx.beginPath();
-    ctx.moveTo(0, -28);
-    ctx.quadraticCurveTo(12, -10, 11, 12);
-    ctx.lineTo(-11, 12);
-    ctx.quadraticCurveTo(-12, -10, 0, -28);
+    ctx.moveTo(0, -30);
+    ctx.quadraticCurveTo(13, -12, 12, 14);
+    ctx.lineTo(-12, 14);
+    ctx.quadraticCurveTo(-13, -12, 0, -30);
     ctx.closePath();
     ctx.fill();
 
-    // Nose tip
-    ctx.fillStyle = crashed ? '#ef4444' : '#ff8a00';
+    // Nose highlight
+    ctx.fillStyle = crashed ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.45)';
     ctx.beginPath();
     ctx.moveTo(0, -28);
-    ctx.lineTo(6, -14);
-    ctx.lineTo(-6, -14);
+    ctx.quadraticCurveTo(5, -14, 4, -2);
+    ctx.lineTo(-1, -2);
+    ctx.quadraticCurveTo(-2, -14, 0, -28);
     ctx.closePath();
     ctx.fill();
 
-    // Window
-    ctx.fillStyle = '#38bdf8';
+    // Window (3D glass)
+    var win = ctx.createRadialGradient(-1, -7, 0.5, 0, -6, 5.5);
+    win.addColorStop(0, '#e0f2fe');
+    win.addColorStop(0.55, '#38bdf8');
+    win.addColorStop(1, '#0369a1');
+    ctx.fillStyle = win;
     ctx.beginPath();
-    ctx.arc(0, -6, 4.5, 0, Math.PI * 2);
+    ctx.arc(0, -6, 5, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+    ctx.lineWidth = 1.2;
     ctx.stroke();
 
-    // Fins
-    ctx.fillStyle = crashed ? '#94a3b8' : '#ff6b00';
+    // Fins with depth
+    ctx.fillStyle = crashed ? '#94a3b8' : '#a855f7';
     ctx.beginPath();
-    ctx.moveTo(-11, 4);
-    ctx.lineTo(-20, 16);
-    ctx.lineTo(-11, 12);
+    ctx.moveTo(-12, 2);
+    ctx.lineTo(-22, 18);
+    ctx.lineTo(-11, 14);
     ctx.closePath();
     ctx.fill();
+    ctx.fillStyle = crashed ? '#64748b' : '#7c3aed';
     ctx.beginPath();
-    ctx.moveTo(11, 4);
-    ctx.lineTo(20, 16);
-    ctx.lineTo(11, 12);
+    ctx.moveTo(12, 2);
+    ctx.lineTo(22, 18);
+    ctx.lineTo(11, 14);
     ctx.closePath();
     ctx.fill();
 
-    // Engine ring
-    ctx.fillStyle = '#334155';
-    ctx.fillRect(-8, 12, 16, 5);
+    // Engine nozzle
+    var nozzle = ctx.createLinearGradient(0, 14, 0, 20);
+    nozzle.addColorStop(0, '#1e293b');
+    nozzle.addColorStop(1, '#0f172a');
+    ctx.fillStyle = nozzle;
+    ctx.beginPath();
+    ctx.moveTo(-9, 14);
+    ctx.lineTo(9, 14);
+    ctx.lineTo(7, 20);
+    ctx.lineTo(-7, 20);
+    ctx.closePath();
+    ctx.fill();
+
+    // Accent stripe
+    if(!crashed){
+      ctx.strokeStyle = 'rgba(168,85,247,0.75)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(-8, 6);
+      ctx.lineTo(8, 6);
+      ctx.stroke();
+    }
 
     ctx.restore();
   }
@@ -241,8 +329,8 @@
       grad.addColorStop(0, 'rgba(239,68,68,0.28)');
       grad.addColorStop(1, 'rgba(239,68,68,0)');
     } else {
-      grad.addColorStop(0, 'rgba(56,189,248,0.22)');
-      grad.addColorStop(1, 'rgba(56,189,248,0)');
+      grad.addColorStop(0, 'rgba(168,85,247,0.28)');
+      grad.addColorStop(1, 'rgba(124,58,237,0)');
     }
 
     ctx.beginPath();
@@ -263,7 +351,7 @@
     for(var k2 = 0; k2 < curvePts.length; k2++){
       ctx.lineTo(px(curvePts[k2].t), py(curvePts[k2].m));
     }
-    ctx.strokeStyle = crashed ? '#ef4444' : '#7dd3fc';
+    ctx.strokeStyle = crashed ? '#ef4444' : '#c084fc';
     ctx.lineWidth = 2.5;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';

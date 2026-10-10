@@ -362,3 +362,40 @@
   .rw-claim{width:100%;padding:.8rem 1.25rem;font-size:.88rem;}
   .rw-info{grid-template-columns:1fr;}
 }
+
+/* VIP badge cosmetic — real asset, soft glow frame */
+.rw-cos-vip-preview{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:72px;
+  background:radial-gradient(circle at 50% 40%, rgba(255,184,77,.18), transparent 65%),
+             linear-gradient(160deg, rgba(255,149,0,.08), rgba(15,18,28,.9));
+  border:1px solid rgba(255,184,77,.28);
+  border-radius:14px;
+  overflow:hidden;
+}
+.rw-vip-badge-img{
+  width:48px;
+  height:48px;
+  object-fit:contain;
+  filter:drop-shadow(0 4px 12px rgba(255,149,0,.45));
+  position:relative;
+  z-index:1;
+}
+.rw-vip-glow{
+  position:absolute;
+  inset:-20%;
+  background:radial-gradient(circle at 50% 50%, rgba(255,184,77,.22), transparent 60%);
+  pointer-events:none;
+  animation:rwVipPulse 3.2s ease-in-out infinite;
+}
+@keyframes rwVipPulse{
+  0%,100%{ opacity:.55; transform:scale(1); }
+  50%{ opacity:1; transform:scale(1.06); }
+}
+.rw-cos-card.rw-cos-vip{
+  border-color:rgba(255,184,77,.18);
+  background:linear-gradient(165deg, rgba(255,149,0,.06), rgba(18,22,32,.95));
+}

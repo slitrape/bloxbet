@@ -29,7 +29,7 @@
   position:relative;
   flex:1;
   min-height:400px;
-  background:linear-gradient(180deg, #0a0e15 0%, #0b1119 100%);
+  background:radial-gradient(ellipse at 50% 30%, #1a0a3a 0%, #08061a 45%, #03010c 100%);
   overflow:hidden;
 }
 .crash-canvas{

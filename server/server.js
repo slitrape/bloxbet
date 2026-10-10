@@ -2019,13 +2019,43 @@ app.post('/api/admin/promo', requireAdmin, (req, res) => {
     try { db.exec(`CREATE TABLE IF NOT EXISTS promo_codes (
       code TEXT PRIMARY KEY, amount INTEGER NOT NULL, uses_left INTEGER DEFAULT 100, created_at INTEGER
     )`); } catch(e){}
-    db.prepare('INSERT OR REPLACE INTO promo_codes (code, amount, uses_left, created_at) VALUES (?, ?, 100, ?)').run(code, amount, Date.now());
-    res.json({ ok: true, code, amount });
+    const uses = Math.max(1, parseInt((req.body||{}).uses_left ?? (req.body||{}).uses ?? 100, 10) || 100);
+    db.prepare('INSERT OR REPLACE INTO promo_codes (code, amount, uses_left, created_at) VALUES (?, ?, ?, ?)').run(code, amount, uses, Date.now());
+    res.json({ ok: true, code, amount, uses_left: uses });
   } catch (err) {
     console.error('[admin/promo]', err);
     res.status(500).json({ error: 'SERVER_ERROR' });
   }
 });
+
+app.get('/api/admin/promo', requireAdmin, (req, res) => {
+  try {
+    try { db.exec(`CREATE TABLE IF NOT EXISTS promo_codes (
+      code TEXT PRIMARY KEY, amount INTEGER NOT NULL, uses_left INTEGER DEFAULT 100, created_at INTEGER
+    )`); } catch(e){}
+    const rows = db.prepare('SELECT code, amount, uses_left, created_at FROM promo_codes ORDER BY created_at DESC').all();
+    res.json({ ok: true, codes: rows || [] });
+  } catch (err) {
+    console.error('[admin/promo list]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+app.delete('/api/admin/promo/:code', requireAdmin, (req, res) => {
+  try {
+    const code = String(req.params.code || '').trim().toUpperCase();
+    if(!code) return res.status(400).json({ error: 'INVALID' });
+    try { db.exec(`CREATE TABLE IF NOT EXISTS promo_codes (
+      code TEXT PRIMARY KEY, amount INTEGER NOT NULL, uses_left INTEGER DEFAULT 100, created_at INTEGER
+    )`); } catch(e){}
+    const info = db.prepare('DELETE FROM promo_codes WHERE code = ?').run(code);
+    res.json({ ok: true, deleted: info.changes || 0, code });
+  } catch (err) {
+    console.error('[admin/promo delete]', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
 app.post('/api/rewards/redeem', requireAuth, (req, res) => {
   try {
     const code = String((req.body||{}).code || '').trim().toUpperCase();

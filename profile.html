@@ -920,7 +920,7 @@
             <span class="pf-name" id="pfName">—</span>
             <span class="pf-badges-row" id="pfBadges"></span>
           </div>
-          <div class="pf-v2-handle" id="pfHandle">@user</div>
+          <div class="pf-v2-handle" id="pfHandle">@…</div>
           <div class="pf-badges-row" id="pfBadgeChips" style="margin-top:.4rem"></div>
         </div>
         <div class="pf-v2-actions">
@@ -1225,19 +1225,34 @@ function bannerClassFromBanner(banner){
     function renderHero(u){
       if(!u) return;
 
-      var displayName = u.displayName || u.username || u.name || 'User';
-      var username = u.username || u.displayName || u.name || '';
+      var displayName = u.displayName || u.display_name || u.username || u.name || 'User';
+      var username = u.username || u.displayName || u.display_name || u.name || '';
+      // Prefer real Roblox-style handle; never keep the literal placeholder "user"
       if(!username || String(username).toLowerCase() === 'user'){
-        // last-chance: local session may still have the real handle
         try {
           var meLocal = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
-          if(meLocal && (meLocal.username || meLocal.displayName)){
-            username = meLocal.username || meLocal.displayName;
-            if(!u.displayName && meLocal.displayName) displayName = meLocal.displayName;
+          if(meLocal){
+            var alt = meLocal.username || meLocal.displayName || meLocal.display_name || meLocal.name || '';
+            if(alt && String(alt).toLowerCase() !== 'user'){
+              username = alt;
+              if(!u.displayName && (meLocal.displayName || meLocal.display_name)){
+                displayName = meLocal.displayName || meLocal.display_name;
+              }
+            }
           }
         } catch(e){}
       }
-      if(!username) username = 'user';
+      if(!username || String(username).toLowerCase() === 'user'){
+        try {
+          var raw = localStorage.getItem('bb_user');
+          if(raw){
+            var stored = JSON.parse(raw);
+            var alt2 = (stored && (stored.username || stored.displayName || stored.display_name || stored.name)) || '';
+            if(alt2 && String(alt2).toLowerCase() !== 'user') username = alt2;
+          }
+        } catch(e){}
+      }
+      if(!username || String(username).toLowerCase() === 'user') username = displayName || 'player';
 
       var banner = document.getElementById('pfBanner');
       applyProfileBanner(banner, u.profileBanner);
@@ -1859,14 +1874,15 @@ function bannerClassFromBanner(banner){
         if(nameEl) nameEl.textContent = u.displayName || u.username || 'Player';
         var handle = document.querySelector('.pf-handle, #pfHandle');
         if(handle){
-          var h = u.username || u.displayName || u.name || '';
+          var h = u.username || u.displayName || u.display_name || u.name || '';
           if(!h || String(h).toLowerCase() === 'user'){
             try {
               var me2 = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
-              if(me2) h = me2.username || me2.displayName || h;
+              if(me2) h = me2.username || me2.displayName || me2.display_name || h;
             } catch(e){}
           }
-          handle.textContent = '@' + (h || 'user');
+          if(!h || String(h).toLowerCase() === 'user') h = u.displayName || u.display_name || 'player';
+          handle.textContent = '@' + String(h).replace(/^@+/, '');
         }
         if(typeof renderAvatar === 'function'){
           var av = document.getElementById('pfAvatar');

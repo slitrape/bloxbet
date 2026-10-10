@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Promo Codes — BloxBet Admin</title>
+<link rel="icon" type="image/png" href="icons/bloxbet.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/redesign.css">
+<style>
+  .promo-page{max-width:920px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+  .promo-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap}
+  .promo-head h1{font-family:'Archivo Black',sans-serif;font-size:1.6rem;letter-spacing:.02em;margin:0}
+  .promo-head p{color:#8b95a8;margin:.35rem 0 0;font-size:.9rem}
+  .promo-card{background:#151a24;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:1.15rem;margin-bottom:1rem}
+  .promo-form{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:.65rem;align-items:end}
+  @media(max-width:720px){.promo-form{grid-template-columns:1fr 1fr}}
+  .promo-form label{display:block;font-size:.72rem;font-weight:700;color:#8b95a8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem}
+  .promo-form input{width:100%;background:#0e1219;border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#fff;padding:.55rem .7rem;font:inherit}
+  .promo-form input:focus{outline:none;border-color:rgba(255,149,0,.45)}
+  .promo-table{width:100%;border-collapse:collapse}
+  .promo-table th{text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:#6b7280;padding:.5rem .4rem;border-bottom:1px solid rgba(255,255,255,.06)}
+  .promo-table td{padding:.7rem .4rem;border-bottom:1px solid rgba(255,255,255,.04);color:#e2e8f0;font-size:.92rem}
+  .promo-table code{font-family:'JetBrains Mono',monospace;font-weight:600;color:#ffb84d;letter-spacing:.03em}
+  .promo-empty{color:#8b95a8;padding:1.25rem .25rem;text-align:center}
+  .btn-danger-soft{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25)}
+  .btn-danger-soft:hover{background:rgba(239,68,68,.2)}
+</style>
+</head>
+<body class="bb-ui">
+<nav class="nav">
+  <div class="nav-left">
+    <a href="index.html" class="nav-logo">
+      <img src="icons/bloxbet.png" alt="BloxBet" class="nav-logo-mark" draggable="false">
+      <span class="nav-logo-text">BLOXBET</span>
+    </a>
+  </div>
+  <div class="nav-right">
+    <a href="admin.html" class="nav-lb-link">← Admin</a>
+    <div class="dropdown">
+      <button class="nav-avatar" data-dropdown data-tip="Account" id="navAvatar" type="button">?</button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="profile.html">Profile</a>
+        <a class="dropdown-item" href="admin.html">Admin</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="Auth.logout()">Sign out</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="promo-page">
+  <div class="promo-head">
+    <div>
+      <h1>Promo Codes</h1>
+      <p>Create multi-use RC codes, track remaining uses, and delete expired ones.</p>
+    </div>
+  </div>
+
+  <section class="promo-card">
+    <form id="promoForm" class="promo-form" autocomplete="off">
+      <div>
+        <label for="pcCode">Code</label>
+        <input id="pcCode" name="code" placeholder="BLOX2026" maxlength="32" required>
+      </div>
+      <div>
+        <label for="pcAmt">RC amount</label>
+        <input id="pcAmt" name="amount" type="number" min="1" value="100" required>
+      </div>
+      <div>
+        <label for="pcUses">Uses left</label>
+        <input id="pcUses" name="uses" type="number" min="1" value="100" required>
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <button type="submit" class="btn btn-primary" id="pcCreate">Create code</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="promo-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+      <strong style="color:#fff">Active codes</strong>
+      <button type="button" class="btn btn-ghost btn-sm" id="pcReload">Refresh</button>
+    </div>
+    <div id="pcTableWrap">
+      <div class="promo-empty">Loading…</div>
+    </div>
+  </section>
+</main>
+
+<script src="js/auth.js"></script>
+<script src="js/toasts.js"></script>
+<script src="js/modals.js"></script>
+<script src="js/app.js"></script>
+<script>
+(function(){
+  if(typeof Auth !== 'undefined' && Auth.requireAuth) Auth.requireAuth();
+
+  async function loadList(){
+    var wrap = document.getElementById('pcTableWrap');
+    try {
+      var r = await Auth.api('/admin/promo');
+      if(r.status === 401 || r.status === 403){
+        wrap.innerHTML = '<div class="promo-empty">Admin access required</div>';
+        return;
+      }
+      if(!r.ok){ wrap.innerHTML = '<div class="promo-empty">Failed to load</div>'; return; }
+      var data = await r.json();
+      var rows = data.codes || [];
+      if(!rows.length){ wrap.innerHTML = '<div class="promo-empty">No promo codes yet — create one above.</div>'; return; }
+      var html = '<table class="promo-table"><thead><tr><th>Code</th><th>Amount</th><th>Uses left</th><th>Created</th><th></th></tr></thead><tbody>';
+      rows.forEach(function(row){
+        var code = String(row.code||'');
+        var when = row.created_at ? new Date(Number(row.created_at)).toLocaleString() : '—';
+        html += '<tr>'
+          + '<td><code>'+code.replace(/</g,'&lt;')+'</code></td>'
+          + '<td>'+Number(row.amount||0)+' RC</td>'
+          + '<td>'+Number(row.uses_left||0)+'</td>'
+          + '<td style="color:#8b95a8;font-size:.82rem">'+when+'</td>'
+          + '<td style="text-align:right"><button type="button" class="btn btn-sm btn-danger-soft pc-del" data-code="'+code.replace(/"/g,'&quot;')+'">Delete</button></td>'
+          + '</tr>';
+      });
+      html += '</tbody></table>';
+      wrap.innerHTML = html;
+      wrap.querySelectorAll('.pc-del').forEach(function(btn){
+        btn.addEventListener('click', async function(){
+          var c = btn.getAttribute('data-code');
+          if(!c || !confirm('Delete promo code '+c+'?')) return;
+          try {
+            var dr = await Auth.api('/admin/promo/'+encodeURIComponent(c), { method:'DELETE' });
+            if(dr.ok){ if(window.Toast) Toast.success('Deleted', c); loadList(); }
+            else if(window.Toast) Toast.error('Delete failed', c);
+          } catch(e){ if(window.Toast) Toast.error('Delete failed', String(e.message||e)); }
+        });
+      });
+    } catch(e){
+      wrap.innerHTML = '<div class="promo-empty">Error loading codes</div>';
+    }
+  }
+
+  document.getElementById('promoForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var code = (document.getElementById('pcCode').value||'').trim();
+    var amt = parseInt(document.getElementById('pcAmt').value, 10);
+    var uses = parseInt(document.getElementById('pcUses').value, 10);
+    if(!code || !Number.isFinite(amt) || amt < 1){ if(window.Toast) Toast.error('Invalid', 'Code + amount required'); return; }
+    try {
+      var r = await Auth.api('/admin/promo', {
+        method: 'POST',
+        body: JSON.stringify({ code: code, amount: amt, uses_left: Number.isFinite(uses) ? uses : 100 })
+      });
+      if(r.ok){
+        if(window.Toast) Toast.success('Created', code.toUpperCase());
+        document.getElementById('pcCode').value = '';
+        loadList();
+      } else {
+        var err = await r.json().catch(function(){return {};});
+        if(window.Toast) Toast.error('Failed', err.error || 'Could not create');
+      }
+    } catch(err){
+      if(window.Toast) Toast.error('Failed', String(err.message||err));
+    }
+  });
+
+  document.getElementById('pcReload').addEventListener('click', loadList);
+  loadList();
+})();
+</script>
+</body>
+</html>
