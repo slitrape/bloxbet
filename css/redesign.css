@@ -1141,3 +1141,48 @@ body.bb-ui .bb-loader.hide,
 body.bb-ui .online-count #onlineCount {
   font-variant-numeric: tabular-nums;
 }
+
+
+/* Promo card with full-bleed banner image */
+.promo-card.promo-card-banner {
+  position: relative;
+  overflow: hidden;
+  min-height: 120px;
+  padding: 0;
+  border: 1px solid rgba(255, 180, 40, 0.25);
+}
+.promo-card.promo-card-banner .promo-banner {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+.promo-card.promo-card-banner .promo-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(8,10,16,0.92) 0%, rgba(8,10,16,0.75) 45%, rgba(8,10,16,0.25) 100%);
+  pointer-events: none;
+}
+.promo-card.promo-card-banner .promo-banner-content {
+  position: relative;
+  z-index: 1;
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 120px;
+}
+.promo-card.promo-card-banner .promo-banner-content .promo-tag {
+  color: #f5d76e;
+}
+.promo-card.promo-card-banner .promo-banner-content h3 {
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+}
+.promo-card.promo-card-banner .promo-banner-content p {
+  color: rgba(255,255,255,0.8);
+  max-width: 55%;
+}
