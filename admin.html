@@ -102,6 +102,199 @@
 .ad-pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:.35rem;box-shadow:0 0 0 0 rgba(74,222,128,.5);animation:adPulse 1.6s infinite}
 @keyframes adPulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.45)}70%{box-shadow:0 0 0 8px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
 </style>
+
+<style id="admin-pro-styles">
+body.bb-ui .admin-pro { max-width: 1200px; }
+body.bb-ui .admin-pro .page-head h1 { font-size: 1.65rem; font-weight: 900; letter-spacing: -0.03em; }
+body.bb-ui .ad-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .85rem;
+  margin-bottom: 1.25rem;
+}
+@media(max-width:900px){ body.bb-ui .ad-stats { grid-template-columns: repeat(2,1fr); } }
+body.bb-ui .ad-stat {
+  background: linear-gradient(145deg, #151822, #0f1219);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  min-height: 88px;
+}
+body.bb-ui .ad-stat-label {
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-weight: 800;
+  color: #6b7280;
+  margin-bottom: .4rem;
+}
+body.bb-ui .ad-stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+body.bb-ui .ad-stat-value.accent { color: #ff9f2e; }
+body.bb-ui .ad-stat-sub { font-size: .7rem; color: #6b7280; margin-top: .25rem; font-weight: 600; }
+
+body.bb-ui .ad-tabs {
+  display: flex;
+  gap: .35rem;
+  padding: .35rem;
+  background: #0e1016;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  margin-bottom: 1.15rem;
+}
+body.bb-ui .ad-tab {
+  font-size: .85rem;
+  font-weight: 700;
+  padding: .55rem 1rem;
+  border-radius: 9px;
+}
+body.bb-ui .ad-tab.active {
+  background: rgba(255,138,0,0.14);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255,138,0,0.25);
+}
+
+body.bb-ui .ad-toolbar {
+  display: flex;
+  gap: .65rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+body.bb-ui .ad-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+}
+body.bb-ui .ad-search-wrap img {
+  position: absolute;
+  left: .85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  opacity: .5;
+  pointer-events: none;
+}
+body.bb-ui .ad-toolbar input[type="search"],
+body.bb-ui .ad-toolbar input#userSearch {
+  width: 100%;
+  background: #12141c;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 11px;
+  color: #fff;
+  font-family: inherit;
+  font-size: .9rem;
+  font-weight: 600;
+  padding: .7rem .9rem .7rem 2.4rem;
+  outline: none;
+}
+body.bb-ui .ad-toolbar input:focus {
+  border-color: rgba(255,138,0,0.45);
+  box-shadow: 0 0 0 3px rgba(255,138,0,0.12);
+}
+
+body.bb-ui .ad-card {
+  background: #12141c;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  overflow: hidden;
+}
+body.bb-ui .ad-users .ad-row {
+  grid-template-columns: 48px minmax(140px,1.4fr) .8fr .9fr .7fr .55fr auto;
+  gap: 1rem;
+  padding: .85rem 1.1rem;
+  font-size: .85rem;
+  font-weight: 600;
+}
+body.bb-ui .ad-users .ad-row.head {
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  background: rgba(255,255,255,0.02);
+  color: #6b7280;
+}
+body.bb-ui .ad-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255,138,0,0.3);
+  background: #1a1d28;
+}
+body.bb-ui .ad-avatar-ph {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: .85rem;
+  color: #fff;
+  background: linear-gradient(145deg, #2a3142, #1a1d28);
+  border: 2px solid rgba(255,255,255,0.08);
+}
+body.bb-ui .ad-user-name {
+  font-weight: 800;
+  color: #fff;
+  font-size: .9rem;
+}
+body.bb-ui .ad-user-handle {
+  font-size: .75rem;
+  font-weight: 600;
+  color: #6b7280;
+  font-family: 'JetBrains Mono', monospace;
+}
+body.bb-ui .ad-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: .82rem;
+}
+body.bb-ui .ad-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .22rem .55rem;
+  border-radius: 6px;
+  font-size: .68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  background: rgba(255,255,255,0.06);
+  color: #9aa3b5;
+}
+body.bb-ui .ad-badge.admin {
+  background: rgba(255,138,0,0.15);
+  color: #ffb84d;
+}
+body.bb-ui .ad-badge.online {
+  background: rgba(34,197,94,0.12);
+  color: #4ade80;
+}
+body.bb-ui .ad-actions {
+  display: flex;
+  gap: .35rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+body.bb-ui .ad-actions .btn {
+  font-size: .72rem;
+  font-weight: 700;
+  padding: .35rem .65rem;
+  border-radius: 7px;
+}
+body.bb-ui .ad-empty {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: #6b7280;
+  font-weight: 600;
+}
+</style>
+
 </head>
 <body class="bb-ui">
 <script>
@@ -119,7 +312,6 @@
   <div class="nav-center-links">
     <a href="index.html"><img src="icons/home.png" alt="" class="ico"> Home</a>
     <a href="games.html"><img src="icons/games.png" alt="" class="ico"> Originals</a>
-    <a href="games.html"><img src="icons/sparkle.png" alt="" class="ico"> Slots</a>
     <a href="rewards.html"><img src="icons/rewards.png" alt="" class="ico"> Rewards</a>
     <a href="leaderboard.html"><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
   </div>
@@ -169,19 +361,17 @@
         <a href="casebattles.html"><img src="icons/gift.png" alt="" class="ico"> Case Battles</a>
       </div>
     </div>
-    <a class="side-nav-item" href="games.html">
-      <img src="icons/sparkle.png" alt="" class="ico" draggable="false">
-      <span>Slots</span>
-    </a>
-    <a class="side-nav-item" href="rewards.html">
-      <img src="icons/gift.png" alt="" class="ico" draggable="false">
-      <span>Promotions</span>
-    </a>
   </div>
   <div class="side-promo">
     <div class="side-promo-label">Halloween Event</div>
     <div class="side-promo-title">Ends in 6d 12h</div>
     <div class="side-promo-sub">Complete missions &amp; earn exclusive rewards!</div>
+  </div>
+  <div class="sidebar-collapse-bar">
+    <button type="button" id="sidebarCollapseBtn" title="Collapse sidebar">
+      <img src="icons/chevron-left.png" alt="" class="ico">
+      <span>Collapse</span>
+    </button>
   </div>
 </aside>
 
@@ -369,28 +559,27 @@
     if(!users.length){ el.innerHTML = '<div class="ad-empty">No users found</div>'; return; }
     el.innerHTML = '<div class="ad-row head"><span></span><span>User</span><span class="hide-sm">Balance</span><span class="hide-sm">IP</span><span class="hide-sm">Device</span><span>Role</span><span></span></div>' +
       users.map(function(u){
-        function shortUa(ua){
-          if(!ua) return '—';
-          ua = String(ua);
-          if(/iPhone|iPad/i.test(ua)) return 'iOS';
-          if(/Android/i.test(ua)) return 'Android';
-          if(/Windows/i.test(ua)) return 'Windows';
-          if(/Mac OS/i.test(ua)) return 'macOS';
-          if(/Linux/i.test(ua)) return 'Linux';
-          return ua.slice(0,18)+'…';
-        }
+        var name = u.displayName || u.username || '?';
+        var handle = u.username || '';
+        var letter = String(name).slice(0,1).toUpperCase();
+        var avUrl = u.avatar || (u.id ? ('/api/avatar/' + encodeURIComponent(u.id)) : '');
+        var av = avUrl
+          ? '<img class="ad-avatar" src="'+esc(avUrl)+'" alt="" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';var n=this.nextElementSibling;if(n)n.style.display=\'grid\';">' +
+            '<div class="ad-avatar-ph" style="display:none">'+esc(letter)+'</div>'
+          : '<div class="ad-avatar-ph">'+esc(letter)+'</div>';
+        var online = u.online || u.isOnline ? '<span class="ad-badge online">Online</span>' : '';
         return '<div class="ad-row">' +
-          av(u) +
-          '<div><div style="font-weight:600">'+esc(u.displayName||u.username)+'</div><div class="ad-mono" style="color:var(--text-3)">@'+esc(u.username)+'</div></div>' +
-          '<span class="ad-mono hide-sm">'+fmt(u.balance)+'</span>' +
-          '<span class="ad-mono hide-sm" title="'+esc(u.lastIp||'')+'">'+(u.lastIp?esc(u.lastIp):'—')+'</span>' +
-          '<span class="ad-mono hide-sm" title="'+esc(u.lastUserAgent||'')+'">'+esc(shortUa(u.lastUserAgent))+'</span>' +
-          (u.isAdmin?'<span class="ad-badge admin">Admin</span>':'<span class="ad-badge">User</span>') +
+          '<div>'+av+'</div>' +
+          '<div><div class="ad-user-name">'+esc(name)+'</div><div class="ad-user-handle">@'+esc(handle)+'</div></div>' +
+          '<div class="ad-mono" style="color:var(--bb-gold,#f5d76e)">'+fmt(u.balance)+'</div>' +
+          '<div class="ad-mono">'+fmt(u.totalWagered||u.wagered||0)+'</div>' +
+          '<div>'+esc(u.rank||'—')+'</div>' +
+          '<div>'+(u.isAdmin?'<span class="ad-badge admin">Admin</span>':'<span class="ad-badge">User</span>')+online+'</div>' +
           '<div class="ad-actions">' +
-            '<button class="btn btn-ghost btn-sm" data-act="add" data-id="'+esc(u.id)+'">+RC</button>' +
+            '<button class="btn btn-ghost btn-sm" data-act="add" data-id="'+esc(u.id)+'">+ Funds</button>' +
             '<button class="btn btn-ghost btn-sm" data-act="set" data-id="'+esc(u.id)+'">Set</button>' +
             '<button class="btn btn-ghost btn-sm" data-act="sessions" data-id="'+esc(u.id)+'">Logs</button>' +
-            '<button class="btn btn-ghost btn-sm" data-act="admin" data-id="'+esc(u.id)+'" data-admin="'+(u.isAdmin?1:0)+'">'+(u.isAdmin?'Revoke':'Admin')+'</button>' +
+            '<button class="btn btn-ghost btn-sm" data-act="admin" data-id="'+esc(u.id)+'" data-admin="'+(u.isAdmin?1:0)+'">'+(u.isAdmin?'Revoke':'Make Admin')+'</button>' +
           '</div></div>';
       }).join('');
 
@@ -512,11 +701,28 @@
 })();
 </script>
 
+
 <script>
 (function(){
   var dd = document.getElementById('originalsDropdown');
   var btn = document.getElementById('originalsToggle');
   if(btn && dd){ btn.addEventListener('click', function(){ dd.classList.toggle('open'); }); }
+  var side = document.getElementById('appSidebar');
+  var main = document.querySelector('main.main');
+  var colBtn = document.getElementById('sidebarCollapseBtn');
+  if(colBtn && side){
+    try {
+      if(localStorage.getItem('bb_sidebar_collapsed') === '1'){
+        side.classList.add('collapsed');
+        if(main) main.classList.add('sidebar-collapsed');
+      }
+    } catch(e){}
+    colBtn.addEventListener('click', function(){
+      side.classList.toggle('collapsed');
+      if(main) main.classList.toggle('sidebar-collapsed');
+      try { localStorage.setItem('bb_sidebar_collapsed', side.classList.contains('collapsed') ? '1' : '0'); } catch(e){}
+    });
+  }
   function setOnline(n){
     var el = document.getElementById('onlineCount');
     if(el) el.textContent = Number(n).toLocaleString();
@@ -539,6 +745,7 @@
   setInterval(refreshOnline, 20000);
 })();
 </script>
+
 
 </body>
 </html>

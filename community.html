@@ -491,7 +491,6 @@
   <div class="nav-center-links">
     <a href="index.html"><img src="icons/home.png" alt="" class="ico"> Home</a>
     <a href="games.html"><img src="icons/games.png" alt="" class="ico"> Originals</a>
-    <a href="games.html"><img src="icons/sparkle.png" alt="" class="ico"> Slots</a>
     <a href="rewards.html"><img src="icons/rewards.png" alt="" class="ico"> Rewards</a>
     <a href="leaderboard.html"><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
   </div>
@@ -541,19 +540,17 @@
         <a href="casebattles.html"><img src="icons/gift.png" alt="" class="ico"> Case Battles</a>
       </div>
     </div>
-    <a class="side-nav-item" href="games.html">
-      <img src="icons/sparkle.png" alt="" class="ico" draggable="false">
-      <span>Slots</span>
-    </a>
-    <a class="side-nav-item" href="rewards.html">
-      <img src="icons/gift.png" alt="" class="ico" draggable="false">
-      <span>Promotions</span>
-    </a>
   </div>
   <div class="side-promo">
     <div class="side-promo-label">Halloween Event</div>
     <div class="side-promo-title">Ends in 6d 12h</div>
     <div class="side-promo-sub">Complete missions &amp; earn exclusive rewards!</div>
+  </div>
+  <div class="sidebar-collapse-bar">
+    <button type="button" id="sidebarCollapseBtn" title="Collapse sidebar">
+      <img src="icons/chevron-left.png" alt="" class="ico">
+      <span>Collapse</span>
+    </button>
   </div>
 </aside>
 
@@ -901,11 +898,28 @@
   })();
 </script>
 
+
 <script>
 (function(){
   var dd = document.getElementById('originalsDropdown');
   var btn = document.getElementById('originalsToggle');
   if(btn && dd){ btn.addEventListener('click', function(){ dd.classList.toggle('open'); }); }
+  var side = document.getElementById('appSidebar');
+  var main = document.querySelector('main.main');
+  var colBtn = document.getElementById('sidebarCollapseBtn');
+  if(colBtn && side){
+    try {
+      if(localStorage.getItem('bb_sidebar_collapsed') === '1'){
+        side.classList.add('collapsed');
+        if(main) main.classList.add('sidebar-collapsed');
+      }
+    } catch(e){}
+    colBtn.addEventListener('click', function(){
+      side.classList.toggle('collapsed');
+      if(main) main.classList.toggle('sidebar-collapsed');
+      try { localStorage.setItem('bb_sidebar_collapsed', side.classList.contains('collapsed') ? '1' : '0'); } catch(e){}
+    });
+  }
   function setOnline(n){
     var el = document.getElementById('onlineCount');
     if(el) el.textContent = Number(n).toLocaleString();
@@ -928,6 +942,7 @@
   setInterval(refreshOnline, 20000);
 })();
 </script>
+
 
 </body>
 </html>

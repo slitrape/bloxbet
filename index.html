@@ -45,7 +45,6 @@
   <div class="nav-center-links">
     <a href="index.html" class="active"><img src="icons/home.png" alt="" class="ico"> Home</a>
     <a href="games.html"><img src="icons/games.png" alt="" class="ico"> Originals</a>
-    <a href="games.html"><img src="icons/sparkle.png" alt="" class="ico"> Slots</a>
     <a href="rewards.html"><img src="icons/rewards.png" alt="" class="ico"> Rewards</a>
     <a href="leaderboard.html"><img src="icons/leaderboard.png" alt="" class="ico"> Leaderboard</a>
   </div>
@@ -82,9 +81,8 @@
       <img src="icons/home.png" alt="" class="ico" draggable="false">
       <span>Home</span>
     </a>
-
     <div class="side-dropdown open" id="originalsDropdown">
-      <button type="button" class="side-dropdown-toggle active" id="originalsToggle">
+      <button type="button" class="side-dropdown-toggle" id="originalsToggle">
         <img src="icons/games.png" alt="" class="ico" draggable="false">
         <span>Originals</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
@@ -96,21 +94,17 @@
         <a href="casebattles.html"><img src="icons/gift.png" alt="" class="ico"> Case Battles</a>
       </div>
     </div>
-
-    <a class="side-nav-item" href="games.html">
-      <img src="icons/sparkle.png" alt="" class="ico" draggable="false">
-      <span>Slots</span>
-    </a>
-    <a class="side-nav-item" href="rewards.html">
-      <img src="icons/gift.png" alt="" class="ico" draggable="false">
-      <span>Promotions</span>
-    </a>
   </div>
-
   <div class="side-promo">
     <div class="side-promo-label">Halloween Event</div>
     <div class="side-promo-title">Ends in 6d 12h</div>
     <div class="side-promo-sub">Complete missions &amp; earn exclusive rewards!</div>
+  </div>
+  <div class="sidebar-collapse-bar">
+    <button type="button" id="sidebarCollapseBtn" title="Collapse sidebar">
+      <img src="icons/chevron-left.png" alt="" class="ico">
+      <span>Collapse</span>
+    </button>
   </div>
 </aside>
 
@@ -140,11 +134,16 @@
         <p>Complete missions &amp; earn exclusive rewards!</p>
         <div class="promo-ph ph ph-amber ph-icon"><img src="icons/fire.png" alt=""></div>
       </div>
-      <div class="promo-card daily">
-        <div class="promo-tag">Daily</div>
-        <h3>DAILY REWARDS</h3>
-        <p>Log in daily for free rewards!</p>
-        <div class="promo-ph ph ph-purple ph-icon"><img src="icons/gift.png" alt=""></div>
+      <div class="promo-card daily promo-card-banner">
+        <div class="promo-banner" style="background-image:url('icons/daily-rewards-banner.png')"></div>
+        <div class="promo-banner-content">
+          <div class="promo-tag">Daily</div>
+          <h3>DAILY REWARDS</h3>
+          <p>Log in daily for free rewards!</p>
+        </div>
+        <div class="promo-actions">
+          <a class="btn-promo" href="rewards.html">Claim</a>
+        </div>
       </div>
       <div class="promo-card weekly promo-card-banner">
         <div class="promo-banner" style="background-image:url('icons/weekly-race-banner.png')"></div>
@@ -152,6 +151,9 @@
           <div class="promo-tag">Weekly</div>
           <h3>WEEKLY RACE</h3>
           <p>Climb the leaderboard &amp; win big!</p>
+        </div>
+        <div class="promo-actions">
+          <a class="btn-promo" href="leaderboard.html">View Race</a>
         </div>
       </div>
     </div>

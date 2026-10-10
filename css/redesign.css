@@ -1186,3 +1186,234 @@ body.bb-ui .online-count #onlineCount {
   color: rgba(255,255,255,0.8);
   max-width: 55%;
 }
+
+
+/* ===== Bigger bolder UI ===== */
+body.bb-ui {
+  font-size: 15px;
+  font-weight: 500;
+}
+body.bb-ui .nav-logo-text {
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+body.bb-ui .nav-center-links a {
+  font-size: .95rem;
+  font-weight: 700;
+  padding: .5rem 1rem;
+}
+body.bb-ui .nav-center-links a img.ico {
+  width: 18px;
+  height: 18px;
+}
+body.bb-ui .balance-chip {
+  font-size: .95rem;
+  font-weight: 800;
+  height: 40px;
+  padding: .4rem .9rem;
+}
+body.bb-ui .wallet-btn {
+  height: 40px;
+  font-size: .88rem;
+  font-weight: 800;
+  padding: 0 1.15rem;
+}
+body.bb-ui .side-nav-item,
+body.bb-ui .side-dropdown-toggle {
+  font-size: .95rem;
+  font-weight: 700;
+  padding: .65rem .8rem;
+}
+body.bb-ui .side-nav-item img.ico,
+body.bb-ui .side-dropdown-toggle img.ico {
+  width: 20px;
+  height: 20px;
+}
+body.bb-ui .side-dropdown-menu a {
+  font-size: .88rem;
+  font-weight: 700;
+  padding: .5rem .75rem;
+}
+body.bb-ui .side-dropdown-menu a img.ico {
+  width: 17px;
+  height: 17px;
+}
+body.bb-ui .online-count {
+  font-size: .82rem;
+  font-weight: 700;
+}
+body.bb-ui .page-head h1,
+body.bb-ui .bb-section-head h2,
+body.bb-ui .section-head h2 {
+  font-weight: 800;
+}
+body.bb-ui .btn {
+  font-weight: 700;
+}
+body.bb-ui .btn-sm {
+  font-size: .85rem;
+  font-weight: 700;
+  padding: .45rem .9rem;
+}
+
+/* Sidebar collapse */
+body.bb-ui .sidebar-collapse-bar {
+  border-top: 1px solid var(--bb-border);
+  padding: .55rem .7rem;
+  margin-top: auto;
+}
+body.bb-ui .sidebar-collapse-bar button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .55rem;
+  border-radius: 10px;
+  border: 1px solid var(--bb-border);
+  background: rgba(255,255,255,0.03);
+  color: var(--bb-text-2);
+  font-family: inherit;
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+body.bb-ui .sidebar-collapse-bar button:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--bb-text);
+}
+body.bb-ui .sidebar-collapse-bar button img.ico {
+  width: 16px;
+  height: 16px;
+}
+body.bb-ui .sidebar.collapsed {
+  width: 72px;
+}
+body.bb-ui .sidebar.collapsed .side-nav-item span,
+body.bb-ui .sidebar.collapsed .side-dropdown-toggle span,
+body.bb-ui .sidebar.collapsed .side-dropdown-menu,
+body.bb-ui .sidebar.collapsed .side-promo,
+body.bb-ui .sidebar.collapsed .online-count span:not(.online-dot),
+body.bb-ui .sidebar.collapsed .sidebar-collapse-bar button span {
+  display: none !important;
+}
+body.bb-ui .sidebar.collapsed .side-nav-item,
+body.bb-ui .sidebar.collapsed .side-dropdown-toggle {
+  justify-content: center;
+  padding: .7rem;
+}
+body.bb-ui .sidebar.collapsed .side-dropdown-toggle .chev { display: none; }
+body.bb-ui .main.sidebar-collapsed {
+  margin-left: 72px;
+}
+body.bb-ui .sidebar.collapsed .side-nav-block {
+  padding: .75rem .4rem;
+}
+
+/* Promo card action buttons */
+.promo-card .promo-actions {
+  position: absolute;
+  right: .85rem;
+  bottom: .75rem;
+  z-index: 2;
+}
+.promo-card .promo-actions .btn-promo {
+  appearance: none;
+  border: none;
+  background: linear-gradient(135deg, #ff9f2e, #ff6b00);
+  color: #111;
+  font-family: inherit;
+  font-size: .75rem;
+  font-weight: 800;
+  padding: .4rem .85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(255,120,0,0.35);
+}
+.promo-card .promo-actions .btn-promo:hover { filter: brightness(1.08); }
+.promo-card.promo-card-banner .promo-actions {
+  right: .85rem;
+  bottom: .85rem;
+}
+.promo-card.daily { position: relative; }
+
+.promo-card.daily.promo-card-banner {
+  border-color: rgba(168, 85, 247, 0.3);
+}
+.promo-card.daily.promo-card-banner .promo-banner::after {
+  background: linear-gradient(90deg, rgba(12,8,22,0.93) 0%, rgba(12,8,22,0.72) 45%, rgba(12,8,22,0.2) 100%);
+}
+.promo-card.daily.promo-card-banner .promo-banner-content .promo-tag {
+  color: #c4b5fd;
+}
+
+/* Coinflip polish */
+body.bb-ui .pvp-recent-clickable:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,138,0,0.25);
+}
+body.bb-ui .pvp-duel {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1.25rem;
+  align-items: center;
+  padding: 1.25rem 0;
+}
+body.bb-ui .pvp-duel-side {
+  text-align: center;
+}
+body.bb-ui .pvp-duel-av,
+body.bb-ui .pvp-duel-av-inner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin: 0 auto .5rem;
+  background: linear-gradient(145deg, #1e2230, #12141c);
+  border: 2px solid rgba(255,138,0,0.35);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #fff;
+}
+body.bb-ui .pvp-duel-name {
+  font-weight: 800;
+  font-size: .95rem;
+  color: #fff;
+}
+body.bb-ui .pvp-duel-bet {
+  font-weight: 700;
+  color: var(--bb-gold, #f5d76e);
+  font-size: .85rem;
+}
+body.bb-ui .pvp-duel-choice {
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--bb-text-2, #9aa3b5);
+  margin-top: .15rem;
+}
+body.bb-ui .pvp-duel-coin img {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(255,150,0,0.35));
+}
+body.bb-ui .coin-flipper {
+  transition: filter .2s;
+}
+body.bb-ui .coin-flipper.spinning {
+  filter: drop-shadow(0 12px 28px rgba(255,150,0,0.4));
+}
+body.bb-ui .pvp-match {
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: #12141c;
+}
+body.bb-ui .pvp-match:hover {
+  border-color: rgba(255,138,0,0.3);
+}

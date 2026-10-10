@@ -192,13 +192,14 @@
     coinFlipper.classList.add('spinning');
 
     const anim = coinFlipper.animate([
-      { transform: 'translateY(0) rotateY(0deg) rotateX(0deg)', offset: 0 },
-      { transform: 'translateY(-40px) rotateY(' + (currentRotationY * 0.15) + 'deg) rotateX(6deg)', offset: 0.15 },
-      { transform: 'translateY(-120px) rotateY(' + (currentRotationY * 0.45) + 'deg) rotateX(-4deg)', offset: 0.35 },
-      { transform: 'translateY(-70px) rotateY(' + (currentRotationY * 0.72) + 'deg) rotateX(2deg)', offset: 0.60 },
-      { transform: 'translateY(-10px) rotateY(' + (currentRotationY * 0.94) + 'deg) rotateX(0deg)', offset: 0.85 },
-      { transform: 'translateY(-14px) rotateY(' + (finalRot * 0.99) + 'deg)', offset: 0.95 },
-      { transform: 'translateY(0) rotateY(' + finalRot + 'deg)', offset: 1 }
+      { transform: 'translateY(0) rotateY(0deg) rotateX(0deg) scale(1)', offset: 0 },
+      { transform: 'translateY(-28px) rotateY(' + (currentRotationY * 0.12) + 'deg) rotateX(8deg) scale(1.04)', offset: 0.12 },
+      { transform: 'translateY(-110px) rotateY(' + (currentRotationY * 0.38) + 'deg) rotateX(-6deg) scale(1.08)', offset: 0.32 },
+      { transform: 'translateY(-90px) rotateY(' + (currentRotationY * 0.58) + 'deg) rotateX(4deg) scale(1.06)', offset: 0.5 },
+      { transform: 'translateY(-45px) rotateY(' + (currentRotationY * 0.78) + 'deg) rotateX(-2deg) scale(1.03)', offset: 0.68 },
+      { transform: 'translateY(-8px) rotateY(' + (currentRotationY * 0.92) + 'deg) rotateX(1deg) scale(1.01)', offset: 0.85 },
+      { transform: 'translateY(-12px) rotateY(' + (finalRot * 0.98) + 'deg) scale(1)', offset: 0.93 },
+      { transform: 'translateY(0) rotateY(' + finalRot + 'deg) scale(1)', offset: 1 }
     ], {
       duration: 2300,
       easing: 'cubic-bezier(.22,.61,.36,1)',
@@ -795,10 +796,10 @@
       const res = await Auth.api('/pvp/coinflip/recent');
       if(!res.ok) return;
       const data = await res.json();
-      const rows = (data.matches || []).slice(0, 6);
+      const rows = (data.matches || []).slice(0, 12);
 
       if(rows.length === 0){
-        pvpRecentEl.innerHTML = '<div class="pvp-recent-item" style="grid-column:1/-1;justify-content:center;color:var(--text-3)">No recent matches.</div>';
+        pvpRecentEl.innerHTML = '<div class="pvp-recent-item" style="grid-column:1/-1;justify-content:center;color:var(--text-3)">No finished matches yet.</div>';
         return;
       }
 
@@ -807,15 +808,70 @@
         const winner = m.winnerId === m.creatorId ? m.creatorUsername : (m.joinerUsername || '?');
         const loser  = m.winnerId === m.creatorId ? (m.joinerUsername || '?') : m.creatorUsername;
         const item = document.createElement('div');
-        item.className = 'pvp-recent-item';
+        item.className = 'pvp-recent-item pvp-recent-clickable';
+        item.style.cursor = 'pointer';
+        item.title = 'View match';
         item.innerHTML =
           '<img src="icons/coin-' + (m.result || 'heads') + '.png" alt="" draggable="false">' +
           '<span class="pvp-recent-name">' + escapeHtml(winner) + ' beat ' + escapeHtml(loser) + '</span>' +
           '<span class="pvp-recent-net">+' + fmtFull(Math.floor(m.bet * 0.96)) + '</span>';
+        item.addEventListener('click', function(){
+          if(typeof window.openMatchView === 'function') window.openMatchView(m);
+          else showFinishedMatchModal(m);
+        });
         pvpRecentEl.appendChild(item);
       });
     } catch {}
   }
+
+  function showFinishedMatchModal(m){
+    if(!pvpCreateView || !pvpWaitView || !pvpResultView) return;
+    pvpCreateView.style.display = 'none';
+    pvpWaitView.style.display = 'none';
+    pvpResultView.style.display = '';
+    const result = m.result || 'heads';
+    const me = Auth.getUser() || {};
+    const won = m.winnerId && me.id && String(m.winnerId) === String(me.id);
+    if(pvpResultTitle){
+      pvpResultTitle.textContent = won ? 'You Won' : (m.winnerUsername ? (m.winnerUsername + ' won') : 'Match Result');
+      pvpResultTitle.style.color = won ? '#4ade80' : '#e2e8f0';
+    }
+    if(pvpResultSub){
+      pvpResultSub.textContent = (result === 'heads' ? 'Heads' : 'Tails') + ' · ' + fmtFull(m.bet) + ' RC · ' + escapeHtml(m.creatorUsername||'?') + ' vs ' + escapeHtml(m.joinerUsername||'?');
+    }
+    const body = pvpResultView;
+    let duel = body.querySelector('.pvp-duel');
+    if(!duel){
+      duel = document.createElement('div');
+      duel.className = 'pvp-duel';
+      body.insertBefore(duel, body.firstChild);
+    }
+    const left = { username: m.creatorUsername, bet: m.bet, choice: m.creatorChoice || 'heads', id: m.creatorId };
+    const right = { username: m.joinerUsername || '—', bet: m.bet, choice: m.joinerChoice || 'tails', id: m.joinerId };
+    function av(u){
+      const letter = (u.username||'?').slice(0,1).toUpperCase();
+      return '<div class="pvp-duel-av-inner">' + letter + '</div>';
+    }
+    duel.innerHTML =
+      '<div class="pvp-duel-side">' +
+        '<div class="pvp-duel-av">' + av(left) + '</div>' +
+        '<div class="pvp-duel-name">' + escapeHtml(left.username||'?') + '</div>' +
+        '<div class="pvp-duel-bet">' + fmtFull(left.bet) + ' RC</div>' +
+        '<div class="pvp-duel-choice">' + escapeHtml(left.choice) + '</div>' +
+      '</div>' +
+      '<div class="pvp-duel-coin"><img src="icons/coin-' + result + '.png" alt="" draggable="false"></div>' +
+      '<div class="pvp-duel-side">' +
+        '<div class="pvp-duel-av">' + av(right) + '</div>' +
+        '<div class="pvp-duel-name">' + escapeHtml(right.username||'?') + '</div>' +
+        '<div class="pvp-duel-bet">' + fmtFull(right.bet) + ' RC</div>' +
+        '<div class="pvp-duel-choice">' + escapeHtml(right.choice) + '</div>' +
+      '</div>';
+    Modal.open('m-createMatch');
+  }
+  window.openMatchView = window.openMatchView || function(m){
+    if(m && (m.status === 'finished' || m.result || m.winnerId)) showFinishedMatchModal(m);
+  };
+
 
   async function joinMatch(matchId, btn){
     btn.disabled = true;

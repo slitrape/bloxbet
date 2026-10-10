@@ -551,3 +551,24 @@
   .crash-actions{min-width:auto}
   .crash-cashout-btn{padding:.85rem 1rem}
 }
+.crash-history-strip,.crash-recent{display:none!important}
+
+/* Cleaner crash layout without recent rounds */
+body.bb-ui .crash-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 1rem;
+}
+body.bb-ui .crash-panel {
+  background: var(--bb-surface, #12141c);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+}
+body.bb-ui .crash-panel-head h3 {
+  font-size: .95rem;
+  font-weight: 800;
+}
+body.bb-ui .crash-multiplier {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
