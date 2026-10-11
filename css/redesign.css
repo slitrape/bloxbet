@@ -2999,15 +2999,41 @@ body.reduce-motion .name-admin-glow {
   background-clip: text;
 }
 .pf-badge-img{
-  width: 22px; height: 22px; object-fit: contain;
+  width: 20px; height: 20px; object-fit: contain;
   vertical-align: middle;
+  flex-shrink: 0;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  margin: 0;
   filter: drop-shadow(0 0 6px rgba(255,140,0,.55));
 }
 .pf-badge-img.vip{
   filter: drop-shadow(0 0 6px rgba(80,140,255,.55));
 }
 .pf-badges-row{
-  display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; margin-top:.35rem;
+  display:inline-flex; align-items:center; gap:.4rem; flex-wrap:wrap; margin-top:0;
+  position: relative; z-index: 1;
+}
+.pf-v2-name .pf-name{
+  display: inline-block;
+  position: relative;
+  z-index: 2;
+  margin-right: .15rem;
+  max-width: 100%;
+}
+.pf-v2-name .pf-badges-row{
+  display: inline-flex !important;
+  align-items: center;
+  gap: .35rem;
+  margin-top: 0 !important;
+  margin-left: .25rem;
+  flex-wrap: wrap;
+  vertical-align: middle;
+}
+/* prevent admin gradient clip from eating neighboring badge space */
+.pf-name.is-admin, .name-admin-glow, [data-admin-name="1"]{
+  padding-right: .1rem;
 }
 .pf-badge-chip{
   display:inline-flex; align-items:center; gap:.3rem;
@@ -3109,3 +3135,27 @@ body.reduce-motion .name-admin-glow {
 /* Keep username visible next to admin badge */
 .pf-v2-name .pf-name{ display:inline; }
 .pf-v2-name .pf-badges-row{ display:inline-flex; margin-top:0; margin-left:.15rem; }
+
+
+/* Chat inline badges — visible to all players */
+.side-chat-body{ display:flex; flex-wrap:wrap; align-items:center; gap:.25rem .35rem; }
+.side-chat-user{ font-weight:800; }
+.side-chat-user.is-admin, .side-chat-user[data-admin-name="1"]{
+  background: linear-gradient(90deg, #ffb84d, #ff6b00, #ffd27a, #ff9f2e);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  font-weight: 900;
+}
+.chat-inline-badge{
+  width:16px !important; height:16px !important;
+  object-fit:contain; flex-shrink:0; display:inline-block;
+  vertical-align:middle;
+}
+.chat-inline-chip{
+  display:inline-flex; align-items:center;
+  font-size:.65rem; font-weight:800; padding:.1rem .35rem;
+  border-radius:999px; background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1); color:#c8d0dc;
+}

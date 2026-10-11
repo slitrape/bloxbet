@@ -556,11 +556,40 @@
     body.className = 'side-chat-body';
     var u = document.createElement('span');
     u.className = 'side-chat-user';
-    u.textContent = '@' + String(msg.user || msg.username || 'user').replace(/^@/,'');
+    var uname = String(msg.user || msg.username || 'user').replace(/^@/,'');
+    u.textContent = '@' + uname;
+    if(msg.isAdmin || msg.is_admin){
+      u.classList.add('is-admin');
+      u.setAttribute('data-admin-name','1');
+    }
     var t = document.createElement('span');
     t.className = 'side-chat-text';
     t.textContent = msg.text || msg.message || '';
-    body.appendChild(u); body.appendChild(t);
+    body.appendChild(u);
+    // badges visible to everyone in chat
+    if(msg.isAdmin || msg.is_admin){
+      var adminImg = document.createElement('img');
+      adminImg.className = 'pf-badge-img chat-inline-badge';
+      adminImg.src = 'icons/badge-admin.png';
+      adminImg.alt = 'Admin';
+      adminImg.title = 'BloxBet Admin';
+      body.appendChild(adminImg);
+    }
+    if(msg.vip){
+      var vipImg = document.createElement('img');
+      vipImg.className = 'pf-badge-img vip chat-inline-badge';
+      vipImg.src = 'icons/badge-vip.png';
+      vipImg.alt = 'VIP';
+      vipImg.title = 'VIP';
+      body.appendChild(vipImg);
+    }
+    if(msg.chatBadge || msg.chat_badge){
+      var cb = document.createElement('span');
+      cb.className = 'chat-inline-chip';
+      cb.textContent = String(msg.chatBadge || msg.chat_badge);
+      body.appendChild(cb);
+    }
+    body.appendChild(t);
     if(mine){ row.appendChild(body); row.appendChild(avNode(msg)); }
     else { row.appendChild(avNode(msg)); row.appendChild(body); }
     chatBox.appendChild(row);

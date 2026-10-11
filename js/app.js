@@ -386,13 +386,19 @@ window.PlayerSheet = (function(){
         }
       }
       if(typeof renderAvatar === 'function') renderAvatar(document.getElementById('psAvatar'), u);
-      document.getElementById('psName').textContent = u.displayName || u.username;
+      var psName = document.getElementById('psName');
+      psName.textContent = u.displayName || u.username;
+      psName.classList.toggle('is-admin', !!u.isAdmin);
+      if(u.isAdmin) psName.setAttribute('data-admin-name','1'); else psName.removeAttribute('data-admin-name');
       document.getElementById('psHandle').textContent = '@' + (u.username || '');
       var badges = document.getElementById('psBadges');
       badges.innerHTML = '';
+      if(u.isAdmin) badges.innerHTML += '<img class="pf-badge-img" src="icons/badge-admin.png" alt="Admin" title="BloxBet Admin">';
+      if(u.vip) badges.innerHTML += '<img class="pf-badge-img vip" src="icons/badge-vip.png" alt="VIP" title="VIP">';
       if(u.rank) badges.innerHTML += '<span class="ps-badge">'+u.rank+'</span>';
       badges.innerHTML += '<span class="ps-badge">Lvl '+(u.level||1)+'</span>';
       if(u.hasVerifiedBadge) badges.innerHTML += '<span class="ps-badge verified">Verified</span>';
+      if(u.chatBadge) badges.innerHTML += '<span class="ps-badge">'+String(u.chatBadge).replace(/</g,'&lt;')+'</span>';
 
       var winRate = u.gamesPlayed > 0 ? Math.round((u.gamesWon / u.gamesPlayed) * 100) : 0;
       document.getElementById('psStats').innerHTML =

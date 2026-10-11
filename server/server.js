@@ -1958,6 +1958,8 @@ app.post('/api/chat/global', chatLimiter, requireAuth, (req, res) => {
       avatar: avatarForUser(user),
       nameColor,
       chatBadge,
+      isAdmin: !!user.is_admin,
+      vip: !!user.vip,
       message,
       timestamp: now
     };
@@ -1994,6 +1996,11 @@ app.delete('/api/chat/global/:id', requireAuth, (req, res) => {
 });
 
 function serializeGlobalChat(c){
+  let isAdmin = false, vip = false;
+  try {
+    const u = stmts.getUser.get(String(c.user_id));
+    if(u){ isAdmin = !!u.is_admin; vip = !!u.vip; }
+  } catch(e){}
   return {
     id: c.id,
     userId: c.user_id,
@@ -2001,6 +2008,8 @@ function serializeGlobalChat(c){
     avatar: avatarForUser({ id: c.user_id || c.userId, avatar: c.avatar }) || c.avatar,
     nameColor: c.name_color,
     chatBadge: c.chat_badge,
+    isAdmin,
+    vip,
     message: c.message,
     timestamp: c.created_at
   };

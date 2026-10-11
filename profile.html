@@ -267,10 +267,15 @@
     margin-top:.2rem;
   }
   .pf-badges-row{
-    display:flex;
+    display:inline-flex;
+    align-items:center;
     gap:.35rem;
-    margin-top:.65rem;
+    margin-top:0;
     flex-wrap:wrap;
+    vertical-align:middle;
+  }
+  .pf-badge-img{
+    width:20px;height:20px;object-fit:contain;flex-shrink:0;display:inline-block;
   }
   .pf-badge{
     display:inline-flex;
@@ -1603,27 +1608,94 @@ function bannerClassFromBanner(banner){
       if(!u) return;
       renderHero(u);
       renderStats(u);
+      if(window.pfRenderBadges) pfRenderBadges(u);
     }
 
-    render(me);
-    Auth.refreshUser().then(function(fresh){ if(fresh) render(fresh); });
+    function setSelfOnlyUI(isSelf){
+      var bannerBtn = document.getElementById('pfBannerEditBtn');
+      if(bannerBtn) bannerBtn.style.display = isSelf ? '' : 'none';
+      var actions = document.querySelector('.pf-v2-actions');
+      if(actions){
+        actions.querySelectorAll('a.pf-discord-btn, button').forEach(function(el){
+          // keep Discord visible only for self; Settings/Sign out only self
+          el.style.display = isSelf ? '' : 'none';
+        });
+      }
+      // balance is private
+      var bal = document.getElementById('pfBalanceWrap');
+      if(bal) bal.style.display = isSelf ? '' : 'none';
+    }
 
-    loadActivity();
-    loadStreakStrip();
-    
-    
-    
-    
-    loadSummary();
+    var params0 = new URLSearchParams(location.search);
+    var viewUserId = params0.get('user');
+    var isSelfView = !viewUserId || (me && (String(me.id) === String(viewUserId) || String(me.username||'').toLowerCase() === String(viewUserId).toLowerCase()));
 
-    setInterval(function(){
-      Auth.refreshUser().then(function(fresh){
-        if(fresh){
-          renderHero(fresh);
-          renderStats(fresh);
+    setSelfOnlyUI(isSelfView);
+
+    async function loadViewedUser(){
+      if(isSelfView){
+        render(me);
+        Auth.refreshUser().then(function(fresh){ if(fresh) render(fresh); });
+        loadActivity();
+        loadStreakStrip();
+        loadSummary();
+        setInterval(function(){
+          Auth.refreshUser().then(function(fresh){
+            if(fresh){
+              renderHero(fresh);
+              renderStats(fresh);
+              if(window.pfRenderBadges) pfRenderBadges(fresh);
+            }
+          });
+        }, 30000);
+        return;
+      }
+      // Other player's public profile — never fall back to me
+      try {
+        var res = await Auth.api('/users/' + encodeURIComponent(viewUserId) + '/public');
+        if(!res || !res.ok){
+          // fallback to non-auth public shape
+          res = await Auth.api('/users/' + encodeURIComponent(viewUserId));
         }
-      });
-    }, 30000);
+        if(!res || !res.ok){
+          if(window.Toast) Toast.error('Profile', 'User not found');
+          return;
+        }
+        var data = await res.json();
+        var u = data.user || data;
+        if(!u || !u.id){
+          if(window.Toast) Toast.error('Profile', 'User not found');
+          return;
+        }
+        // normalize fields from either endpoint
+        u.displayName = u.displayName || u.display_name || u.username;
+        u.totalWagered = u.totalWagered != null ? u.totalWagered : (u.total_wagered || 0);
+        u.totalWon = u.totalWon != null ? u.totalWon : (u.total_won || 0);
+        u.totalLost = u.totalLost != null ? u.totalLost : (u.total_lost || 0);
+        u.biggestWin = u.biggestWin != null ? u.biggestWin : (u.biggest_win || 0);
+        u.gamesPlayed = u.gamesPlayed != null ? u.gamesPlayed : (u.games_played || 0);
+        u.gamesWon = u.gamesWon != null ? u.gamesWon : (u.games_won || 0);
+        u.hasVerifiedBadge = !!(u.hasVerifiedBadge || u.has_verified_badge);
+        u.isAdmin = !!(u.isAdmin || u.is_admin);
+        u.vip = !!(u.vip);
+        u.chatBadge = u.chatBadge || u.chat_badge || null;
+        u.profileBanner = u.profileBanner || u.profile_banner || null;
+        u.nameColor = u.nameColor || u.name_color || null;
+        u.avatarRing = u.avatarRing || u.avatar_ring || null;
+        u.xp = u.xp != null ? u.xp : 0;
+        render(u);
+        // public profiles: no private activity feed for others unless server allows
+        var act = document.getElementById('pfActivity');
+        if(act) act.innerHTML = '<div class="pf-empty">Public profile — activity is private.</div>';
+        var streak = document.getElementById('pfStreakStrip');
+        if(streak) streak.innerHTML = '';
+      } catch(e){
+        console.error('[profile] other user', e);
+        if(window.Toast) Toast.error('Profile', 'Could not load user');
+      }
+    }
+
+    loadViewedUser();
 
   
     
@@ -1795,11 +1867,40 @@ function bannerClassFromBanner(banner){
     body.className = 'side-chat-body';
     var u = document.createElement('span');
     u.className = 'side-chat-user';
-    u.textContent = '@' + String(msg.user || msg.username || 'user').replace(/^@/,'');
+    var uname = String(msg.user || msg.username || 'user').replace(/^@/,'');
+    u.textContent = '@' + uname;
+    if(msg.isAdmin || msg.is_admin){
+      u.classList.add('is-admin');
+      u.setAttribute('data-admin-name','1');
+    }
     var t = document.createElement('span');
     t.className = 'side-chat-text';
     t.textContent = msg.text || msg.message || '';
-    body.appendChild(u); body.appendChild(t);
+    body.appendChild(u);
+    // badges visible to everyone in chat
+    if(msg.isAdmin || msg.is_admin){
+      var adminImg = document.createElement('img');
+      adminImg.className = 'pf-badge-img chat-inline-badge';
+      adminImg.src = 'icons/badge-admin.png';
+      adminImg.alt = 'Admin';
+      adminImg.title = 'BloxBet Admin';
+      body.appendChild(adminImg);
+    }
+    if(msg.vip){
+      var vipImg = document.createElement('img');
+      vipImg.className = 'pf-badge-img vip chat-inline-badge';
+      vipImg.src = 'icons/badge-vip.png';
+      vipImg.alt = 'VIP';
+      vipImg.title = 'VIP';
+      body.appendChild(vipImg);
+    }
+    if(msg.chatBadge || msg.chat_badge){
+      var cb = document.createElement('span');
+      cb.className = 'chat-inline-chip';
+      cb.textContent = String(msg.chatBadge || msg.chat_badge);
+      body.appendChild(cb);
+    }
+    body.appendChild(t);
     if(mine){ row.appendChild(body); row.appendChild(avNode(msg)); }
     else { row.appendChild(avNode(msg)); row.appendChild(body); }
     chatBox.appendChild(row);
