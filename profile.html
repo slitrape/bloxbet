@@ -857,10 +857,10 @@
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="side-dropdown-menu">
-        <a href="coinflip.html"><img src="icons/coin.png" alt="" class="ico"> Coinflip</a>
+        <a href="coinflip.html"><img src="icons/sidebar-coinflip.png" alt="" class="ico"> Coinflip</a>
         <a href="mines.html"><img src="icons/mines-side.png" alt="" class="ico"> Mines</a>
         <a href="crash.html"><img src="icons/crash-side.png" alt="" class="ico"> Crash</a>
-        <a href="casebattles.html"><img src="icons/gift.png" alt="" class="ico"> Case Battles</a>
+        <a href="casebattles.html"><img src="icons/sidebar-casebattles.png" alt="" class="ico"> Case Battles</a>
       </div>
     </div>
     <a class="side-nav-item" href="rewards.html">
@@ -1259,10 +1259,14 @@ function bannerClassFromBanner(banner){
       var nameClasses = 'pf-name ' + nameColorClass(u.nameColor);
       if(u.isAdmin) nameClasses += ' is-admin';
       nameEl.className = nameClasses;
-      nameEl.textContent = displayName;
+      var safeName = (displayName && String(displayName).trim()) || (username && String(username).trim()) || 'Player';
+      var safeHandle = (username && String(username).trim()) || safeName;
+      if(String(safeHandle).toLowerCase() === 'user') safeHandle = safeName;
+      nameEl.textContent = safeName;
+      nameEl.style.opacity = '1';
+      nameEl.style.visibility = 'visible';
       if(u.isAdmin){
         nameEl.setAttribute('data-admin-name','1');
-        // gradient clip handles color; don't force inline color over it
         nameEl.style.color = '';
       } else if(u.nameColor && /^#[0-9a-f]{3,8}$/i.test(u.nameColor)){
         nameEl.removeAttribute('data-admin-name');
@@ -1275,7 +1279,12 @@ function bannerClassFromBanner(banner){
       var v = document.getElementById('pfVerified');
       if(v) v.style.display = u.hasVerifiedBadge ? 'inline-block' : 'none';
 
-      document.getElementById('pfHandle').textContent = '@' + username;
+      var handleEl = document.getElementById('pfHandle');
+      if(handleEl){
+        handleEl.textContent = '@' + String(safeHandle).replace(/^@+/, '');
+        handleEl.style.opacity = '1';
+        handleEl.style.visibility = 'visible';
+      }
 
       var badges = document.getElementById('pfBadges');
       badges.innerHTML = '';
@@ -1610,16 +1619,66 @@ function bannerClassFromBanner(banner){
 
     setSelfOnlyUI(isSelfView);
 
+    function normalizeProfileUser(u){
+      if(!u) return null;
+      u.id = u.id || u.userId || u.user_id;
+      u.username = (u.username && String(u.username).toLowerCase() !== 'user')
+        ? String(u.username)
+        : (u.displayName || u.display_name || u.name || '');
+      u.displayName = u.displayName || u.display_name || u.username || u.name || 'Player';
+      if(!u.username || String(u.username).toLowerCase() === 'user') u.username = u.displayName;
+      u.totalWagered = u.totalWagered != null ? u.totalWagered : (u.total_wagered || 0);
+      u.totalWon = u.totalWon != null ? u.totalWon : (u.total_won || 0);
+      u.totalLost = u.totalLost != null ? u.totalLost : (u.total_lost || 0);
+      u.biggestWin = u.biggestWin != null ? u.biggestWin : (u.biggest_win || 0);
+      u.gamesPlayed = u.gamesPlayed != null ? u.gamesPlayed : (u.games_played || 0);
+      u.gamesWon = u.gamesWon != null ? u.gamesWon : (u.games_won || 0);
+      u.hasVerifiedBadge = !!(u.hasVerifiedBadge || u.has_verified_badge);
+      u.isAdmin = !!(u.isAdmin || u.is_admin);
+      u.vip = !!u.vip;
+      u.chatBadge = u.chatBadge || u.chat_badge || null;
+      u.profileBanner = u.profileBanner || u.profile_banner || null;
+      u.nameColor = u.nameColor || u.name_color || null;
+      u.avatarRing = u.avatarRing || u.avatar_ring || null;
+      u.xp = u.xp != null ? u.xp : 0;
+      u.level = u.level != null ? u.level : 1;
+      u.rank = u.rank || 'Bronze';
+      return u;
+    }
+
+    async function fetchProfileById(id){
+      var res = await Auth.api('/users/' + encodeURIComponent(id) + '/public');
+      if(!res || !res.ok) res = await Auth.api('/users/' + encodeURIComponent(id));
+      if(!res || !res.ok) return null;
+      var data = await res.json();
+      return normalizeProfileUser(data.user || data);
+    }
+
     async function loadViewedUser(){
       if(isSelfView){
-        render(me);
-        Auth.refreshUser().then(function(fresh){ if(fresh) render(fresh); });
+        // Always prefer live server user so Roblox username is never blank
+        var live = null;
+        try {
+          live = await Auth.refreshUser();
+        } catch(e){}
+        if(!live || !live.username){
+          try {
+            var meId = (live && live.id) || (me && me.id);
+            if(meId) live = await fetchProfileById(meId) || live;
+          } catch(e){}
+        }
+        live = normalizeProfileUser(live || me) || me;
+        if(live){
+          try { Auth.updateUser(live); } catch(e){}
+          render(live);
+        }
         loadActivity();
         loadStreakStrip();
         loadSummary();
         setInterval(function(){
           Auth.refreshUser().then(function(fresh){
             if(fresh){
+              fresh = normalizeProfileUser(fresh);
               renderHero(fresh);
               renderStats(fresh);
               if(window.pfRenderBadges) pfRenderBadges(fresh);
@@ -1628,41 +1687,14 @@ function bannerClassFromBanner(banner){
         }, 30000);
         return;
       }
-      // Other player's public profile — never fall back to me
+      // Other player's public profile — full banner, name, badges, stats
       try {
-        var res = await Auth.api('/users/' + encodeURIComponent(viewUserId) + '/public');
-        if(!res || !res.ok){
-          // fallback to non-auth public shape
-          res = await Auth.api('/users/' + encodeURIComponent(viewUserId));
-        }
-        if(!res || !res.ok){
-          if(window.Toast) Toast.error('Profile', 'User not found');
-          return;
-        }
-        var data = await res.json();
-        var u = data.user || data;
+        var u = await fetchProfileById(viewUserId);
         if(!u || !u.id){
           if(window.Toast) Toast.error('Profile', 'User not found');
           return;
         }
-        // normalize fields from either endpoint
-        u.displayName = u.displayName || u.display_name || u.username;
-        u.totalWagered = u.totalWagered != null ? u.totalWagered : (u.total_wagered || 0);
-        u.totalWon = u.totalWon != null ? u.totalWon : (u.total_won || 0);
-        u.totalLost = u.totalLost != null ? u.totalLost : (u.total_lost || 0);
-        u.biggestWin = u.biggestWin != null ? u.biggestWin : (u.biggest_win || 0);
-        u.gamesPlayed = u.gamesPlayed != null ? u.gamesPlayed : (u.games_played || 0);
-        u.gamesWon = u.gamesWon != null ? u.gamesWon : (u.games_won || 0);
-        u.hasVerifiedBadge = !!(u.hasVerifiedBadge || u.has_verified_badge);
-        u.isAdmin = !!(u.isAdmin || u.is_admin);
-        u.vip = !!(u.vip);
-        u.chatBadge = u.chatBadge || u.chat_badge || null;
-        u.profileBanner = u.profileBanner || u.profile_banner || null;
-        u.nameColor = u.nameColor || u.name_color || null;
-        u.avatarRing = u.avatarRing || u.avatar_ring || null;
-        u.xp = u.xp != null ? u.xp : 0;
         render(u);
-        // public profiles: no private activity feed for others unless server allows
         var act = document.getElementById('pfActivity');
         if(act) act.innerHTML = '<div class="pf-empty">Public profile — activity is private.</div>';
         var streak = document.getElementById('pfStreakStrip');

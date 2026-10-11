@@ -4609,7 +4609,12 @@ app.post('/api/admin/users/:id/note', requireAdmin, (req, res) => {
 app.get('/api/users/:id/public', requireAuth, (req, res) => {
   try {
     const id = String(req.params.id);
-    const u = stmts.getUser.get(id);
+    let u = stmts.getUser.get(id);
+    if(!u) {
+      try {
+        u = db.prepare('SELECT * FROM users WHERE username = ? COLLATE NOCASE').get(id);
+      } catch(e){}
+    }
     if(!u) return res.status(404).json({ error: 'USER_NOT_FOUND' });
     const flips = db.prepare(`
       SELECT COUNT(*) AS total,
@@ -4625,10 +4630,12 @@ app.get('/api/users/:id/public', requireAuth, (req, res) => {
         avatar: avatarForUser(u),
         hasVerifiedBadge: !!u.has_verified_badge,
         level: u.level,
+        xp: u.xp || 0,
         rank: u.rank,
         isAdmin: !!u.is_admin,
         vip: !!u.vip,
         chatBadge: u.chat_badge || null,
+        avatarRing: u.avatar_ring || null,
         totalWagered: u.total_wagered,
         totalWon: u.total_won,
         totalLost: u.total_lost,
