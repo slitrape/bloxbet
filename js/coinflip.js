@@ -62,9 +62,9 @@
     const stage = document.getElementById('coinScene');
     const width = stage ? stage.offsetWidth : 200;
     const RADIUS = width / 2;
-    const THICKNESS = 24;
-    const SLICES = 48;
-    const sliceWidth = (2 * Math.PI * RADIUS / SLICES) + 1.5;
+    const THICKNESS = 14;
+    const SLICES = 64;
+    const sliceWidth = (2 * Math.PI * RADIUS / SLICES) + 0.35;
 
     for(let i = 0; i < SLICES; i++){
       const slice = document.createElement('span');

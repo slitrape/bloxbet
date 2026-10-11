@@ -2294,8 +2294,8 @@ app.get('/api/users/:id', (req, res) => {
     res.json({
       user: {
         id: u.id,
-        username: u.username,
-        displayName: u.display_name || u.username,
+        username: u.username || u.display_name || String(u.id),
+        displayName: u.display_name || u.username || String(u.id),
         avatar: avatarForUser(u),
         level: u.level,
         rank: rankFor(u.total_wagered || 0),
@@ -4620,8 +4620,8 @@ app.get('/api/users/:id/public', requireAuth, (req, res) => {
     res.json({
       user: {
         id: u.id,
-        username: u.username,
-        displayName: u.display_name || u.username,
+        username: u.username || u.display_name || String(u.id),
+        displayName: u.display_name || u.username || String(u.id),
         avatar: avatarForUser(u),
         hasVerifiedBadge: !!u.has_verified_badge,
         level: u.level,

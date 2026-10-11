@@ -95,7 +95,7 @@
     </div>
     <div class="side-dropdown open" id="originalsDropdown">
       <button type="button" class="side-dropdown-toggle active" id="originalsToggle">
-        <img src="icons/games.png" alt="" class="ico" draggable="false">
+        <img src="icons/originals-sidebar.png" alt="" class="ico originals-ico" draggable="false">
         <span>Originals</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </button>
@@ -529,7 +529,12 @@
     var id = msg.userId || msg.user_id || '';
     var name = String(msg.user || msg.username || '?').replace(/^@/,'');
     var letter = name.slice(0,1).toUpperCase();
-    wrap.href = 'profile.html?user=' + encodeURIComponent(id || name);
+    // Always prefer stable user id so clicks open THAT profile, never self by accident
+    if(id) wrap.href = 'profile.html?user=' + encodeURIComponent(String(id));
+    else wrap.href = 'profile.html?user=' + encodeURIComponent(name);
+    wrap.addEventListener('click', function(e){
+      if(!id && !name){ e.preventDefault(); return; }
+    });
     if(id){
       var img = document.createElement('img');
       img.src = '/api/avatar/' + encodeURIComponent(id);
@@ -608,7 +613,7 @@
       var list = msgs.slice();
       if(list.length > 1 && (list[0].created_at||list[0].createdAt||0) > (list[list.length-1].created_at||list[list.length-1].createdAt||0)) list = list.reverse();
       list.forEach(function(m){
-        appendChat({ id:m.id, user:m.username||m.user, userId:m.user_id||m.userId, text:m.message||m.text, at:m.created_at||m.createdAt });
+        appendChat({ id:m.id, user:m.username||m.user, userId:m.userId||m.user_id||m.user, text:m.message||m.text, at:m.created_at||m.createdAt||m.timestamp, isAdmin:!!(m.isAdmin||m.is_admin), vip:!!m.vip, chatBadge:m.chatBadge||m.chat_badge||null });
       });
     } catch(e){}
   }

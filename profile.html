@@ -852,7 +852,7 @@
     </div>
     <div class="side-dropdown" id="originalsDropdown">
       <button type="button" class="side-dropdown-toggle" id="originalsToggle">
-        <img src="icons/games.png" alt="" class="ico" draggable="false">
+        <img src="icons/originals-sidebar.png" alt="" class="ico originals-ico" draggable="false">
         <span>Originals</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </button>
@@ -1231,33 +1231,11 @@ function bannerClassFromBanner(banner){
       if(!u) return;
 
       var displayName = u.displayName || u.display_name || u.username || u.name || 'User';
-      var username = u.username || u.displayName || u.display_name || u.name || '';
-      // Prefer real Roblox-style handle; never keep the literal placeholder "user"
+      // Roblox handle must come from the profile being viewed — never from the logged-in viewer
+      var username = u.username || '';
       if(!username || String(username).toLowerCase() === 'user'){
-        try {
-          var meLocal = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
-          if(meLocal){
-            var alt = meLocal.username || meLocal.displayName || meLocal.display_name || meLocal.name || '';
-            if(alt && String(alt).toLowerCase() !== 'user'){
-              username = alt;
-              if(!u.displayName && (meLocal.displayName || meLocal.display_name)){
-                displayName = meLocal.displayName || meLocal.display_name;
-              }
-            }
-          }
-        } catch(e){}
+        username = u.displayName || u.display_name || u.name || displayName || 'player';
       }
-      if(!username || String(username).toLowerCase() === 'user'){
-        try {
-          var raw = localStorage.getItem('bb_user');
-          if(raw){
-            var stored = JSON.parse(raw);
-            var alt2 = (stored && (stored.username || stored.displayName || stored.display_name || stored.name)) || '';
-            if(alt2 && String(alt2).toLowerCase() !== 'user') username = alt2;
-          }
-        } catch(e){}
-      }
-      if(!username || String(username).toLowerCase() === 'user') username = displayName || 'player';
 
       var banner = document.getElementById('pfBanner');
       applyProfileBanner(banner, u.profileBanner);
@@ -1840,7 +1818,12 @@ function bannerClassFromBanner(banner){
     var id = msg.userId || msg.user_id || '';
     var name = String(msg.user || msg.username || '?').replace(/^@/,'');
     var letter = name.slice(0,1).toUpperCase();
-    wrap.href = 'profile.html?user=' + encodeURIComponent(id || name);
+    // Always prefer stable user id so clicks open THAT profile, never self by accident
+    if(id) wrap.href = 'profile.html?user=' + encodeURIComponent(String(id));
+    else wrap.href = 'profile.html?user=' + encodeURIComponent(name);
+    wrap.addEventListener('click', function(e){
+      if(!id && !name){ e.preventDefault(); return; }
+    });
     if(id){
       var img = document.createElement('img');
       img.src = '/api/avatar/' + encodeURIComponent(id);
@@ -1919,7 +1902,7 @@ function bannerClassFromBanner(banner){
       var list = msgs.slice();
       if(list.length > 1 && (list[0].created_at||list[0].createdAt||0) > (list[list.length-1].created_at||list[list.length-1].createdAt||0)) list = list.reverse();
       list.forEach(function(m){
-        appendChat({ id:m.id, user:m.username||m.user, userId:m.user_id||m.userId, text:m.message||m.text, at:m.created_at||m.createdAt });
+        appendChat({ id:m.id, user:m.username||m.user, userId:m.userId||m.user_id||m.user, text:m.message||m.text, at:m.created_at||m.createdAt||m.timestamp, isAdmin:!!(m.isAdmin||m.is_admin), vip:!!m.vip, chatBadge:m.chatBadge||m.chat_badge||null });
       });
     } catch(e){}
   }
@@ -1975,14 +1958,7 @@ function bannerClassFromBanner(banner){
         if(nameEl) nameEl.textContent = u.displayName || u.username || 'Player';
         var handle = document.querySelector('.pf-handle, #pfHandle');
         if(handle){
-          var h = u.username || u.displayName || u.display_name || u.name || '';
-          if(!h || String(h).toLowerCase() === 'user'){
-            try {
-              var me2 = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
-              if(me2) h = me2.username || me2.displayName || me2.display_name || h;
-            } catch(e){}
-          }
-          if(!h || String(h).toLowerCase() === 'user') h = u.displayName || u.display_name || 'player';
+          var h = u.username || u.displayName || u.display_name || u.name || 'player';
           handle.textContent = '@' + String(h).replace(/^@+/, '');
         }
         if(typeof renderAvatar === 'function'){

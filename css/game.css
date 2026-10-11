@@ -76,7 +76,7 @@
   position:absolute;
   inset:0;
   transform-style:preserve-3d;
-  --thickness: 24px;
+  --thickness: 14px;
 }
 
 .coin-face{
@@ -84,19 +84,26 @@
   inset:0;
   border-radius:50%;
   backface-visibility:hidden;
-  background-size:contain;
+  -webkit-backface-visibility:hidden;
+  background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
-  filter:drop-shadow(0 6px 16px rgba(0,0,0,.4));
+  overflow:hidden;
+  /* kill any seam / middle line artifacts */
+  outline: none;
+  border: none;
+  box-shadow: 0 8px 28px rgba(0,0,0,.45);
+  transform-style: preserve-3d;
 }
 .coin-face.heads{
   background-image:url('../icons/coin-heads.png');
-  transform:translateZ(calc(var(--thickness) / 2));
+  transform:translateZ(calc(var(--thickness) / 2 + 0.5px));
 }
 .coin-face.tails{
   background-image:url('../icons/coin-tails.png');
-  transform:rotateY(180deg) translateZ(calc(var(--thickness) / 2));
+  transform:rotateY(180deg) translateZ(calc(var(--thickness) / 2 + 0.5px));
 }
+.coin-face::before, .coin-face::after{ display:none !important; content:none !important; }
 
 .coin-face .shine{
   position:absolute;
@@ -168,16 +175,18 @@
   height:var(--thickness);
   transform-origin:50% 50%;
   backface-visibility:hidden;
-  border-radius:1px;
-  background:
-    linear-gradient(
-      to right,
-      #4b5563 0%,
-      #94a3b8 25%,
-      #f1f5f9 50%,
-      #94a3b8 75%,
-      #374151 100%
-    );
+  -webkit-backface-visibility:hidden;
+  border-radius:0;
+  /* continuous metallic rim — no bright midline stripe */
+  background: linear-gradient(
+    to bottom,
+    #c9a227 0%,
+    #8a7010 35%,
+    #5c4a08 50%,
+    #8a7010 65%,
+    #c9a227 100%
+  );
+  box-shadow: none;
 }
 .coin-flipper.spinning .coin-edge span{
   filter:blur(.4px);
