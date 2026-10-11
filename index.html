@@ -308,38 +308,79 @@
 
 
 <div class="modal-overlay" id="m-deposit">
-  <div class="modal deposit-modal wallet-pro">
-    <div class="modal-head">
-      <div>
-        <h3>Wallet</h3>
-        <p>Deposit BC, convert to RC for play, or withdraw</p>
+  <div class="modal deposit-modal wallet-pro wallet-gift">
+    <div class="modal-head wallet-gift-head">
+      <div class="wallet-pill-tabs">
+        <button type="button" class="wallet-pill active" data-wtab="deposit">Deposit</button>
+        <button type="button" class="wallet-pill" data-wtab="withdraw">Withdraw</button>
+      </div>
+      <div class="wallet-method-dd" id="walletMethodDd">
+        <button type="button" class="wallet-method-btn" id="walletMethodBtn">
+          <span id="walletMethodLabel">Gift Cards</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="wallet-method-menu" id="walletMethodMenu">
+          <button type="button" class="wallet-method-item active" data-method="gift">Gift Cards</button>
+          <button type="button" class="wallet-method-item" data-method="crypto">Cryptocurrency</button>
+          <button type="button" class="wallet-method-item" data-method="cards">Credit Cards</button>
+          <button type="button" class="wallet-method-item" data-method="free">Free</button>
+        </div>
       </div>
       <button class="modal-close" onclick="Modal.close('m-deposit')" type="button">
         <img src="icons/close.png" alt="" class="ico" draggable="false">
       </button>
     </div>
-    <div class="modal-body deposit-body">
-      <div class="wallet-tabs">
-        <button type="button" class="wallet-tab active" data-wtab="deposit">Deposit</button>
-        <button type="button" class="wallet-tab" data-wtab="withdraw">Withdraw</button>
-        <button type="button" class="wallet-tab" data-wtab="convert">Convert</button>
-      </div>
+    <div class="modal-body deposit-body wallet-gift-body">
       <div class="wallet-pane active" id="walletDepositPane">
-        <div class="dep-amount-wrap">
-          <label>Deposit BloxCoins</label>
-          <div class="dep-amount-box">
-            <input type="number" id="depositAmount" value="100" min="7" step="1">
-            <span class="dep-unit" id="depositUnit">BC</span>
+        <div class="gift-redeem">
+          <label>Already purchased a gift card? Redeem it here:</label>
+          <div class="gift-redeem-row">
+            <input type="text" id="giftCardCode" placeholder="Enter gift card code here" autocomplete="off">
+            <button type="button" class="btn btn-primary btn-orange" id="giftRedeemBtn">Redeem</button>
           </div>
         </div>
-        <div class="dep-quick">
-          <button class="dep-chip" data-deposit="7" type="button">7</button>
-          <button class="dep-chip" data-deposit="50" type="button">50</button>
-          <button class="dep-chip" data-deposit="100" type="button">100</button>
-          <button class="dep-chip" data-deposit="500" type="button">500</button>
-          <button class="dep-chip" data-deposit="1000" type="button">1K</button>
+        <div class="gift-or"><span>OR PURCHASE NEW</span></div>
+        <div class="gift-providers">
+          <a class="gift-card-provider" href="https://www.kinguin.net/" target="_blank" rel="noopener">
+            <div class="gift-card-logo">
+              <span class="gift-logo-text kinguin">🐧 KINGUIN</span>
+            </div>
+            <div class="gift-card-accepts">
+              <span class="tiny muted">Kinguin Gift Cards Accepts:</span>
+              <div class="pay-icons">
+                <span class="pay-pill">PayPal</span>
+                <span class="pay-pill">VISA</span>
+                <span class="pay-pill">MC</span>
+                <span class="pay-pill">AMEX</span>
+                <span class="pay-pill">GPay</span>
+                <span class="pay-pill">Apple Pay</span>
+                <span class="pay-pill">BLIK</span>
+                <span class="pay-pill">iDEAL</span>
+              </div>
+            </div>
+          </a>
+          <a class="gift-card-provider" href="#" onclick="return false;">
+            <div class="gift-card-logo">
+              <span class="gift-logo-text pulse">◆ PULSE <small>DIGITAL GIFTCARDS</small></span>
+            </div>
+            <div class="gift-card-accepts">
+              <span class="tiny muted">Pulse Gift Cards Accepts:</span>
+              <div class="pay-icons">
+                <span class="pay-pill">PayPal</span>
+                <span class="pay-pill">VISA</span>
+                <span class="pay-pill">MC</span>
+                <span class="pay-pill">GPay</span>
+                <span class="pay-pill">Apple Pay</span>
+                <span class="pay-pill">iDEAL</span>
+                <span class="pay-pill">BLIK</span>
+              </div>
+            </div>
+          </a>
         </div>
-        <div class="dep-note">Min 7 BC · Convert BC → RC to play games</div>
+        <div class="dep-note" style="margin-top:1rem">Codes credit BC instantly · Convert BC → RC in Convert when available</div>
+        <input type="hidden" id="depositAmount" value="100">
+        <input type="hidden" id="convertFrom" value="bc">
+        <input type="hidden" id="convertAmount" value="100">
       </div>
       <div class="wallet-pane" id="walletWithdrawPane">
         <div class="dep-amount-wrap">
@@ -349,27 +390,23 @@
             <span class="dep-unit">BC</span>
           </div>
         </div>
-        <div class="dep-note">Min 7 BC</div>
+        <div class="dep-note">Min 7 BC · Processed manually</div>
       </div>
-      <div class="wallet-pane" id="walletConvertPane">
-        <div class="convert-dir">
-          <button type="button" class="convert-pill active" data-from="bc">BC → RC</button>
-        </div>
-        <input type="hidden" id="convertFrom" value="bc">
-        <div class="dep-amount-wrap" style="margin-top:.85rem">
+      <div class="wallet-pane" id="walletConvertPane" style="display:none">
+        <div class="dep-amount-wrap">
           <label>Amount (BloxCoins)</label>
           <div class="dep-amount-box">
-            <input type="number" id="convertAmount" value="100" min="1" step="1">
+            <input type="number" id="convertAmountVisible" value="100" min="1" step="1">
             <span class="dep-unit">BC</span>
           </div>
         </div>
         <div class="dep-note">1:1 · RC is the playable coin</div>
       </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')" type="button">Cancel</button>
-      <button class="btn btn-primary btn-orange" id="depositConfirmBtn" type="button">Confirm Deposit</button>
+    <div class="modal-foot" id="walletGiftFoot">
+      <button class="btn btn-ghost" onclick="Modal.close('m-deposit')" type="button">Close</button>
       <button class="btn btn-primary btn-orange" id="withdrawConfirmBtn" type="button" style="display:none">Confirm Withdraw</button>
+      <button class="btn btn-primary btn-orange" id="depositConfirmBtn" type="button" style="display:none">Confirm Deposit</button>
       <button class="btn btn-primary btn-orange" id="convertConfirmBtn" type="button" style="display:none">Convert to RC</button>
     </div>
   </div>
@@ -774,22 +811,52 @@
     });
     document.addEventListener('click', function(){ menu.classList.remove('open'); });
   }
-  document.querySelectorAll('.wallet-tab').forEach(function(tab){
-    tab.addEventListener('click', function(){
-      document.querySelectorAll('.wallet-tab').forEach(function(t){ t.classList.remove('active'); });
-      document.querySelectorAll('.wallet-pane').forEach(function(p){ p.classList.remove('active'); });
-      tab.classList.add('active');
-      var map = { deposit:'walletDepositPane', withdraw:'walletWithdrawPane', convert:'walletConvertPane' };
-      var pane = document.getElementById(map[tab.dataset.wtab] || 'walletDepositPane');
-      if(pane) pane.classList.add('active');
-      var depBtn = document.getElementById('depositConfirmBtn');
-      var wdBtn = document.getElementById('withdrawConfirmBtn');
-      var cvBtn = document.getElementById('convertConfirmBtn');
-      if(depBtn) depBtn.style.display = tab.dataset.wtab === 'deposit' ? '' : 'none';
-      if(wdBtn) wdBtn.style.display = tab.dataset.wtab === 'withdraw' ? '' : 'none';
-      if(cvBtn) cvBtn.style.display = tab.dataset.wtab === 'convert' ? '' : 'none';
+  function setWalletTab(name){
+    document.querySelectorAll('.wallet-tab, .wallet-pill').forEach(function(t){
+      t.classList.toggle('active', t.dataset.wtab === name);
     });
+    document.querySelectorAll('.wallet-pane').forEach(function(p){ p.classList.remove('active'); });
+    var map = { deposit:'walletDepositPane', withdraw:'walletWithdrawPane', convert:'walletConvertPane' };
+    var pane = document.getElementById(map[name] || 'walletDepositPane');
+    if(pane) pane.classList.add('active');
+    var depBtn = document.getElementById('depositConfirmBtn');
+    var wdBtn = document.getElementById('withdrawConfirmBtn');
+    var cvBtn = document.getElementById('convertConfirmBtn');
+    if(depBtn) depBtn.style.display = 'none';
+    if(wdBtn) wdBtn.style.display = name === 'withdraw' ? '' : 'none';
+    if(cvBtn) cvBtn.style.display = name === 'convert' ? '' : 'none';
+  }
+  document.querySelectorAll('.wallet-tab, .wallet-pill').forEach(function(tab){
+    tab.addEventListener('click', function(){ setWalletTab(tab.dataset.wtab || 'deposit'); });
   });
+  var methodBtn = document.getElementById('walletMethodBtn');
+  var methodMenu = document.getElementById('walletMethodMenu');
+  if(methodBtn && methodMenu){
+    methodBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      methodMenu.classList.toggle('open');
+    });
+    methodMenu.querySelectorAll('.wallet-method-item').forEach(function(item){
+      item.addEventListener('click', function(){
+        methodMenu.querySelectorAll('.wallet-method-item').forEach(function(x){ x.classList.remove('active'); });
+        item.classList.add('active');
+        var lab = document.getElementById('walletMethodLabel');
+        if(lab) lab.textContent = item.textContent.trim();
+        methodMenu.classList.remove('open');
+      });
+    });
+    document.addEventListener('click', function(){ methodMenu.classList.remove('open'); });
+  }
+  var giftRedeem = document.getElementById('giftRedeemBtn');
+  if(giftRedeem){
+    giftRedeem.addEventListener('click', function(){
+      var code = (document.getElementById('giftCardCode')||{}).value || '';
+      code = String(code).trim();
+      if(!code){ if(window.Toast) Toast.error('Code required', 'Enter a gift card code.'); return; }
+      if(window.Toast) Toast.info('Redeem', 'Redeeming code…');
+      // Server hook when available
+    });
+  }
   var wdBtn = document.getElementById('withdrawConfirmBtn');
   if(wdBtn){
     wdBtn.addEventListener('click', function(){

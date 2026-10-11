@@ -223,16 +223,24 @@
     gameActive = false;
 
     var grid_data = data.grid || [];
-    // Reveal entire board: bombs on mines, diamonds on safe tiles
+    var picked = activeGame && activeGame.revealed ? activeGame.revealed.slice() : [];
+    // Bombs: red outline glow. Selected gems only: blue glow. Other safes stay muted.
     grid.querySelectorAll('.mines-tile').forEach(function(tile){
       var idx = parseInt(tile.dataset.index, 10);
       tile.classList.add('disabled');
       var isMine = grid_data[idx] === 'mine' || grid_data[idx] === 1 || grid_data[idx] === 'bomb';
+      var wasPicked = picked.indexOf(idx) !== -1;
       if(isMine){
+        tile.classList.remove('gem');
         tile.classList.add('revealed','mine','reveal-mine-on-loss');
         ensureTileIcon(tile, 'icons/bomb.png');
-      } else {
+      } else if(wasPicked){
+        tile.classList.remove('mine');
         tile.classList.add('revealed','gem');
+        ensureTileIcon(tile, 'icons/diamond.png');
+      } else {
+        tile.classList.remove('gem','mine');
+        tile.classList.add('revealed','miss');
         ensureTileIcon(tile, 'icons/diamond.png');
       }
     });
@@ -309,21 +317,26 @@
 
       gameActive = false;
 
-      // Full board: diamonds on gems, bombs on mines (like Stake cashout)
+      // Bombs red outline; only cashed/selected gems blue glow; rest muted
       var grid_data = data.grid || [];
-      var revealed = data.revealed || [];
+      var revealed = data.revealed || (activeGame && activeGame.revealed) || [];
       grid.querySelectorAll('.mines-tile').forEach(function(tile){
         var idx = parseInt(tile.dataset.index, 10);
         tile.classList.add('disabled');
         var cell = grid_data[idx];
         var isMine = cell === 'mine' || cell === 1 || cell === 'bomb';
+        var wasPicked = revealed.indexOf(idx) !== -1;
         if(isMine){
           tile.classList.remove('gem');
           tile.classList.add('revealed','mine');
           ensureTileIcon(tile, 'icons/bomb.png');
-        } else {
+        } else if(wasPicked){
           tile.classList.remove('mine');
           tile.classList.add('revealed','gem');
+          ensureTileIcon(tile, 'icons/diamond.png');
+        } else {
+          tile.classList.remove('gem','mine');
+          tile.classList.add('revealed','miss');
           ensureTileIcon(tile, 'icons/diamond.png');
         }
       });

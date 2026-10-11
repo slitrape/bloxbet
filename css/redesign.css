@@ -3159,3 +3159,89 @@ body.reduce-motion .name-admin-glow {
   border-radius:999px; background:rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.1); color:#c8d0dc;
 }
+
+/* ========== Wallet gift-card layout (matches deposit mock) ========== */
+.wallet-gift.modal{ max-width:720px; width:94vw; }
+.wallet-gift-head{
+  display:flex; align-items:center; gap:.75rem; flex-wrap:wrap;
+  padding:1rem 1.15rem .5rem!important; border-bottom:none!important;
+}
+.wallet-pill-tabs{
+  display:inline-flex; background:#0a0e16; border-radius:999px; padding:3px;
+  border:1px solid rgba(255,255,255,.08); gap:2px;
+}
+.wallet-pill{
+  appearance:none; border:none; background:transparent; color:#8b95a8;
+  font:inherit; font-weight:800; font-size:.85rem; padding:.45rem 1.15rem;
+  border-radius:999px; cursor:pointer; transition:background .15s,color .15s;
+}
+.wallet-pill.active{
+  background:linear-gradient(180deg,#ffb24a,#ff8a00); color:#1a0f00;
+  box-shadow:0 4px 14px rgba(255,138,0,.35);
+}
+.wallet-method-dd{ position:relative; margin-left:auto; }
+.wallet-method-btn{
+  appearance:none; border:1px solid rgba(255,255,255,.1); background:#151c28;
+  color:#e8eef7; font:inherit; font-weight:700; font-size:.82rem;
+  padding:.45rem .75rem; border-radius:10px; cursor:pointer;
+  display:inline-flex; align-items:center; gap:.4rem;
+}
+.wallet-method-btn:hover{ border-color:rgba(255,255,255,.18); }
+.wallet-method-menu{
+  display:none; position:absolute; right:0; top:calc(100% + 6px); z-index:40;
+  min-width:180px; background:#121820; border:1px solid rgba(255,255,255,.1);
+  border-radius:12px; padding:.35rem; box-shadow:0 16px 40px rgba(0,0,0,.45);
+}
+.wallet-method-menu.open{ display:block; }
+.wallet-method-item{
+  appearance:none; border:none; background:transparent; color:#c9d2e3;
+  font:inherit; font-weight:700; font-size:.82rem; width:100%; text-align:left;
+  padding:.55rem .7rem; border-radius:8px; cursor:pointer;
+}
+.wallet-method-item:hover{ background:rgba(255,255,255,.06); color:#fff; }
+.wallet-method-item.active{ background:rgba(59,130,246,.25); color:#93c5fd; }
+.wallet-gift-body{ padding:0 1.15rem 1.15rem!important; }
+.gift-redeem label{
+  display:block; font-size:.78rem; font-weight:700; color:#aab4c4; margin-bottom:.45rem;
+}
+.gift-redeem-row{ display:flex; gap:.5rem; }
+.gift-redeem-row input{
+  flex:1; min-width:0; background:#0a0e16; border:1px solid rgba(255,255,255,.1);
+  border-radius:12px; color:#fff; font:inherit; font-weight:600; padding:.7rem .9rem;
+  outline:none;
+}
+.gift-redeem-row input:focus{ border-color:rgba(255,149,0,.5); box-shadow:0 0 0 3px rgba(255,149,0,.12); }
+.gift-or{
+  display:flex; align-items:center; gap:.75rem; margin:1.15rem 0 .9rem;
+  color:#6b7280; font-size:.68rem; font-weight:800; letter-spacing:.08em;
+}
+.gift-or::before,.gift-or::after{ content:""; flex:1; height:1px; background:rgba(255,255,255,.08); }
+.gift-providers{
+  display:grid; grid-template-columns:1fr 1fr; gap:.85rem;
+}
+@media(max-width:640px){ .gift-providers{ grid-template-columns:1fr; } }
+.gift-card-provider{
+  display:block; text-decoration:none!important; color:inherit;
+  background:linear-gradient(165deg,#171d2a,#10151f);
+  border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:1rem;
+  transition:border-color .15s, transform .12s, box-shadow .15s;
+}
+.gift-card-provider:hover{
+  border-color:rgba(255,149,0,.35); transform:translateY(-2px);
+  box-shadow:0 12px 28px rgba(0,0,0,.35);
+}
+.gift-card-logo{
+  min-height:52px; display:flex; align-items:center; justify-content:center;
+  margin-bottom:.75rem; background:rgba(0,0,0,.25); border-radius:12px;
+  border:1px solid rgba(255,255,255,.05);
+}
+.gift-logo-text{ font-weight:900; font-size:1.15rem; letter-spacing:.02em; color:#fff; }
+.gift-logo-text.kinguin{ color:#fff; }
+.gift-logo-text.pulse{ color:#a78bfa; display:flex; flex-direction:column; align-items:center; line-height:1.15; }
+.gift-logo-text.pulse small{ font-size:.55rem; letter-spacing:.12em; color:#8b95a8; font-weight:700; }
+.gift-card-accepts .tiny{ display:block; margin-bottom:.4rem; }
+.pay-icons{ display:flex; flex-wrap:wrap; gap:.3rem; }
+.pay-pill{
+  font-size:.62rem; font-weight:800; padding:.22rem .4rem; border-radius:6px;
+  background:#0a0e16; border:1px solid rgba(255,255,255,.08); color:#c9d2e3;
+}
